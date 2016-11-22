@@ -12,9 +12,9 @@ public class Globals {
     public static int doAdminMention = 0;
 
     //Console Bot message Variables
-    public static String consoleMessageCID = "177747821338951680";
-    public static String creatorID = "153159020528533505";
-    public static String botName = "S.A.I.L";
+    public static String consoleMessageCID = "203694223596191744";
+    public static String creatorID = "83984886494400512";
+    public static String botName = "LillyBot";
     public static IDiscordClient client;
     public static int argsMax = 500;
     public static int maxWarnings = 3;

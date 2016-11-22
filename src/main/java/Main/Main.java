@@ -74,6 +74,7 @@ public class Main {
             IChannel channel = Globals.getClient().getChannelByID(Globals.consoleMessageCID);
             String message = scanner.nextLine();
             message = message.replaceAll("#Dawn#", Globals.getClient().getUserByID("153159020528533505").toString());
+            message = message.replaceAll("#thakyZ#", Globals.getClient().getUserByID("83984886494400512").toString());
             message = message.replaceAll("teh", "the");
             message = message.replaceAll("Teh", "The");
             if (!message.equals("")) {

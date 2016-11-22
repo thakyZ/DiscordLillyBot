@@ -12989,3 +12989,34 @@ java.lang.NullPointerException: null
 	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
 	at java.lang.Thread.run(Thread.java:745)
+2016-11-22 13:43:24.401 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @1839ms
+2016-11-22 13:43:24.434 [main] INFO  sx.blah.discord.Discord4J - Discord4J v2.7.0-SNAPSHOT
+2016-11-22 13:43:24.435 [main] INFO  sx.blah.discord.Discord4J - A Java binding for the official Discord API, forked from https://github.com/nerd/Discord4J. Copyright (c) 2016, Licensed under GNU GPLv2
+2016-11-22 13:43:24.440 [main] INFO  Handlers.FileHandler - Directory Created: Storage/Images/
+2016-11-22 13:43:24.441 [main] INFO  Handlers.FileHandler - Directory Created: Storage/Competition/
+2016-11-22 13:43:24.443 [main] INFO  Handlers.FileHandler - Directory Created: Storage/Backups/
+2016-11-22 13:43:24.445 [main] INFO  Handlers.FileHandler - Directory Created: Storage/Temp/
+2016-11-22 13:43:24.452 [main] INFO  Handlers.FileHandler - Directory Created: Storage/Old_Files/
+2016-11-22 13:45:32.896 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @1333ms
+2016-11-22 13:45:32.915 [main] INFO  sx.blah.discord.Discord4J - Discord4J v2.7.0-SNAPSHOT
+2016-11-22 13:45:32.915 [main] INFO  sx.blah.discord.Discord4J - A Java binding for the official Discord API, forked from https://github.com/nerd/Discord4J. Copyright (c) 2016, Licensed under GNU GPLv2
+2016-11-22 13:47:31.307 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @1926ms
+2016-11-22 13:47:31.324 [main] INFO  sx.blah.discord.Discord4J - Discord4J v2.7.0-SNAPSHOT
+2016-11-22 13:47:31.324 [main] INFO  sx.blah.discord.Discord4J - A Java binding for the official Discord API, forked from https://github.com/nerd/Discord4J. Copyright (c) 2016, Licensed under GNU GPLv2
+2016-11-22 13:48:13.500 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @1134ms
+2016-11-22 13:48:13.530 [main] INFO  sx.blah.discord.Discord4J - Discord4J v2.7.0-SNAPSHOT
+2016-11-22 13:48:13.531 [main] INFO  sx.blah.discord.Discord4J - A Java binding for the official Discord API, forked from https://github.com/nerd/Discord4J. Copyright (c) 2016, Licensed under GNU GPLv2
+2016-11-22 13:48:17.647 [WebSocketClient@1825935130-20] INFO  sx.blah.discord.Discord4J - Websocket Connected.
+2016-11-22 13:48:17.864 [WebSocketClient@1825935130-24] INFO  sx.blah.discord.Discord4J - Connected to Discord Gateway v5. Receiving 1 guilds.
+2016-11-22 13:48:24.345 [Event Dispatch Thread] INFO  Listeners.AnnotationListener - Starting Guild init proccess for Guild with ID: 83985251872833536
+2016-11-22 13:48:24.353 [Event Dispatch Thread] INFO  Handlers.FileHandler - Directory Created: Storage/83985251872833536/
+2016-11-22 13:48:24.354 [Event Dispatch Thread] INFO  Handlers.FileHandler - Directory Created: Storage/Backups/83985251872833536/
+2016-11-22 13:48:24.356 [Event Dispatch Thread] INFO  Handlers.FileHandler - Directory Created: Storage/83985251872833536/Images/
+2016-11-22 13:48:24.405 [Event Dispatch Thread] INFO  Listeners.AnnotationListener - Finished Initialising Guild With ID: 83985251872833536
+2016-11-22 13:53:34.582 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @1218ms
+2016-11-22 13:53:34.606 [main] INFO  sx.blah.discord.Discord4J - Discord4J v2.7.0-SNAPSHOT
+2016-11-22 13:53:34.606 [main] INFO  sx.blah.discord.Discord4J - A Java binding for the official Discord API, forked from https://github.com/nerd/Discord4J. Copyright (c) 2016, Licensed under GNU GPLv2
+2016-11-22 13:53:37.916 [WebSocketClient@1115094346-25] INFO  sx.blah.discord.Discord4J - Websocket Connected.
+2016-11-22 13:53:38.099 [WebSocketClient@1115094346-23] INFO  sx.blah.discord.Discord4J - Connected to Discord Gateway v5. Receiving 1 guilds.
+2016-11-22 13:53:45.605 [Event Dispatch Thread] INFO  Listeners.AnnotationListener - Starting Guild init proccess for Guild with ID: 83985251872833536
+2016-11-22 13:53:45.638 [Event Dispatch Thread] INFO  Listeners.AnnotationListener - Finished Initialising Guild With ID: 83985251872833536
