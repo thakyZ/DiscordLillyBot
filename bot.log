@@ -15151,3 +15151,54 @@ java.lang.NullPointerException: null
 	at java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
 	at java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
 	at java.lang.Thread.run(Unknown Source)
+2016-11-22 18:31:31.882 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @685ms
+2016-11-22 18:31:31.918 [main] INFO  sx.blah.discord.Discord4J - Discord4J v2.7.0-SNAPSHOT
+2016-11-22 18:31:31.919 [main] INFO  sx.blah.discord.Discord4J - A Java binding for the official Discord API, forked from https://github.com/nerd/Discord4J. Copyright (c) 2016, Licensed under GNU GPLv2
+2016-11-22 18:31:35.097 [WebSocketClient@1437300344-26] INFO  sx.blah.discord.Discord4J - Websocket Connected.
+2016-11-22 18:31:35.234 [WebSocketClient@1437300344-22] INFO  sx.blah.discord.Discord4J - Connected to Discord Gateway v5. Receiving 1 guilds.
+2016-11-22 18:31:38.350 [Event Dispatch Thread] INFO  Listeners.AnnotationListener - Starting Guild init proccess for Guild with ID: 83985251872833536
+2016-11-22 18:31:38.368 [Event Dispatch Thread] INFO  Listeners.AnnotationListener - Finished Initialising Guild With ID: 83985251872833536
+2016-11-22 18:32:48.716 [WebSocketClient@1437300344-24] ERROR sx.blah.discord.Discord4J - Encountered websocket error: {}
+java.lang.NullPointerException: null
+	at sx.blah.discord.api.internal.DiscordUtils.getInviteFromJSON(DiscordUtils.java:109)
+	at sx.blah.discord.api.internal.DiscordClientImpl.getInviteForCode(DiscordClientImpl.java:485)
+	at sx.blah.discord.api.internal.DispatchHandler.lambda$messageCreate$6(DispatchHandler.java:159)
+	at java.util.stream.ReferencePipeline$3$1.accept(Unknown Source)
+	at java.util.ArrayList$ArrayListSpliterator.forEachRemaining(Unknown Source)
+	at java.util.stream.AbstractPipeline.copyInto(Unknown Source)
+	at java.util.stream.AbstractPipeline.wrapAndCopyInto(Unknown Source)
+	at java.util.stream.ReduceOps$ReduceOp.evaluateSequential(Unknown Source)
+	at java.util.stream.AbstractPipeline.evaluate(Unknown Source)
+	at java.util.stream.ReferencePipeline.collect(Unknown Source)
+	at sx.blah.discord.api.internal.DispatchHandler.messageCreate(DispatchHandler.java:159)
+	at sx.blah.discord.api.internal.DispatchHandler.handle(DispatchHandler.java:43)
+	at sx.blah.discord.api.internal.DiscordWS.onWebSocketText(DiscordWS.java:88)
+	at org.eclipse.jetty.websocket.common.events.JettyListenerEventDriver.onTextMessage(JettyListenerEventDriver.java:189)
+	at org.eclipse.jetty.websocket.common.message.SimpleTextMessage.messageComplete(SimpleTextMessage.java:69)
+	at org.eclipse.jetty.websocket.common.events.AbstractEventDriver.appendMessage(AbstractEventDriver.java:66)
+	at org.eclipse.jetty.websocket.common.events.JettyListenerEventDriver.onTextFrame(JettyListenerEventDriver.java:158)
+	at org.eclipse.jetty.websocket.common.events.AbstractEventDriver.incomingFrame(AbstractEventDriver.java:162)
+	at org.eclipse.jetty.websocket.common.WebSocketSession.incomingFrame(WebSocketSession.java:376)
+	at org.eclipse.jetty.websocket.common.extensions.ExtensionStack.incomingFrame(ExtensionStack.java:220)
+	at org.eclipse.jetty.websocket.common.Parser.notifyFrame(Parser.java:220)
+	at org.eclipse.jetty.websocket.common.Parser.parse(Parser.java:256)
+	at org.eclipse.jetty.websocket.common.io.AbstractWebSocketConnection.readParse(AbstractWebSocketConnection.java:679)
+	at org.eclipse.jetty.websocket.common.io.AbstractWebSocketConnection.onFillable(AbstractWebSocketConnection.java:511)
+	at org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:273)
+	at org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:95)
+	at org.eclipse.jetty.io.ssl.SslConnection.onFillable(SslConnection.java:202)
+	at org.eclipse.jetty.io.AbstractConnection$ReadCallback.succeeded(AbstractConnection.java:273)
+	at org.eclipse.jetty.io.FillInterest.fillable(FillInterest.java:95)
+	at org.eclipse.jetty.io.SelectChannelEndPoint$2.run(SelectChannelEndPoint.java:93)
+	at org.eclipse.jetty.util.thread.strategy.ExecuteProduceConsume.executeProduceConsume(ExecuteProduceConsume.java:303)
+	at org.eclipse.jetty.util.thread.strategy.ExecuteProduceConsume.produceConsume(ExecuteProduceConsume.java:148)
+	at org.eclipse.jetty.util.thread.strategy.ExecuteProduceConsume.run(ExecuteProduceConsume.java:136)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:671)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$2.run(QueuedThreadPool.java:589)
+	at java.lang.Thread.run(Unknown Source)
+2016-11-22 18:32:48.726 [WebSocketClient@1437300344-24] INFO  sx.blah.discord.Discord4J - Shard 0 websocket disconnected with status code 1008 and reason "NullPointerException".
+2016-11-22 18:32:48.728 [WebSocketClient@1437300344-24] INFO  sx.blah.discord.Discord4J - Beginning reconnect for shard 0.
+2016-11-22 18:32:48.729 [WebSocketClient@1437300344-24] INFO  sx.blah.discord.Discord4J - Performing reconnect attempt 0.
+2016-11-22 18:32:49.127 [WebSocketClient@11851956-66] INFO  sx.blah.discord.Discord4J - Websocket Connected.
+2016-11-22 18:32:49.129 [WebSocketClient@11851956-66] INFO  sx.blah.discord.Discord4J - Reconnect for shard 0 succeeded.
+2016-11-22 18:32:49.214 [WebSocketClient@11851956-60] INFO  sx.blah.discord.Discord4J - Session resumed on shard 0

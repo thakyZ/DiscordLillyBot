@@ -89,7 +89,7 @@ public class AnnotationListener {
         try {
             Globals.isReady = true;
             event.getClient().changeStatus(Status.game("with space and time!"));
-            if (!event.getClient().getOurUser().getName().equals(Globals.botName))
+            if (!event.getClient().getOurUser().getName().equals(Globals.botName)){
                 event.getClient().changeUsername(Globals.botName);
             }
 
