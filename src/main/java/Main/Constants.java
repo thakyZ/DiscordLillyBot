@@ -74,8 +74,8 @@ public class Constants {
 
 
     //Special Messages
-    public static final String DAILY_MESSAGE_1 = "> Mow WOW!\n";
-    public static final String DAILY_MESSAGE_2 = "> I love Kitty Treats!.";
+    public static final String DAILY_MESSAGE_1 = "> Mow WOW!";
+    public static final String DAILY_MESSAGE_2 = "> I love Kitty Treats!";
     public static final String DAILY_MESSAGE_3 = "> There is something out side in the backyard!";
     public static final String DAILY_MESSAGE_4 = "> HI TOBY! HOW ARE YOU!?!?";
     public static final String DAILY_MESSAGE_5 = "> Can I haz Kitty Treats?";
