@@ -63,3 +63,8 @@ Storage/Token.txt
 *.json1
 *.json2
 *.json3
+*.log
+
+workspace.xml
+Competition.json
+JavaDiscordSAILv2.jar
