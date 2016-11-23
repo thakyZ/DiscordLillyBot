@@ -88,9 +88,11 @@ public class AnnotationListener {
     public void onReadyEvent(ReadyEvent event) {
         try {
             Globals.isReady = true;
-            event.getClient().changeStatus(Status.game("with space and time!"));
-            if (!event.getClient().getApplicationName().equals(Globals.botName))
+            event.getClient().changeStatus(Status.game("Starbound"));
+            if (!event.getClient().getOurUser().getName().equals(Globals.botName)){
                 event.getClient().changeUsername(Globals.botName);
+            }
+
         } catch (DiscordException | RateLimitException e) {
             e.printStackTrace();
         }
