@@ -2,7 +2,6 @@ package Main;
 
 import Annotations.TagAnnotation;
 import Objects.ReplaceObject;
-import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import sx.blah.discord.handle.obj.*;
 
@@ -269,7 +268,7 @@ public class TagSystem {
                             long randMin = Long.parseLong(tag.split(";;")[0]);
                             long randMax = Long.parseLong(tag.split(";;")[1]);
                             long randomNumber = ThreadLocalRandom.current().nextLong(randMin,randMax +1);
-                            from = from.replace(prefix + tag + suffix, randomNumber + "");
+                            from = from.replaceFirst(Pattern.quote(prefix + tag + suffix), randomNumber + "");
                         }catch (NumberFormatException e){
                             from = from.replace(prefix + tag + suffix, "#ERROR#");
                         } catch (IllegalArgumentException e){

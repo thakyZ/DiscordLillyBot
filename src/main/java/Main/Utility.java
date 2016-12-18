@@ -4,13 +4,16 @@ import Annotations.CommandAnnotation;
 import Handlers.FileHandler;
 import Handlers.MessageHandler;
 import Objects.BlackListObject;
+import POGOs.GuildConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.api.internal.json.objects.EmbedObject;
 import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.util.*;
+import sx.blah.discord.util.Image;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -62,16 +65,16 @@ public class Utility {
     }
 
     //Command Utils
-    public static String getCommandInfo(CommandAnnotation annotation) {
+    public static String getCommandInfo(CommandAnnotation annotation, GuildConfig guildConfig) {
         StringBuilder builder = new StringBuilder();
-        builder.append("`" + Constants.PREFIX_COMMAND + annotation.name() + " " + annotation.usage() + "`");
+        builder.append("`" + guildConfig.getPrefixCommand() + annotation.name() + " " + annotation.usage() + "`");
         return builder.toString();
     }
 
-    public static String getCommandInfo(String methodName) {
+    public static String getCommandInfo(String methodName, GuildConfig guildConfig) {
         try {
             Method method = MessageHandler.class.getMethod(methodName);
-            return getCommandInfo(method.getAnnotation(CommandAnnotation.class));
+            return getCommandInfo(method.getAnnotation(CommandAnnotation.class), guildConfig);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
@@ -110,7 +113,21 @@ public class Utility {
     }
 
     public static Object initFile(String guildID, String filePath, Class<?> objClass) {
-        return handler.readFromJson(Utility.getFilePath(guildID, filePath), objClass);
+        Object object = null;
+        int counter = 0;
+        while (object == null) {
+            object = handler.readFromJson(Utility.getFilePath(guildID, filePath), objClass);
+            counter++;
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        if (counter > 1){
+            logger.debug(filePath + " File for guild with id " + guildID + " took " + counter + " tries to Init");
+        }
+        return object;
     }
 
     public static void flushFile(String guildID, String filePath, Object object, boolean wasInit) {
@@ -150,7 +167,7 @@ public class Utility {
                         channel.sendMessage(message);
                     }
                 } catch (MissingPermissionsException e) {
-                    logger.error("Error sending message to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
+                    logger.debug("Error sending message to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
                             ".\n" + Constants.PREFIX_EDT_LOGGER_INDENT + "Reason: Missing permissions.");
                     return true;
                 } catch (DiscordException e) {
@@ -162,7 +179,7 @@ public class Utility {
                     }
                 }
             } else {
-                logger.error("Message to be sent to channel with id: " + channel.getID() + "on guild with id: " + channel.getGuild().getID() +
+                logger.debug("Message to be sent to channel with id: " + channel.getID() + "on guild with id: " + channel.getGuild().getID() +
                         ".\n" + Constants.PREFIX_EDT_LOGGER_INDENT + "Reason: Message to large.");
                 return true;
             }
@@ -177,7 +194,7 @@ public class Utility {
                     if (message != null) {
                         channel.sendFile(file);
                     } else {
-                        logger.error("Error sending File to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
+                        logger.debug("Error sending File to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
                                 ".\n" + Constants.PREFIX_EDT_LOGGER_INDENT + "Reason: No file to send");
                         return true;
                     }
@@ -199,8 +216,38 @@ public class Utility {
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (MissingPermissionsException e) {
-                logger.error("Error sending File to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
+                logger.debug("Error sending File to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
                         ".\n" + Constants.PREFIX_EDT_LOGGER_INDENT + "Reason: Missing permissions.");
+                return true;
+            }
+            return false;
+        });
+    }
+
+    public static RequestBuffer.RequestFuture<Boolean> sendEmbededMessage(String message, EmbedObject embed, IChannel channel, boolean b) {
+        return RequestBuffer.request(() -> {
+            try {
+                String iMessage = message;
+                if (iMessage == null){
+                    iMessage = "";
+                }
+                channel.sendMessage(iMessage,embed,b);
+            } catch (DiscordException e) {
+                if (e.getMessage().contains("CloudFlare")) {
+                    sendMessage(message, channel);
+                } else {
+                    e.printStackTrace();
+                    return true;
+                }
+            } catch (MissingPermissionsException e) {
+                logger.debug("Error sending File to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
+                        ".\n" + Constants.PREFIX_EDT_LOGGER_INDENT + "Reason: Missing permissions.");
+                StringBuilder embedtoString = new StringBuilder();
+                if (embed.title != null) embedtoString.append("**" + embed.title + "**\n");
+                if (embed.description != null) embedtoString.append(embed.description + "\n");
+                if (embed.footer != null) embedtoString.append(embed.footer);
+                if (embed.image != null) embedtoString.append(embed.image.url);
+                sendMessage(embedtoString.toString(),channel);
                 return true;
             }
             return false;
@@ -216,7 +263,7 @@ public class Utility {
                 e.printStackTrace();
                 return true;
             } catch (NullPointerException e) {
-                logger.error("[sendDM] " + e.getMessage());
+                logger.debug("[sendDM] " + e.getMessage());
                 return true;
             }
             return false;
@@ -237,7 +284,7 @@ public class Utility {
                 }
             } catch (MissingPermissionsException e) {
                 if (e.getMessage().contains("Edited roles hierarchy is too high.")) {
-                    logger.error("Error Editing roles of user with id: " + author.getID() + " on guild with id: " + guild.getID() +
+                    logger.debug("Error Editing roles of user with id: " + author.getID() + " on guild with id: " + guild.getID() +
                             ".\n" + Constants.PREFIX_EDT_LOGGER_INDENT + "Reason: Edited roles hierarchy is too high.");
                     return true;
                 } else {
@@ -268,7 +315,7 @@ public class Utility {
                 guild.editUserRoles(author, roles);
             } catch (MissingPermissionsException e) {
                 if (e.getMessage().contains("Edited roles hierarchy is too high.")) {
-                    logger.error("Error Editing roles of user with id: " + author.getID() + " on guild with id: " + guild.getID() +
+                    logger.debug("Error Editing roles of user with id: " + author.getID() + " on guild with id: " + guild.getID() +
                             ".\n" + Constants.PREFIX_EDT_LOGGER_INDENT + "Reason: Edited roles hierarchy is too high.");
                     return true;
                 } else {
@@ -343,14 +390,18 @@ public class Utility {
 
     public static RequestBuffer.RequestFuture<Boolean> updateUserNickName(IUser author, IGuild guild, String nickname) {
         return RequestBuffer.request(() -> {
-            try{
-                guild.setUserNickname(author,nickname);
+            try {
+                guild.setUserNickname(author, nickname);
             } catch (MissingPermissionsException e) {
-                e.printStackTrace();
+                if (e.getMessage().toLowerCase().contains("hierarchy")) {
+                    logger.debug("Could not Update Nickname. User's position in hierarchy is higher than mine.");
+                } else {
+                    e.printStackTrace();
+                }
                 return true;
             } catch (DiscordException e) {
                 if (e.getMessage().contains("CloudFlare")) {
-                    updateUserNickName(author,guild,nickname);
+                    updateUserNickName(author, guild, nickname);
                 } else {
                     e.printStackTrace();
                     return true;
@@ -358,6 +409,27 @@ public class Utility {
             }
             return false;
         });
+    }
+
+    public static Color getUsersColour(IUser user, IGuild guild) {
+        List<IRole> botRoles = guild.getRolesForUser(Globals.getClient().getOurUser());
+        IRole topColour = null;
+        String defaultColour = "0,0,0";
+        for (IRole role : botRoles) {
+            if (!(role.getColor().getRed() + "," + role.getColor().getGreen() + "," + role.getColor().getBlue()).equals(defaultColour)) {
+                if (topColour != null) {
+                    if (role.getPosition() > topColour.getPosition()) {
+                        topColour = role;
+                    }
+                } else {
+                    topColour = role;
+                }
+            }
+        }
+        if (topColour != null) {
+            return topColour.getColor();
+        }
+        return null;
     }
 
     //Time Utils
