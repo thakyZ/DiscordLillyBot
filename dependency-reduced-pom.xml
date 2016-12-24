@@ -5,7 +5,7 @@
   <artifactId>DiscordLillyBot</artifactId>
   <version>2.0.0</version>
   <build>
-    <finalName>JavaDiscordSAILv2</finalName>
+    <finalName>DiscordLillyBotv1</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-eclipse-plugin</artifactId>

@@ -9,7 +9,7 @@
     <version>2.0.0</version>
 
     <build>
-        <finalName>JavaDiscordSAILv2</finalName>
+        <finalName>DiscordLillyBotv1</finalName>
         <plugins>
 
             <!-- download source code in Eclipse, best practice -->
