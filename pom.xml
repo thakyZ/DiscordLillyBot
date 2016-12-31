@@ -6,7 +6,7 @@
 
     <groupId>com.github.vaerys</groupId>
     <artifactId>DiscordLillyBot</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.16</version>
 
     <build>
         <finalName>DiscordLillyBotv1</finalName>
@@ -81,7 +81,7 @@
         <dependency>
             <groupId>com.github.austinv11</groupId>
             <artifactId>Discord4j</artifactId>
-            <version>f6f90c4</version>
+            <version>2.7.0</version>
             <classifier>shaded</classifier>
         </dependency>
         <dependency>

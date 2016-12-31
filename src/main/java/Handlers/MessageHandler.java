@@ -98,7 +98,7 @@ public class MessageHandler {
     }
 
     private void checkMentionCount() {
-        if (Utility.testForPerms(new Permissions[]{Permissions.MENTION_EVERYONE}, author, guild)) {
+        if (message.toString().contains("@everyone") || message.toString().contains("@here")) {
             return;
         }
         if (guildConfig.doMaxMentions()) {
@@ -344,6 +344,7 @@ public class MessageHandler {
             builder.append("Support Discord - https://discord.gg/XSyQQrR\n");
             builder.append("[Bot's GitHub](https://github.com/Vaerys-Dawn/DiscordSailv2)");
             helpEmbed.withDescription(builder.toString());
+            helpEmbed.withFooterText("Bot Version: " + Globals.version);
         } else {
             boolean isFound = false;
             for (String s : types) {
@@ -527,6 +528,7 @@ public class MessageHandler {
         if (Utility.testForPerms(new Permissions[]{Permissions.MANAGE_SERVER}, author, guild) || author.getID().equals(Globals.creatorID)) {
             builder.append("\n\n***[GUILD CONFIG OPTIONS]***");
             builder.append("\n> LoginMessage = **" + guildConfig.doLoginMessage());
+            builder.append("**\n> DailyMessage = **" + guildConfig.doDailyMessage());
             builder.append("**\n> GeneralLogging = **" + guildConfig.doGeneralLogging());
             builder.append("**\n> AdminLogging = **" + guildConfig.doAdminLogging());
             builder.append("**\n> BlackListing = **" + guildConfig.doBlackListing());
@@ -1200,8 +1202,7 @@ public class MessageHandler {
             isLocked = true;
         }
         content = newContent;
-        boolean isTrusted = guildConfig.testIsTrusted(author, guild);
-        return customCommands.addCommand(isLocked, author.getID(), nameCC, content, isShitpost, guild, isTrusted, guildConfig);
+        return customCommands.addCommand(isLocked, author, nameCC, content, isShitpost, guild, guildConfig);
     }
 
     @CommandAnnotation(
@@ -1227,13 +1228,13 @@ public class MessageHandler {
         String tagUserSuffix = "}";
         String tagUser;
         if (message.getMentions().size() > 0) {
-            return customCommands.getUserCommands(message.getMentions().get(0).getID(), guildConfig);
+            return customCommands.getUserCommands(message.getMentions().get(0).getID(),guild, guildConfig);
         }
         if (args.contains(tagUserPrefix)) {
             tagUser = StringUtils.substringBetween(args, tagUserPrefix, tagUserSuffix);
             if (tagUser != null) {
                 if (Globals.getClient().getUserByID(tagUser) != null) {
-                    return customCommands.getUserCommands(tagUser, guildConfig);
+                    return customCommands.getUserCommands(tagUser,guild, guildConfig);
                 }
             }
         }
@@ -1314,7 +1315,7 @@ public class MessageHandler {
             } else {
                 trusted = guildConfig.testIsTrusted(Globals.getClient().getUserByID(userID), guild);
             }
-            return customCommands.addCommand(locked, userID, name, contents, shitpost, guild, trusted, guildConfig);
+            return customCommands.addCommand(locked, Globals.getClient().getUserByID(userID), name, contents, shitpost, guild, guildConfig);
         } else {
             return "> Your Server Has no Legacy commands to transfer.";
         }
