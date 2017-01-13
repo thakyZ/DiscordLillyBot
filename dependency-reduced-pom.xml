@@ -5,6 +5,12 @@
   <artifactId>DiscordLillyBot</artifactId>
   <version>2.0.16</version>
   <build>
+    <resources>
+      <resource>
+        <filtering>true</filtering>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
     <finalName>DiscordLillyBotv1</finalName>
     <plugins>
       <plugin>
