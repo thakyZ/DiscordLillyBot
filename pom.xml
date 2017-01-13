@@ -10,6 +10,13 @@
 
     <build>
         <finalName>DiscordLillyBotv1</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
         <plugins>
 
             <!-- download source code in Eclipse, best practice -->
@@ -81,7 +88,7 @@
         <dependency>
             <groupId>com.github.austinv11</groupId>
             <artifactId>Discord4j</artifactId>
-            <version>2.7.0</version>
+            <version>d23849a</version>
             <classifier>shaded</classifier>
         </dependency>
         <dependency>
