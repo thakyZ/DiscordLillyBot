@@ -5,7 +5,6 @@ import Main.Constants;
 import Main.Globals;
 import Main.Utility;
 import Objects.*;
-import sx.blah.discord.handle.impl.obj.Guild;
 import sx.blah.discord.handle.obj.*;
 
 import java.time.LocalDateTime;
@@ -251,6 +250,14 @@ public class GuildConfig {
                 repeatOffenders.get(i).setDisplayName(offender.getName() + "#" + offender.getDiscriminator());
             }
         }
+
+        //update channels
+        for (ChannelTypeObject c : channels){
+            IChannel channel = guild.getChannelByID(c.getID());
+            if (channel == null){
+                channels.remove(c);
+            }
+        }
         repeatOffenders = newMentionSpammers;
     }
 
@@ -472,9 +479,9 @@ public class GuildConfig {
             StringBuilder formatted = new StringBuilder();
             formatted.append("\n> **" + rso.getRoleName() + "**");
             if (Utility.testForPerms(new Permissions[]{Permissions.MANAGE_ROLES}, author, guild) || author.getID().equals(Globals.creatorID)) {
-                builder.append(" Colour : \"**" + rso.getColour() + "**\",");
+                formatted.append(" Colour : \"**" + rso.getColour() + "**\",");
             }
-            builder.append(" Total Users: \"**" + rso.getTotalUsers() + "**\"");
+            formatted.append(" Total Users: \"**" + rso.getTotalUsers() + "**\"");
             if (rso.isCosmetic()) {
                 cosmeticRoleStats.add(formatted.toString());
                 totalCosmetic += rso.getTotalUsers();

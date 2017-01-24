@@ -1,5 +1,6 @@
 package Main;
 
+import Objects.DailyMessageObject;
 import Objects.ReminderObject;
 import Objects.TimedObject;
 import Objects.WaiterObject;
@@ -11,7 +12,7 @@ import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.util.Image;
 
 import java.io.File;
-import java.lang.reflect.Field;
+import java.time.DayOfWeek;
 import java.time.Month;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -33,12 +34,13 @@ public class TimedEvents {
         doRemovalOneSec();
         doRemovalThreeSec();
         doRemovalMin();
+        doTaskFiveMin();
         dailyTasks();
     }
 
     public static void addGuildCoolDown(String guildID) {
-        for(TimedObject t: TimerObjects){
-            if (t.getGuildID().equals(guildID)){
+        for (TimedObject t : TimerObjects) {
+            if (t.getGuildID().equals(guildID)) {
                 return;
             }
         }
@@ -68,7 +70,7 @@ public class TimedEvents {
         ZonedDateTime nowUTC = ZonedDateTime.now(ZoneOffset.UTC);
         ZonedDateTime midnightUTC = ZonedDateTime.now(ZoneOffset.UTC);
         midnightUTC = midnightUTC.withHour(0).withSecond(0).withMinute(0).withNano(0).plusDays(1);
-        long initialDelay = midnightUTC.toEpochSecond() - nowUTC.toEpochSecond();
+        long initialDelay = midnightUTC.toEpochSecond() - nowUTC.toEpochSecond() + 4;
         logger.debug("Now UTC = " + Utility.formatTimeSeconds(nowUTC.toEpochSecond()));
         logger.debug("Midnight UTC = " + Utility.formatTimeSeconds(midnightUTC.toEpochSecond()));
         logger.debug("Delay = " + Utility.formatTimeSeconds(initialDelay));
@@ -76,18 +78,24 @@ public class TimedEvents {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                ZonedDateTime midnightUTC = ZonedDateTime.now(ZoneOffset.UTC);
-                int day = midnightUTC.getDayOfWeek().getValue();
-                String time = midnightUTC.getYear() + "-" + midnightUTC.getMonth() + "-" + midnightUTC.getDayOfMonth();
-                logger.info(time + ": Running " + midnightUTC.getDayOfWeek().toString() + "'s Daily Tasks");
-                StringBuilder file = new StringBuilder();
-                file.append(Constants.DIRECTORY_GLOBAL_IMAGES + "avatarForDay_" + day);
-                if (midnightUTC.getMonth().equals(Month.DECEMBER)) {
-                    file.append("_Santa");
+                ZonedDateTime timeNow = ZonedDateTime.now(ZoneOffset.UTC);
+                String dailyFileName = Globals.dailyAvatarName.replace("#day#",timeNow.getDayOfWeek().toString());
+                DayOfWeek day = timeNow.getDayOfWeek();
+                File avatarFile;
+
+                logger.info("Running Daily tasks for " + day);
+
+                //sets Avatar.
+                if (Globals.doDailyAvatars) {
+                    avatarFile = new File(Constants.DIRECTORY_GLOBAL_IMAGES + dailyFileName);
+                } else {
+                    avatarFile = new File(Constants.DIRECTORY_GLOBAL_IMAGES + Globals.defaultAvatarFile);
                 }
-                file.append(".png");
-                final Image avatar = Image.forFile(new File(file.toString()));
+                Image avatar = Image.forFile(avatarFile);
                 Utility.updateAvatar(avatar);
+
+                //backups
+                Utility.backupConfigFile(Constants.FILE_CONFIG);
                 for (TimedObject g : TimerObjects) {
                     Utility.backupFile(g.getGuildID(), Constants.FILE_GUILD_CONFIG);
                     Utility.backupFile(g.getGuildID(), Constants.FILE_CUSTOM);
@@ -95,30 +103,22 @@ public class TimedEvents {
                     Utility.backupFile(g.getGuildID(), Constants.FILE_SERVERS);
                     Utility.backupFile(g.getGuildID(), Constants.FILE_INFO);
                     Utility.backupFile(g.getGuildID(), Constants.FILE_COMPETITION);
-                    GuildConfig guildConfig = (GuildConfig) Utility.initFile(g.getGuildID(), Constants.FILE_GUILD_CONFIG, GuildConfig.class);
+                    GuildConfig guildConfig = Globals.getGuildContent(g.getGuildID()).getGuildConfig();
+
+                    //daily messages
                     if (guildConfig.getChannelTypeID(Constants.CHANNEL_GENERAL) != null) {
                         if (guildConfig.doDailyMessage()) {
                             IChannel channel = Globals.getClient().getChannelByID(guildConfig.getChannelTypeID(Constants.CHANNEL_GENERAL));
-                            try {
-                                if (midnightUTC.getDayOfMonth() == 25 && midnightUTC.getMonth().equals(Month.DECEMBER)) {
-                                    Thread.sleep(1000);
-                                    Utility.sendMessage("> ***MERRY CHRISTMAS***", channel);
-                                } else if (midnightUTC.getDayOfMonth() == 1 && midnightUTC.getMonth().equals(Month.JANUARY)) {
-                                    Thread.sleep(1000);
-                                    Utility.sendMessage("> ***HAPPY NEW YEAR***", channel);
-                                } else {
-                                    for (Field f : Constants.class.getFields()) {
-                                        if (f.getName().equals("DAILY_MESSAGE_" + day)) {
-                                            String response = TagSystem.tagRandom((String) f.get(null));
-                                            Thread.sleep(1000);
-                                            Utility.sendMessage(response, channel);
-                                        }
+                            for (DailyMessageObject d : Globals.dailyMessages) {
+                                if (day.equals(d.getDayOfWeek())) {
+                                    if (timeNow.getDayOfMonth() == 25 && timeNow.getMonth().equals(Month.DECEMBER)) {
+                                        Utility.sendMessage("> ***MERRY CHRISTMAS***", channel);
+                                    } else if (timeNow.getDayOfMonth() == 1 && timeNow.getMonth().equals(Month.JANUARY)) {
+                                        Utility.sendMessage("> ***HAPPY NEW YEAR***", channel);
+                                    } else {
+                                        Utility.sendMessage(d.getContents(), channel);
                                     }
                                 }
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } catch (IllegalAccessException e) {
-                                e.printStackTrace();
                             }
                         }
                     }
@@ -221,7 +221,13 @@ public class TimedEvents {
         }, 3000, 60000);
     }
 
-    public static void saveAndLogOff() {
-        //// TODO: 17/11/2016 this
+    private static void doTaskFiveMin() {
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Globals.saveFiles();
+            }
+        }, 2* 60 * 1000, 5 * 60 * 1000);
     }
 }

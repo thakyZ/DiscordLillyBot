@@ -13,16 +13,22 @@ import sx.blah.discord.handle.obj.*;
 import sx.blah.discord.util.*;
 import sx.blah.discord.util.Image;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by Vaerys on 17/08/2016.
@@ -100,6 +106,10 @@ public class Utility {
         return Constants.DIRECTORY_BACKUPS + guildID + "/" + type;
     }
 
+    public static String getFilePath(String file, boolean isBackup) {
+        return Constants.DIRECTORY_BACKUPS + file;
+    }
+
     public static String getDirectory(String guildID) {
         return Constants.DIRECTORY_STORAGE + guildID + "/";
     }
@@ -112,10 +122,11 @@ public class Utility {
         return Constants.DIRECTORY_BACKUPS + guildID + "/";
     }
 
+    @Nonnull
     public static Object initFile(String guildID, String filePath, Class<?> objClass) {
-        List<String> fileContents = FileHandler.readFromFile(Utility.getFilePath(guildID,filePath));
-        if (fileContents == null || fileContents.size() == 0 || fileContents.get(0).equals("null")){
-            logger.error(Utility.getFilePath(guildID,filePath) + ". FILE EMPTY PLEASE CHECK FILE OR LOAD BACKUP.");
+        List<String> fileContents = FileHandler.readFromFile(Utility.getFilePath(guildID, filePath));
+        if (fileContents == null || fileContents.size() == 0 || fileContents.get(0).equals("null")) {
+            logger.error(Utility.getFilePath(guildID, filePath) + ". FILE EMPTY PLEASE CHECK FILE OR LOAD BACKUP.");
             return null;
         }
         Object object = null;
@@ -129,7 +140,7 @@ public class Utility {
                 e.printStackTrace();
             }
         }
-        if (counter > 1){
+        if (counter > 1) {
             logger.debug(filePath + " File for guild with id " + guildID + " took " + counter + " tries to Init");
         }
         return object;
@@ -147,6 +158,22 @@ public class Utility {
             File backup2 = new File(getFilePath(guildID, type, true) + 2);
             File backup3 = new File(getFilePath(guildID, type, true) + 3);
             File toBackup = new File(getFilePath(guildID, type));
+            if (backup3.exists()) backup3.delete();
+            if (backup2.exists()) backup2.renameTo(backup3);
+            if (backup1.exists()) backup1.renameTo(backup2);
+            if (toBackup.exists())
+                Files.copy(Paths.get(toBackup.getPath()), backup1.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void backupConfigFile(String fileConfig) {
+        try {
+            File backup1 = new File(Constants.FILE_CONFIG_BACKUP + 1);
+            File backup2 = new File(Constants.FILE_CONFIG_BACKUP + 2);
+            File backup3 = new File(Constants.FILE_CONFIG_BACKUP + 3);
+            File toBackup = new File(Constants.FILE_CONFIG);
             if (backup3.exists()) backup3.delete();
             if (backup2.exists()) backup2.renameTo(backup3);
             if (backup1.exists()) backup1.renameTo(backup2);
@@ -192,7 +219,7 @@ public class Utility {
         });
     }
 
-    public static RequestBuffer.RequestFuture<Boolean> sendFile(String message, IChannel channel, File file) {
+    public static RequestBuffer.RequestFuture<Boolean> sendFile(String message, File file, IChannel channel) {
         return RequestBuffer.request(() -> {
             try {
                 if (StringUtils.containsOnly(message, "\n") || (message == null) || message.equals("")) {
@@ -213,7 +240,7 @@ public class Utility {
                 }
             } catch (DiscordException e) {
                 if (e.getMessage().contains("CloudFlare")) {
-                    sendMessage(message, channel);
+                    sendFile(message, file, channel);
                 } else {
                     e.printStackTrace();
                     return true;
@@ -229,14 +256,69 @@ public class Utility {
         });
     }
 
-    public static RequestBuffer.RequestFuture<Boolean> sendEmbededMessage(String message, EmbedObject embed, IChannel channel, boolean b) {
+    public static RequestBuffer.RequestFuture<Boolean> sendFile(String message, String imageURL, IChannel channel) {
+        return RequestBuffer.request(() -> {
+            String messageID = "";
+            try {
+                messageID = channel.sendMessage("`Loading...`").getID();
+                final HttpURLConnection connection = (HttpURLConnection) new URL(imageURL).openConnection();
+                connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) " + "AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
+                InputStream stream = connection.getInputStream();
+                String[] urlSplit = imageURL.split(Pattern.quote("."));
+                String suffix = "." + urlSplit[urlSplit.length-1];
+                if (!suffix.contains(".png") && !suffix.contains(".jpg") && !suffix.contains(".gif") && !suffix.contains(".webp")){
+                    sendMessage(message + " " + imageURL, channel);
+                    return true;
+                }
+                if (StringUtils.containsOnly(message, "\n") || (message == null) || message.equals("")) {
+                    if (imageURL != null) {
+                        channel.sendFile("", stream, suffix);
+                    } else {
+                        logger.debug("Error sending File to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
+                                ".\n" + Constants.PREFIX_EDT_LOGGER_INDENT + "Reason: No file to send");
+                        return true;
+                    }
+                } else {
+                    if (imageURL != null) {
+                        channel.sendFile(message, true, stream, suffix);
+                    } else {
+                        sendMessage(message, channel);
+                        return true;
+                    }
+                }
+                Globals.getClient().getMessageByID(messageID).delete();
+            } catch (DiscordException e) {
+                if (e.getMessage().contains("CloudFlare")) {
+                    sendFile(message, imageURL, channel);
+                    deleteMessage(Globals.getClient().getMessageByID(messageID));
+                } else {
+                    e.printStackTrace();
+                    return true;
+                }
+            } catch (MalformedURLException e) {
+                sendMessage(message + " " + imageURL, channel);
+                deleteMessage(Globals.getClient().getMessageByID(messageID));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (MissingPermissionsException e) {
+                sendMessage(message + " <" + imageURL+">", channel);
+                deleteMessage(Globals.getClient().getMessageByID(messageID));
+                logger.debug("Error sending File to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
+                        ".\n" + Constants.PREFIX_EDT_LOGGER_INDENT + "Reason: Missing permissions.");
+                return true;
+            }
+            return false;
+        });
+    }
+
+    public static RequestBuffer.RequestFuture<Boolean> sendEmbededMessage(String message, EmbedObject embed, IChannel channel) {
         return RequestBuffer.request(() -> {
             try {
                 String iMessage = message;
-                if (iMessage == null){
+                if (iMessage == null) {
                     iMessage = "";
                 }
-                channel.sendMessage(iMessage,embed,b);
+                channel.sendMessage(iMessage, embed, false);
             } catch (DiscordException e) {
                 if (e.getMessage().contains("CloudFlare")) {
                     sendMessage(message, channel);
@@ -248,16 +330,23 @@ public class Utility {
                 logger.debug("Error sending File to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
                         ".\n" + Constants.PREFIX_EDT_LOGGER_INDENT + "Reason: Missing permissions.");
                 StringBuilder embedtoString = new StringBuilder();
+                if (embed.author != null) embedtoString.append("**" + embed.author.name + "**\n");
                 if (embed.title != null) embedtoString.append("**" + embed.title + "**\n");
                 if (embed.description != null) embedtoString.append(embed.description + "\n");
-                if (embed.footer != null) embedtoString.append("*" + embed.footer.text +"*");
+                if (embed.fields != null) {
+                    for (EmbedObject.EmbedFieldObject field : embed.fields) {
+                        embedtoString.append("**" + field.name + "**\n" + field.value + "\n");
+                    }
+                }
+                if (embed.footer != null) embedtoString.append("*" + embed.footer.text + "*");
                 if (embed.image != null) embedtoString.append(embed.image.url);
-                sendMessage(embedtoString.toString(),channel);
+                sendMessage(embedtoString.toString(), channel);
                 return true;
             }
             return false;
         });
     }
+
 
     public static RequestBuffer.RequestFuture<Boolean> sendDM(String message, String userID) {
         return RequestBuffer.request(() -> {
@@ -346,6 +435,22 @@ public class Utility {
             } catch (DiscordException e) {
                 if (e.getMessage().contains("CloudFlare")) {
                     updateAvatar(avatar);
+                } else {
+                    e.printStackTrace();
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
+    public static RequestBuffer.RequestFuture<Boolean> updateUsername(String botName) {
+        return RequestBuffer.request(() -> {
+            try {
+                Globals.getClient().changeUsername(botName);
+            } catch (DiscordException e) {
+                if (e.getMessage().contains("CloudFlare")) {
+                    updateUsername(botName);
                 } else {
                     e.printStackTrace();
                     return true;
@@ -446,5 +551,28 @@ public class Utility {
         return time;
     }
 
+    public static Boolean testModifier(String modifier) {
+        switch (modifier.toLowerCase()) {
+            case "+":
+                return true;
+            case "-":
+                return false;
+            case "add":
+                return true;
+            case "del":
+                return false;
+            default:
+                return null;
+        }
+    }
 
+    public static boolean canBypass(IUser author, IGuild guild) {
+        if (author.getID().equals(Globals.creatorID)) {
+            return true;
+        }
+        if (author.getID().equals(guild.getOwnerID())) {
+            return true;
+        }
+        return testForPerms(new Permissions[]{Permissions.ADMINISTRATOR}, author, guild);
+    }
 }
