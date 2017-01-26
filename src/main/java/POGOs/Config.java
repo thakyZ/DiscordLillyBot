@@ -30,14 +30,14 @@ public class Config {
     public boolean initObject() {
         if (resetToDefault) {
             resetToDefault = false;
-            botName = "S.A.I.L";
-            creatorID = "153159020528533505";
+            botName = "LillyBot";
+            creatorID = "83984886494400512";
             defaultPrefixCommand = "$";
             defaultPrefixCC = "$$";
             defaultAvatarFile = "Avatar.png";
-            doDailyAvatars = false;
+            doDailyAvatars = true;
             dailyAvatarName = "Avatar_For_#day#.png";
-            playing = "Starbound";
+            playing = "with space and time";
             argsMax = 500;
             maxWarnings = 3;
             dailyMessages = new ArrayList<DailyMessageObject>() {{
