@@ -46,8 +46,7 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# Files that should not be pushed
-Token.txt
+# Custom files that should not be pushed
 *.json
 *.json1
 *.json2
@@ -58,15 +57,6 @@ Token.txt
 *.png
 *.log
 *.txt
-Storage
-*.txt
-*.json1
-*.json2
-*.json3
-*.log
-
-workspace.xml
-Competition.json
-DiscordLillyBotv1.jar
-
+*.jar
+Storage/
 target/
