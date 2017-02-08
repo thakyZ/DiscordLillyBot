@@ -1,5 +1,6 @@
 package Main;
 
+import Commands.Command;
 import Objects.DailyMessageObject;
 import Objects.ReminderObject;
 import Objects.TimedObject;
@@ -94,6 +95,12 @@ public class TimedEvents {
                 Image avatar = Image.forFile(avatarFile);
                 Utility.updateAvatar(avatar);
 
+                //wait for the avatar to update properly
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 //backups
                 Utility.backupConfigFile(Constants.FILE_CONFIG);
                 for (TimedObject g : TimerObjects) {
@@ -106,9 +113,9 @@ public class TimedEvents {
                     GuildConfig guildConfig = Globals.getGuildContent(g.getGuildID()).getGuildConfig();
 
                     //daily messages
-                    if (guildConfig.getChannelTypeID(Constants.CHANNEL_GENERAL) != null) {
+                    if (guildConfig.getChannelTypeID(Command.CHANNEL_GENERAL) != null) {
                         if (guildConfig.doDailyMessage()) {
-                            IChannel channel = Globals.getClient().getChannelByID(guildConfig.getChannelTypeID(Constants.CHANNEL_GENERAL));
+                            IChannel channel = Globals.getClient().getChannelByID(guildConfig.getChannelTypeID(Command.CHANNEL_GENERAL));
                             for (DailyMessageObject d : Globals.dailyMessages) {
                                 if (day.equals(d.getDayOfWeek())) {
                                     if (timeNow.getDayOfMonth() == 25 && timeNow.getMonth().equals(Month.DECEMBER)) {

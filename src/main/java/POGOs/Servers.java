@@ -11,7 +11,6 @@ import sx.blah.discord.handle.obj.Permissions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 
 /**
  * Created by Vaerys on 14/08/2016.
@@ -29,20 +28,20 @@ public class Servers {
         this.properlyInit = properlyInit;
     }
 
-    public String addToBlacklist(String phrase, String reason){
-        for (BlackListObject b: blackList){
-            if (b.getPhrase().equalsIgnoreCase(phrase)){
+    public String addToBlacklist(String phrase, String reason) {
+        for (BlackListObject b : blackList) {
+            if (b.getPhrase().equalsIgnoreCase(phrase)) {
                 return "> Phrase already blacklisted";
             }
         }
-        blackList.add(new BlackListObject(phrase,reason));
+        blackList.add(new BlackListObject(phrase, reason));
         return "> Phrase added to blacklist";
     }
 
-    public String removeFromBlacklist(String phrase){
+    public String removeFromBlacklist(String phrase) {
         int i = 0;
-        for (BlackListObject b: blackList){
-            if (b.getPhrase().equalsIgnoreCase(phrase)){
+        for (BlackListObject b : blackList) {
+            if (b.getPhrase().equalsIgnoreCase(phrase)) {
                 blackList.remove(i);
                 return "> Phrase removed from blacklist.";
             }
@@ -57,14 +56,19 @@ public class Servers {
                 if (s.getName().equalsIgnoreCase(serverName)) {
                     return "> A Server with that name already Exists.";
                 }
-                String checked = Utility.checkBlacklist(serverName + serverIP + serverPort,blackList);
-                if (checked != null){
+                String checked = Utility.checkBlacklist(serverName + serverIP + serverPort, blackList);
+                if (checked != null) {
                     return checked;
                 }
             }
         }
-        servers.add(new ServerObject(serverName,userID,serverIP,serverPort));
+        servers.add(new ServerObject(serverName, userID, serverIP, serverPort));
         return "> Server Added.";
+
+    }
+
+    public ArrayList<ServerObject> getServers() {
+        return servers;
     }
 
     public String editServerDesc(String userID, String serverName, String desc, IGuild guild) {
@@ -72,8 +76,8 @@ public class Servers {
             if (s.getName().equalsIgnoreCase(serverName)) {
                 boolean bypass = Utility.testForPerms(new Permissions[]{Permissions.MANAGE_MESSAGES}, Globals.getClient().getUserByID(userID), guild);
                 if (s.getCreatorID().equals(userID) || bypass) {
-                    String check = Utility.checkBlacklist(desc,blackList);
-                    if (check != null){
+                    String check = Utility.checkBlacklist(desc, blackList);
+                    if (check != null) {
                         return check;
                     }
                     if (desc.length() > 1000) {
@@ -96,8 +100,8 @@ public class Servers {
             if (s.getName().equalsIgnoreCase(serverName)) {
                 boolean bypass = Utility.testForPerms(new Permissions[]{Permissions.MANAGE_MESSAGES}, Globals.getClient().getUserByID(userID), guild);
                 if (s.getCreatorID().equals(userID) || bypass) {
-                    String check = Utility.checkBlacklist(IP + port,blackList);
-                    if (check != null){
+                    String check = Utility.checkBlacklist(IP + port, blackList);
+                    if (check != null) {
                         return check;
                     }
                     s.setServerIP(IP);
@@ -114,13 +118,13 @@ public class Servers {
             if (s.getName().equalsIgnoreCase(oldServerName)) {
                 boolean bypass = Utility.testForPerms(new Permissions[]{Permissions.MANAGE_MESSAGES}, Globals.getClient().getUserByID(userID), guild);
                 if (s.getCreatorID().equals(userID) || bypass) {
-                    for (ServerObject so :servers){
-                        if (so.getName().equalsIgnoreCase(newServerName)){
+                    for (ServerObject so : servers) {
+                        if (so.getName().equalsIgnoreCase(newServerName)) {
                             return "> Cannot change Server name. That server name is already in use.";
                         }
                     }
-                    String check = Utility.checkBlacklist(newServerName,blackList);
-                    if (check != null){
+                    String check = Utility.checkBlacklist(newServerName, blackList);
+                    if (check != null) {
                         return check;
                     }
                     s.setName(newServerName);
@@ -131,7 +135,7 @@ public class Servers {
         return "> Server with that name not found.";
     }
 
-    public String deleteServer(String userID,String serverName, IGuild guild){
+    public String deleteServer(String userID, String serverName, IGuild guild) {
         int position = 0;
         for (ServerObject s : servers) {
             if (s.getName().equalsIgnoreCase(serverName)) {
@@ -146,9 +150,9 @@ public class Servers {
         return "> Server with that name not found.";
     }
 
-    public String getServer(String serverName,IGuild guild){
-        for (ServerObject s: servers){
-            if (s.getName().equalsIgnoreCase(serverName)){
+    public String getServer(String serverName, IGuild guild) {
+        for (ServerObject s : servers) {
+            if (s.getName().equalsIgnoreCase(serverName)) {
                 StringBuilder builder = new StringBuilder();
                 builder.append("> **" + s.getName() + "**\n");
                 builder.append(Constants.PREFIX_INDENT + "IP: **" + s.getServerIP() + "** Port: **" + s.getServerPort() + "**\n");
@@ -158,22 +162,6 @@ public class Servers {
             }
         }
         return "> Server with that name not found.";
-    }
-
-    public String getServerList(GuildConfig guildConfig){
-        StringBuilder builder = new StringBuilder();
-        builder.append("> Here are the Servers I have Listed:\n");
-        ArrayList<String> serverNames = new ArrayList<>();
-        for(ServerObject s: servers){
-            serverNames.add(s.getName());
-        }
-        Collections.sort(serverNames);
-        for (String s: serverNames){
-            builder.append(Constants.PREFIX_INDENT + s + "\n");
-        }
-        builder.append("> You can get more info for a server by running:\n");
-        builder.append(Utility.getCommandInfo("server",guildConfig));
-        return builder.toString();
     }
 }
 

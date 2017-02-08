@@ -1,5 +1,6 @@
 package Listeners;
 
+import Commands.CommandObject;
 import Handlers.DMHandler;
 import Handlers.FileHandler;
 import Handlers.MessageHandler;
@@ -14,13 +15,17 @@ import org.slf4j.LoggerFactory;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.GuildCreateEvent;
+import sx.blah.discord.handle.impl.events.guild.GuildLeaveEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.ChannelDeleteEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MentionEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
 import sx.blah.discord.handle.impl.events.guild.role.RoleDeleteEvent;
 import sx.blah.discord.handle.impl.events.guild.role.RoleUpdateEvent;
-import sx.blah.discord.handle.obj.*;
+import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IMessage;
+import sx.blah.discord.handle.obj.IUser;
 
 /**
  * Created by Vaerys on 03/08/2016.
@@ -74,9 +79,14 @@ public class AnnotationListener {
     }
 
     @EventSubscriber
+    public void onGuildLeaveEvent(GuildLeaveEvent event){
+        Globals.unloadGuild(event.getGuild().getID());
+    }
+
+    @EventSubscriber
     public void onReadyEvent(ReadyEvent event) {
         Globals.isReady = true;
-        event.getClient().changeStatus(Status.game(Globals.playing));
+        event.getClient().changePlayingText(Globals.playing);
         Utility.updateUsername(Globals.botName);
     }
 
@@ -120,7 +130,8 @@ public class AnnotationListener {
         }
 
         //message and command handling
-        new MessageHandler(command, args, message);
+        CommandObject commandObject = new CommandObject(message);
+        new MessageHandler(command, args, commandObject);
     }
 
     @EventSubscriber
@@ -206,6 +217,14 @@ public class AnnotationListener {
     @EventSubscriber
     public void onReactionAddEvent(ReactionAddEvent event) {
         if (event.getChannel().isPrivate()) {
+            if (event.getReaction().toString().equals("❌")) {
+                if (event.getMessage().getAuthor().getID().equals(Globals.getClient().getOurUser().getID())) {
+                    Utility.deleteMessage(event.getMessage());
+                }
+            }
+            return;
+        }
+        if (Utility.canBypass(event.getUser(),event.getGuild())){
             if (event.getReaction().toString().equals("❌")) {
                 if (event.getMessage().getAuthor().getID().equals(Globals.getClient().getOurUser().getID())) {
                     Utility.deleteMessage(event.getMessage());
