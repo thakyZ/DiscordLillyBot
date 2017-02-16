@@ -1,4 +1,4 @@
-package Commands.Admin;
+package Commands.Competition;
 
 import Commands.Command;
 import Commands.CommandObject;
@@ -57,7 +57,7 @@ public class FinalTally implements Command {
 
     @Override
     public String type() {
-        return TYPE_ADMIN;
+        return TYPE_COMPETITION;
     }
 
     @Override

@@ -57,6 +57,8 @@ Temporary Items
 *.png
 *.log
 *.txt
-*.jar
-Storage/
+*.class
+bot.log
 target/
+*.jar
+Storage

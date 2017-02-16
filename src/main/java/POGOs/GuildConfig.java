@@ -1,6 +1,7 @@
 package POGOs;
 
 import Annotations.ToggleAnnotation;
+import Commands.Command;
 import Main.Constants;
 import Main.Globals;
 import Main.Utility;
@@ -23,6 +24,7 @@ public class GuildConfig {
     boolean loginMessage = true;
     boolean generalLogging = false;
     boolean adminLogging = false;
+    boolean deleteLogging = false;
     boolean blackListing = false;
     boolean maxMentions = true;
     boolean dailyMessage = true;
@@ -30,6 +32,9 @@ public class GuildConfig {
     boolean muteRepeatOffenders = true;
     boolean compEntries = false;
     boolean compVoting = false;
+    boolean moduleServers = true;
+    boolean moduleChars = true;
+    boolean moduleComp = false;
     int maxMentionLimit = 8;
 
     // TODO: 04/10/2016 let the mention limit be customisable.
@@ -106,6 +111,10 @@ public class GuildConfig {
         return adminLogging;
     }
 
+    public boolean doDeleteLogging() {
+        return deleteLogging;
+    }
+
     public boolean doMaxMentions() {
         return maxMentions;
     }
@@ -126,6 +135,18 @@ public class GuildConfig {
         return compVoting;
     }
 
+    public boolean doModuleServers() {
+        return moduleServers;
+    }
+
+    public boolean doModuleChars() {
+        return moduleChars;
+    }
+
+    public boolean doModuleComp() {
+        return moduleComp;
+    }
+
     //Togglers
     @ToggleAnnotation(name = "LoginMessage")
     public boolean toggleDoLoginMessage() {
@@ -140,6 +161,11 @@ public class GuildConfig {
     @ToggleAnnotation(name = "AdminLogging")
     public boolean toggleAdminLogging() {
         return adminLogging = !adminLogging;
+    }
+
+    @ToggleAnnotation(name = "DeleteLogging")
+    public boolean toggleDeleteLogging() {
+        return deleteLogging = !deleteLogging;
     }
 
     @ToggleAnnotation(name = "BlackListing")
@@ -173,11 +199,29 @@ public class GuildConfig {
     }
 
     @ToggleAnnotation(name = "Voting")
-    public boolean setCompVoting() {
+    public boolean toggleCompVoting() {
         return compVoting = !compVoting;
     }
 
+    @ToggleAnnotation(name = "ModuleComp")
+    public boolean toggleModuleComp() {
+        return moduleComp = !moduleComp;
+    }
+
+    @ToggleAnnotation(name = "ModuleChars")
+    public boolean toggleModuleChars() {
+        return moduleChars = !moduleChars;
+    }
+
+    @ToggleAnnotation(name = "ModuleServers")
+    public boolean toggleModuleServers() {
+        return moduleServers = !moduleServers;
+    }
+
     public void setUpChannel(String channelType, String channelID) {
+        if (channelType.equals(Command.CHANNEL_SERVERS) && !moduleServers) {
+            return;
+        }
         if (channels.size() == 0) {
             channels.add(new ChannelTypeObject(channelType, channelID));
             return;
@@ -194,6 +238,9 @@ public class GuildConfig {
     public String getChannelTypeID(String channelType) {
         for (ChannelTypeObject c : channels) {
             if (c.getType().equals(channelType)) {
+                if (channelType.equalsIgnoreCase(Command.CHANNEL_SERVERS) && !moduleServers) {
+                    return null;
+                }
                 return c.getID();
             }
         }
@@ -428,8 +475,8 @@ public class GuildConfig {
     }
 
     public boolean isRoleTrusted(String id) {
-        for (RoleTypeObject r: trustedRoles){
-            if (r.getRoleID().equals(id)){
+        for (RoleTypeObject r : trustedRoles) {
+            if (r.getRoleID().equals(id)) {
                 return true;
             }
         }

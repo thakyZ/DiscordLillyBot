@@ -1,5 +1,6 @@
 package Listeners;
 
+import Commands.Command;
 import Commands.CommandObject;
 import Handlers.DMHandler;
 import Handlers.FileHandler;
@@ -13,11 +14,13 @@ import POGOs.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.api.events.EventSubscriber;
+import sx.blah.discord.api.internal.json.event.MessageDeleteEventResponse;
 import sx.blah.discord.handle.impl.events.ReadyEvent;
 import sx.blah.discord.handle.impl.events.guild.GuildCreateEvent;
 import sx.blah.discord.handle.impl.events.guild.GuildLeaveEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.ChannelDeleteEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MentionEvent;
+import sx.blah.discord.handle.impl.events.guild.channel.message.MessageDeleteEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.MessageReceivedEvent;
 import sx.blah.discord.handle.impl.events.guild.channel.message.reaction.ReactionAddEvent;
 import sx.blah.discord.handle.impl.events.guild.role.RoleDeleteEvent;
@@ -90,7 +93,7 @@ public class AnnotationListener {
         Utility.updateUsername(Globals.botName);
     }
 
-
+    // TODO: 15/02/2017 ---------------PIXEL XP-----------------
     // TODO: 16/01/2017 add xp system 20 xp per min max, decay of 150 xp per day, level up to be exponential unsure at what rate tho
     // TODO: 16/01/2017 roles removed when level threshold is no longer high enough, ability to set role to gain on level,
     // TODO: 16/01/2017 min word limit to gain xp default = 10 words,
@@ -230,6 +233,47 @@ public class AnnotationListener {
                     Utility.deleteMessage(event.getMessage());
                 }
             }
+        }
+    }
+
+    @EventSubscriber
+    public void onMessageDeleteEvent(MessageDeleteEvent event){
+        if (event.getChannel().isPrivate()){
+            return;
+        }
+        CommandObject command = new CommandObject(event.getMessage());
+        String content;
+        IChannel logging = command.client.getChannelByID(command.guildConfig.getChannelTypeID(Command.CHANNEL_SERVER_LOG));
+        IUser ourUser = command.client.getOurUser();
+        String infoID = command.guildConfig.getChannelTypeID(Command.CHANNEL_INFO);
+        String serverLogID = command.guildConfig.getChannelTypeID(Command.CHANNEL_SERVER_LOG);
+        String adminLogID = command.guildConfig.getChannelTypeID(Command.CHANNEL_ADMIN_LOG);
+        if (event.getMessage() == null){
+            return;
+        }
+        if (serverLogID != null && serverLogID.equals(command.channelID) && ourUser.getID().equals(command.authorID)){
+            return;
+        }
+        if (infoID != null && serverLogID.equals(command.channelID) && ourUser.getID().equals(command.authorID)){
+            return;
+        }
+        if (adminLogID != null && serverLogID.equals(command.channelID) && ourUser.getID().equals(command.authorID)){
+            return;
+        }
+        if (logging != null && command.guildConfig.doDeleteLogging()){
+            if (command.message.getContent().isEmpty()){
+                return;
+            }
+            int charLimit = 1800;
+            if (command.message.getContent().length() > charLimit){
+                content = command.message.getContent().substring(0,1800);
+            }else {
+                content = command.message.getContent();
+            }
+            if ((content.equals("`Loading...`") || content.equals("`Working...`")) && command.authorID.equals(command.client.getOurUser().getID())){
+                return;
+            }
+            Utility.sendMessage("> **@" + command.authorUserName+ "'s** Message was deleted in channel: " + command.channel.mention() + " with contents:\n" + content,logging);
         }
     }
 }
