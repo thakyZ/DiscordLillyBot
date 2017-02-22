@@ -1,6 +1,5 @@
 package Main;
 
-import Commands.Admin.Shutdown;
 import Commands.Command;
 import Commands.CommandObject;
 import Commands.DMCommand;
@@ -57,7 +56,7 @@ public class Utility {
         return roleID;
     }
 
-    public static boolean testForPerms(Permissions[] perms, IUser user, IGuild guild) {
+    public static boolean testForPerms(Permissions[] perms, IUser user, IGuild guild,boolean logging) {
         EnumSet<Permissions> toMatch = EnumSet.noneOf(Permissions.class);
         toMatch.addAll(Arrays.asList(perms));
         //Debug code.
@@ -67,14 +66,20 @@ public class Utility {
         ArrayList<String> userList = new ArrayList<String>() {{
             addAll(user.getPermissionsForGuild(guild).stream().map(Enum::toString).collect(Collectors.toList()));
         }};
-        logger.debug("To Match : " + Utility.listFormatter(toMatchList, true));
-        logger.debug("User Perms : " + Utility.listFormatter(userList, true));
-        logger.debug("Result : " + user.getPermissionsForGuild(guild).containsAll(toMatch));
+        if (logging) {
+            logger.debug("To Match : " + Utility.listFormatter(toMatchList, true));
+            logger.debug("User Perms : " + Utility.listFormatter(userList, true));
+            logger.debug("Result : " + user.getPermissionsForGuild(guild).containsAll(toMatch));
+        }
         //end Debug
         return user.getPermissionsForGuild(guild).containsAll(toMatch);
     }
 
-    //Command Utils
+    public static boolean testForPerms(Permissions[] perms, IUser user, IGuild guild) {
+        return testForPerms(perms,user,guild,true);
+    }
+
+        //Command Utils
     public static String getCommandInfo(Command command, CommandObject commandObject) {
         String response = ">> **" + commandObject.guildConfig.getPrefixCommand() + command.names()[0];
         if (command.usage() != null) {
@@ -197,7 +202,7 @@ public class Utility {
                         return null;
                     }
                     if (message != null || !message.equals("")) {
-                        return channel.sendMessage(message).getID();
+                        return channel.sendMessage(message.replace("@everyone","").replace("@here","")).getID();
                     }
                 } catch (MissingPermissionsException e) {
                     logger.debug("Error sending message to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
@@ -316,6 +321,15 @@ public class Utility {
         });
     }
 
+    public static boolean sendDMEmbed(String message, EmbedObject embed, String userID) {
+        IChannel channel = Globals.getClient().getOrCreatePMChannel(Globals.getClient().getUserByID(userID));
+        if (channel != null){
+            return sendEmbededMessage(message,embed,channel).get();
+        }else {
+            return true;
+        }
+    }
+
     public static RequestBuffer.RequestFuture<Boolean> sendEmbededMessage(String message, EmbedObject embed, IChannel channel) {
         return RequestBuffer.request(() -> {
             try {
@@ -382,10 +396,14 @@ public class Utility {
                 if (isAdding) {
                     if (guild.getRoleByID(newRoleID) != null) {
                         author.addRole(guild.getRoleByID(newRoleID));
+                    }else {
+                        return true;
                     }
                 } else {
                     if (guild.getRoleByID(newRoleID) != null) {
                         author.removeRole(guild.getRoleByID(newRoleID));
+                    }else {
+                        return true;
                     }
                 }
             } catch (MissingPermissionsException e) {
@@ -578,19 +596,26 @@ public class Utility {
         }
     }
 
-    public static boolean canBypass(IUser author, IGuild guild) {
+    public static boolean canBypass(IUser author, IGuild guild,boolean logging) {
         if (author.getID().equals(Globals.creatorID)) {
-            logger.debug("User is Creator, BYPASSING.");
+            if (logging) {
+                logger.debug("User is Creator, BYPASSING.");
+            }
             return true;
         }
         if (author.getID().equals(guild.getOwnerID())) {
-            logger.debug("User is Guild Owner, GUILD : \"" + guild.getID() + "\", BYPASSING.");
+            if (logging) {
+                logger.debug("User is Guild Owner, GUILD : \"" + guild.getID() + "\", BYPASSING.");
+            }
             return true;
         }
-        return testForPerms(new Permissions[]{Permissions.ADMINISTRATOR}, author, guild);
+        return testForPerms(new Permissions[]{Permissions.ADMINISTRATOR}, author, guild,logging);
     }
 
-    public static String getMentionUserID(String content) {
+    public static boolean canBypass(IUser author, IGuild guild) {
+        return canBypass(author,guild,true);
+    }
+        public static String getMentionUserID(String content) {
         if (content.contains("<@")) {
             String userID = StringUtils.substringBetween(content, "<@!", ">");
             if (userID == null) {
@@ -635,7 +660,7 @@ public class Utility {
         if (horizontal) {
             builder.appendField(title, "`" + formattedList + "`", false);
         } else {
-            builder.appendField(title, "```" + formattedList + "```", false);
+            builder.appendField(title, "```\n" + formattedList + "```", false);
         }
     }
 
@@ -651,7 +676,7 @@ public class Utility {
         if (horizontal) {
             builder.appendField(title, "`" + formattedList + "`\n" + suffix, false);
         } else {
-            builder.appendField(title, "```" + formattedList + "```\n" + suffix, false);
+            builder.appendField(title, "```\n" + formattedList + "```\n" + suffix, false);
         }
     }
 
@@ -717,6 +742,4 @@ public class Utility {
             }
         }
     }
-
-
 }

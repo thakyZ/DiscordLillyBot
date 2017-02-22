@@ -32,9 +32,18 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/Commands/Admin/FinalTally.java" />
-        <option value="$PROJECT_DIR$/src/main/resources/logback.xml" />
-        <option value="$PROJECT_DIR$/src/main/java/Commands/DMCommandObject.java" />
+        <option value="$PROJECT_DIR$/src/main/java/GuildToggles/Toggle.java" />
+        <option value="$PROJECT_DIR$/src/main/java/GuildToggles/Toggles/CompEntries.java" />
+        <option value="$PROJECT_DIR$/src/main/java/GuildToggles/Toggles/DailyMessage.java" />
+        <option value="$PROJECT_DIR$/src/main/java/GuildToggles/Toggles/DeleteLogging.java" />
+        <option value="$PROJECT_DIR$/src/main/java/GuildToggles/Toggles/DenyInvites.java" />
+        <option value="$PROJECT_DIR$/src/main/java/GuildToggles/Toggles/GeneralLogging.java" />
+        <option value="$PROJECT_DIR$/src/main/java/GuildToggles/Toggles/LoginMessage.java" />
+        <option value="$PROJECT_DIR$/src/main/java/GuildToggles/Toggles/MentionSpam.java" />
+        <option value="$PROJECT_DIR$/src/main/java/GuildToggles/Toggles/MuteRepeatOffender.java" />
+        <option value="$PROJECT_DIR$/src/main/java/GuildToggles/Toggles/ShitpostFiltering.java" />
+        <option value="$PROJECT_DIR$/src/main/java/GuildToggles/Toggles/Voting.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Commands/Admin/ChannelHere.java" />
         <option value="$PROJECT_DIR$/src/main/java/Handlers/CCHandler.java" />
         <option value="$PROJECT_DIR$/src/main/java/Commands/DMCommands/HelpDM.java" />
         <option value="$PROJECT_DIR$/src/main/java/Commands/DMCommands/InfoDM.java" />
@@ -199,14 +208,16 @@
       <recent name="E:\Repositories\DiscordSailv2\Storage\176434793674833920\Images" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="GuildToggles.Modules" />
+      <recent name="GuildToggles.Toggles" />
       <recent name="" />
     </key>
     <key name="CreateClassDialog.RecentsKey">
+      <recent name="Objects" />
       <recent name="Commands.DMCommands" />
       <recent name="Commands" />
       <recent name="Commands.Servers" />
       <recent name="Commands.RoleSelect" />
-      <recent name="Commands.Admin" />
     </key>
   </component>
   <component name="RunManager" selected="Maven.DiscordLillyBot [package]">
@@ -728,7 +739,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/Main/Globals.java">
+    <entry file="file://$PROJECT_DIR$/src/main/java/GuildToggles/GuildToggle.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1564">
           <caret line="25" column="41" lean-forward="false" selection-start-line="25" selection-start-column="37" selection-end-line="25" selection-end-column="41" />

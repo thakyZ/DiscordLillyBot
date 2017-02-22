@@ -1,9 +1,8 @@
-package Commands.Admin;
+package Commands.Creator;
 
 import Commands.Command;
 import Commands.CommandObject;
 import Handlers.MessageHandler;
-import Main.Globals;
 import Objects.SplitFirstObject;
 import sx.blah.discord.handle.obj.Permissions;
 
@@ -13,25 +12,21 @@ import sx.blah.discord.handle.obj.Permissions;
 public class Sudo implements Command {
     @Override
     public String execute(String args, CommandObject command) {
-        if (command.authorID.equals(Globals.creatorID)) {
-            SplitFirstObject sudo = new SplitFirstObject(args);
-            String commandArgs = "";
-            if (command.message.getMentions().size() > 0){
-                command.setAuthor(command.message.getMentions().get(0));
-                SplitFirstObject commandName = new SplitFirstObject(sudo.getRest());
-                if (commandName.getFirstWord() == null){
-                    return "> You need to specify some arguments.";
-                }
-                if (commandName.getRest() != null){
-                    commandArgs = commandName.getRest();
-                }
-                new MessageHandler(commandName.getFirstWord(),commandArgs,command);
-                return null;
-            }else {
-                return "> Error no user Specified.";
+        SplitFirstObject sudo = new SplitFirstObject(args);
+        String commandArgs = "";
+        if (command.message.getMentions().size() > 0) {
+            command.setAuthor(command.message.getMentions().get(0));
+            SplitFirstObject commandName = new SplitFirstObject(sudo.getRest());
+            if (commandName.getFirstWord() == null) {
+                return "> You need to specify some arguments.";
             }
-        }else {
-            return command.notAllowed;
+            if (commandName.getRest() != null) {
+                commandArgs = commandName.getRest();
+            }
+            new MessageHandler(commandName.getFirstWord(), commandArgs, command);
+            return null;
+        } else {
+            return "> Error no user Specified.";
         }
     }
 
@@ -52,7 +47,7 @@ public class Sudo implements Command {
 
     @Override
     public String type() {
-        return TYPE_ADMIN;
+        return TYPE_CREATOR;
     }
 
     @Override

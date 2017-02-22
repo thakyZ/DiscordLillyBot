@@ -84,13 +84,8 @@ public class Main {
             while (!client.isReady()) ;
 
             //makes sure that nothing in the config file will cause an error
-            String configResult = Globals.checkConfig();
-            if (!configResult.isEmpty()) {
-                System.out.println("AN ERROR HAS OCCURRED WHEN LOADING \"" + Constants.FILE_CONFIG + "\" PLEASE CHECK BELOW TO SEE WHAT WENT WRONG.");
-                System.out.println(configResult);
-                client.logout();
-                Runtime.getRuntime().exit(0);
-            }
+            Globals.validateConfig();
+            Globals.setVersion();
             consoleInput();
         } catch (DiscordException ex) {
             logger.error(ex.getErrorMessage());
@@ -103,14 +98,16 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         while (!Globals.isReady) ;
         logger.info("Console input initiated.");
+
         while (scanner.hasNextLine()) {
             while (Globals.consoleMessageCID == null) ;
             IChannel channel = Globals.getClient().getChannelByID(Globals.consoleMessageCID);
             String message = scanner.nextLine();
-            message = message.replaceAll("#Dawn#", Globals.getClient().getUserByID("153159020528533505").toString());
-            message = message.replaceAll("#thakyZ#", Globals.getClient().getUserByID("83984886494400512").toString());
-            message = message.replaceAll("teh", "the");
-            message = message.replaceAll("Teh", "The");
+            message = message.replace("#thakyZ#", Globals.getClient().getUserByID("83984886494400512").getName());
+            message = message.replace("#Dawn#", Globals.getClient().getUserByID("153159020528533505").getName());
+            message = message.replace("teh", "the");
+            message = message.replace("Teh", "The");
+            System.out.println(message);
             if (!message.equals("")) {
                 Utility.sendMessage(message, channel);
             }

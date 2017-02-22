@@ -11,10 +11,7 @@ import POGOs.GuildConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.api.IDiscordClient;
-import sx.blah.discord.handle.obj.IChannel;
-import sx.blah.discord.handle.obj.IGuild;
-import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.*;
 
 import java.util.ArrayList;
 
@@ -42,6 +39,9 @@ public class MessageHandler {
 
         checkBlacklist(commandObject);
         checkMentionCount(commandObject);
+        if (rateLimiting(commandObject)) {
+            return;
+        }
 
         if (commandObject.message.getAuthor().isBot()) {
             return;
@@ -58,22 +58,18 @@ public class MessageHandler {
     private void handleCommand(CommandObject commandObject, String command, String args) {
         IChannel channel = commandObject.channel;
         GuildConfig guildConfig = commandObject.guildConfig;
-        ArrayList<Command> commands = Globals.getCommands();
+        ArrayList<Command> commands = commandObject.commands;
         IDiscordClient client = commandObject.client;
         for (Command c : commands) {
             for (String name : c.names()) {
                 if (command.equalsIgnoreCase(guildConfig.getPrefixCommand() + name)) {
-                    if ((c.type().equalsIgnoreCase(Command.TYPE_SERVERS) && !commandObject.guildConfig.doModuleServers())) {
-                        return;
-                    }
-                    if (c.type().equalsIgnoreCase(Command.TYPE_CHARACTER) && !commandObject.guildConfig.doModuleChars()){
-                        return;
-                    }
-                    if (c.type().equalsIgnoreCase(Command.TYPE_COMPETITION) && !commandObject.guildConfig.doModuleComp()){
-                        return;
-                    }
                     //command logging
-                    logger.debug(Utility.loggingFormatter("COMMAND",command,args,commandObject));
+
+                    if (c.type().equals(Command.TYPE_CREATOR) && !commandObject.authorID.equalsIgnoreCase(Globals.creatorID)) {
+                        return;
+                    }
+
+                    logger.debug(Utility.loggingFormatter("COMMAND", command, args, commandObject));
 
                     if (c.requiresArgs() && args.isEmpty()) {
                         Utility.sendMessage(Utility.getCommandInfo(c, commandObject), channel);
@@ -95,12 +91,12 @@ public class MessageHandler {
                         }
                     }
                     if (c.doAdminLogging()) {
-                        if (guildConfig.doAdminLogging()) {
+                        if (guildConfig.adminLogging) {
                             IChannel logging = client.getChannelByID(guildConfig.getChannelTypeID(Command.CHANNEL_ADMIN_LOG));
                             handleLogging(logging, commandObject, args, c);
                         }
                     } else {
-                        if (guildConfig.doGeneralLogging()) {
+                        if (guildConfig.generalLogging) {
                             IChannel logging = client.getChannelByID(guildConfig.getChannelTypeID(Command.CHANNEL_SERVER_LOG));
                             handleLogging(logging, commandObject, args, c);
                         }
@@ -130,7 +126,7 @@ public class MessageHandler {
         if (message.toString().contains("@everyone") || message.toString().contains("@here")) {
             return;
         }
-        if (guildConfig.doMaxMentions()) {
+        if (guildConfig.maxMentions) {
             if (message.getMentions().size() > 8) {
                 Utility.deleteMessage(message);
                 int i = 0;
@@ -163,6 +159,45 @@ public class MessageHandler {
         }
     }
 
+    private boolean rateLimiting(CommandObject command) {
+        if (Utility.testForPerms(new Permissions[]{Permissions.MANAGE_MESSAGES}, command.author, command.guild, false) ||
+                Utility.canBypass(command.author, command.guild, false)) {
+            return false;
+        }
+        if (command.guildConfig.rateLimiting) {
+            if (command.guildContent.rateLimit(command.authorID)) {
+                command.message.delete();
+                Utility.sendDM("Your message was deleted because you are being rate limited.\nMax messages per 10 seconds : " + command.guildConfig.messageLimit, command.authorID);
+                if (command.guildConfig.muteRepeatOffenders) {
+                    int rate = command.guildContent.getUserRate(command.authorID);
+                    if (rate - 3 > command.guildConfig.messageLimit) {
+                        //mutes users if they abuse it.
+                        boolean failed = Utility.roleManagement(command.author, command.guild, command.guildConfig.getMutedRole().getRoleID(), true).get();
+                        if (!failed) {
+                            IChannel adminChannel = command.client.getChannelByID(command.guildConfig.getChannelTypeID(Command.CHANNEL_ADMIN));
+                            if (adminChannel == null){
+                                adminChannel = command.channel;
+                            }
+                            Utility.sendDM("You have been muted for abusing the Guild rate limit.", command.authorID);
+                            Utility.sendMessage("> " + command.author.mention() + " has been muted for repetitively abusing Guild rateLimit.", adminChannel);
+                        }
+                    }
+                }
+                if (command.guildConfig.deleteLogging) {
+                    if (command.guildConfig.getChannelTypeID(Command.CHANNEL_SERVER_LOG) != null) {
+                        IChannel logging = command.client.getChannelByID(command.guildConfig.getChannelTypeID(Command.CHANNEL_SERVER_LOG));
+                        Utility.sendMessage("> **@" + command.authorUserName + "** is being rate limited", logging);
+                    }
+                }
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
     //File handlers
 
     //BlackListed Phrase Remover
@@ -178,7 +213,7 @@ public class MessageHandler {
         if (guildConfig.getBlackList() == null) {
             return;
         }
-        if (guildConfig.doBlackListing()) {
+        if (guildConfig.denyInvites) {
             for (BlackListObject bLP : guildConfig.getBlackList()) {
                 if (message.toString().toLowerCase().contains(bLP.getPhrase().toLowerCase())) {
                     if (guildConfig.testIsTrusted(author, guild)) {

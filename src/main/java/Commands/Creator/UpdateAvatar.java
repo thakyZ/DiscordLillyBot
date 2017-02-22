@@ -1,4 +1,4 @@
-package Commands.Admin;
+package Commands.Creator;
 
 import Commands.Command;
 import Commands.CommandObject;
@@ -19,24 +19,20 @@ import java.time.ZonedDateTime;
 public class UpdateAvatar implements Command {
     @Override
     public String execute(String args, CommandObject command) {
-        if (command.authorID.equals(Globals.creatorID)) {
-            ZonedDateTime nowUTC = ZonedDateTime.now(ZoneOffset.UTC);
-            if (Globals.doDailyAvatars == true) {
-                for (DailyMessageObject d : Globals.dailyMessages) {
-                    if (d.getDayOfWeek().equals(nowUTC.getDayOfWeek())) {
-                        Image avatar = Image.forFile(new File(Constants.DIRECTORY_GLOBAL_IMAGES + d.getFileName()));
-                        Utility.updateAvatar(avatar);
-                    }
+        ZonedDateTime nowUTC = ZonedDateTime.now(ZoneOffset.UTC);
+        if (Globals.doDailyAvatars == true) {
+            for (DailyMessageObject d : Globals.dailyMessages) {
+                if (d.getDayOfWeek().equals(nowUTC.getDayOfWeek())) {
+                    Image avatar = Image.forFile(new File(Constants.DIRECTORY_GLOBAL_IMAGES + d.getFileName()));
+                    Utility.updateAvatar(avatar);
                 }
-            } else {
-                Image avatar = Image.forFile(new File(Constants.DIRECTORY_GLOBAL_IMAGES + Globals.defaultAvatarFile));
-                Utility.updateAvatar(avatar);
             }
-            Utility.sendGlobalAdminLogging(this,args,command);
-            return "> Avatar Updated.";
         } else {
-            return command.notAllowed;
+            Image avatar = Image.forFile(new File(Constants.DIRECTORY_GLOBAL_IMAGES + Globals.defaultAvatarFile));
+            Utility.updateAvatar(avatar);
         }
+        Utility.sendGlobalAdminLogging(this, args, command);
+        return "> Avatar Updated.";
     }
 
     @Override
@@ -56,7 +52,7 @@ public class UpdateAvatar implements Command {
 
     @Override
     public String type() {
-        return TYPE_ADMIN;
+        return TYPE_CREATOR;
     }
 
     @Override

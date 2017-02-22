@@ -2,49 +2,43 @@ package Commands.Admin;
 
 import Commands.Command;
 import Commands.CommandObject;
-import Handlers.MessageHandler;
-import Main.Globals;
-import Main.Utility;
 import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.DiscordException;
 
 /**
- * Created by Vaerys on 31/01/2017.
+ * Created by Vaerys on 21/02/2017.
  */
-public class Shutdown implements Command {
+public class MaxMessages implements Command {
+
     @Override
     public String execute(String args, CommandObject command) {
-        if (command.authorID.equals(Globals.creatorID)) {
-            Utility.sendMessage("> Shutting Down.", command.channel);
-            Utility.sendGlobalAdminLogging(this,args,command);
-            try {
-                Thread.sleep(4000);
-                Globals.getClient().logout();
-                Runtime.getRuntime().exit(0);
-            } catch (DiscordException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        try {
+            int max = Integer.parseInt(args);
+            if (max <= 0){
+                return "> Rate Limit must be larger than 0";
+            }else if (max > 10){
+                return "> That would be stopped by Discord's Rate Limit.";
+            }else{
+                command.guildConfig.setRateLimit(max);
+                return "> Guild Rate limit set to **" + max + "** messages per user every 10 seconds.";
             }
-            return null;
-        } else {
-            return command.notAllowed;
+        }catch (NumberFormatException e){
+            return "> You need to specify a number.";
         }
-    }
+}
 
     @Override
     public String[] names() {
-        return new String[]{"Shutdown"};
+        return new String[]{"SetRateLimit"};
     }
 
     @Override
     public String description() {
-        return "Shuts the bot down safely.\n" + ownerOnly;
+        return "Sets the rate limit for your Guild. (Maximum Messages per 10 seconds per person.)";
     }
 
     @Override
     public String usage() {
-        return null;
+        return "[Max messages per 10 sec]";
     }
 
     @Override
@@ -59,12 +53,12 @@ public class Shutdown implements Command {
 
     @Override
     public Permissions[] perms() {
-        return new Permissions[0];
+        return new Permissions[]{Permissions.MANAGE_SERVER};
     }
 
     @Override
     public boolean requiresArgs() {
-        return false;
+        return true;
     }
 
     @Override

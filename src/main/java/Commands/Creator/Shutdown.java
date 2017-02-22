@@ -1,45 +1,55 @@
-package Commands.Competition;
+package Commands.Creator;
 
 import Commands.Command;
 import Commands.CommandObject;
+import Main.Globals;
+import Main.Utility;
 import sx.blah.discord.handle.obj.Permissions;
+import sx.blah.discord.util.DiscordException;
 
 /**
- * Created by Vaerys on 01/02/2017.
+ * Created by Vaerys on 31/01/2017.
  */
-public class EnterVote implements Command {
+public class Shutdown implements Command {
     @Override
     public String execute(String args, CommandObject command) {
-        if (command.guildConfig.compVoting) {
-            return command.competition.addVote(command.authorID, args);
-        } else {
-            return "> Competition Voting is closed.";
+        Utility.sendMessage("> Shutting Down.", command.channel);
+        Utility.sendGlobalAdminLogging(this, args, command);
+        try {
+            Thread.sleep(4000);
+            Globals.getClient().logout();
+            Runtime.getRuntime().exit(0);
+        } catch (DiscordException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
     @Override
     public String[] names() {
-        return new String[]{"Vote"};
+        return new String[]{"Shutdown"};
     }
 
     @Override
     public String description() {
-        return "Saves your vote.";
+        return "Shuts the bot down safely.\n" + ownerOnly;
     }
 
     @Override
     public String usage() {
-        return "[Vote...]";
+        return null;
     }
 
     @Override
     public String type() {
-        return TYPE_COMPETITION;
+        return TYPE_CREATOR;
     }
 
     @Override
     public String channel() {
-        return CHANNEL_BOT_COMMANDS;
+        return null;
     }
 
     @Override
@@ -49,12 +59,12 @@ public class EnterVote implements Command {
 
     @Override
     public boolean requiresArgs() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean doAdminLogging() {
-        return false;
+        return true;
     }
 
     @Override
