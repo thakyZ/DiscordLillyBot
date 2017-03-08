@@ -49,6 +49,7 @@ public class Constants {
     public static final String FILE_GUILD_CONFIG = "Guild_Config.json";
     public static final String FILE_SERVERS = "Servers.json";
     public static final String FILE_CHARACTERS = "Characters.json";
+    public static final String FILE_GUILD_USERS = "Guild_Users.json";
     public static final String FILE_INFO = "Info.txt";
     public static final String FILE_CONFIG = DIRECTORY_STORAGE + "Config.json";
     public static final String FILE_CONFIG_BACKUP = DIRECTORY_BACKUPS + "Config.json";
@@ -60,11 +61,11 @@ public class Constants {
 
     //Special Messages
     public static final String DAILY_MESSAGE_1 = "> Mow WOW!";
-    public static final String DAILY_MESSAGE_2 = "> I love Kitty Treats!";
     public static final String DAILY_MESSAGE_4 = "> HI TOBY! HOW ARE YOU!?!?";
+    public static final String DAILY_MESSAGE_2 = "> I love Kitty Treats!";
     public static final String DAILY_MESSAGE_5 = "> Can I haz Kitty Treats?";
-    public static final String DAILY_MESSAGE_3 = "> There is something out side in the backyard!";
     public static final String DAILY_MESSAGE_6 = "> I wanna play!";
+    public static final String DAILY_MESSAGE_3 = "> There is something out side in the backyard!";
     public static final String DAILY_MESSAGE_7 = "> Give me your finger so I can suckle on it!";
 
 

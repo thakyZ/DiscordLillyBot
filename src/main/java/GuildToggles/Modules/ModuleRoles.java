@@ -6,31 +6,31 @@ import GuildToggles.GuildToggle;
 import POGOs.GuildConfig;
 
 /**
- * Created by Vaerys on 20/02/2017.
+ * Created by Vaerys on 02/03/2017.
  */
-public class ModuleChars implements GuildToggle {
+public class ModuleRoles implements GuildToggle {
 
     @Override
     public String name() {
-        return "Chars";
+        return "Roles";
     }
 
     @Override
     public boolean toggle(GuildConfig config) {
-        return config.moduleChars = !config.moduleChars;
+        return config.moduleRoles = !config.moduleRoles;
     }
 
     @Override
     public boolean get(GuildConfig config) {
-        return config.moduleChars;
+        return config.moduleRoles;
     }
 
     @Override
     public void execute(CommandObject command) {
-        if (command.guildConfig.moduleChars){
+        if (command.guildConfig.moduleRoles){
             return;
         }else {
-            command.removeCommandsByType(Command.TYPE_CHARACTER);
+            command.removeCommandsByType(Command.TYPE_ROLE_SELECT);
         }
     }
 

@@ -40,6 +40,7 @@ public class CommandObject {
     public Characters characters;
     public Servers servers;
     public Competition competition;
+    public GuildUsers guildUsers;
 
     public ArrayList<Command> commands = new ArrayList<>();
     public ArrayList<DMCommand> dmCommands = new ArrayList<>();
@@ -51,6 +52,7 @@ public class CommandObject {
 
 
     final static Logger logger = LoggerFactory.getLogger(CommandObject.class);
+
 
     public CommandObject(IMessage message) {
         this.message = message;
@@ -85,18 +87,19 @@ public class CommandObject {
         characters = guildContent.getCharacters();
         servers = guildContent.getServers();
         competition = guildContent.getCompetition();
+        guildUsers = guildContent.getGuildUsers();
         client = Globals.getClient();
 
         commands = (ArrayList<Command>) Globals.getCommands().clone();
         commandTypes = (ArrayList<String>) Globals.getCommandTypes().clone();
         channelTypes = (ArrayList<String>) Globals.getChannelTypes().clone();
-        guildToggles = Globals.getGuildGuildToggles();
+        guildToggles = (ArrayList<GuildToggle>) Globals.getGuildGuildToggles().clone();
 
-        for (GuildToggle t : guildToggles) {
-            if (t.isModule()) {
-                if (!t.get(guildConfig)) {
-                    logger.info(t.name() + " - " + t.get(guildConfig) + "");
-                    t.execute(this);
+        for (int i = 0; i < guildToggles.size();i++) {
+            if (guildToggles.get(i).isModule()) {
+                if (!guildToggles.get(i).get(guildConfig)) {
+                    logger.trace(guildToggles.get(i).name() + " - " + guildToggles.get(i).get(guildConfig) + "");
+                    guildToggles.get(i).execute(this);
                 }
             }
         }
@@ -152,14 +155,14 @@ public class CommandObject {
     public void removeCommandsByType(String type) {
         for (int i = 0; i < commands.size(); i++) {
             if (commands.get(i).type().equalsIgnoreCase(type)) {
-                logger.debug(type + " - " + commands.get(i).names()[0] + " - removed");
+                logger.trace(type + " - " + commands.get(i).names()[0] + " - removed");
                 commands.remove(i);
             }
         }
         for (int i = 0; i < commandTypes.size(); i++) {
             if (commandTypes.get(i).equalsIgnoreCase(type)) {
                 commandTypes.remove(i);
-                logger.debug(type + " - removed");
+                logger.trace(type + " - removed");
             }
         }
     }
@@ -168,6 +171,22 @@ public class CommandObject {
         for (int i = 0; i < channelTypes.size(); i++) {
             if (channelTypes.get(i).equalsIgnoreCase(channel)) {
                 channelTypes.remove(i);
+            }
+        }
+    }
+
+    public void removeCommand(String[] names) {
+        for (int i = 0;i < commands.size(); i++){
+            if (commands.get(i).names()[0].equals(names[0])){
+                commands.remove(i);
+            }
+        }
+    }
+
+    public void removeToggle(String name) {
+        for (int i = 0; i < guildToggles.size();i++){
+            if (guildToggles.get(i).name().equals(name)){
+                guildToggles.remove(i);
             }
         }
     }

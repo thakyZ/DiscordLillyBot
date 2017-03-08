@@ -1,52 +1,41 @@
-package Commands.General;
+package Commands.Help;
 
 import Commands.Command;
 import Commands.CommandObject;
-import Main.Utility;
-import Objects.UserTypeObject;
-import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.Permissions;
-import sx.blah.discord.util.EmbedBuilder;
-
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * Created by Vaerys on 30/01/2017.
+ * Created by Vaerys on 22/02/2017.
  */
-public class Test implements Command {
-
+public class StartUpGuide implements Command {
     @Override
     public String execute(String args, CommandObject command) {
-        return "> Nothing to test right now come back later.";
+        return "https://github.com/Vaerys-Dawn/DiscordSailv2/wiki/S.A.I.L-Startup-Guide";
     }
 
     @Override
     public String[] names() {
-        return new String[]{"Test", "Testing"};
+        return new String[]{"StartUpGuide"};
     }
 
     @Override
     public String description() {
-        return "Tests Things.";
+        return "Posts a link to the Bot's Startup Guide on its wiki.";
     }
 
     @Override
     public String usage() {
-        return "[Lol this command has no usages XD]";
+        return null;
     }
 
     @Override
     public String type() {
-        return TYPE_GENERAL;
+        return TYPE_HELP;
     }
 
     @Override
     public String channel() {
-        return CHANNEL_BOT_COMMANDS;
+        return null;
     }
 
     @Override
@@ -61,26 +50,26 @@ public class Test implements Command {
 
     @Override
     public boolean doAdminLogging() {
-        return true;
+        return false;
     }
 
     @Override
     public String dualDescription() {
-        return "This is another test.";
+        return null;
     }
 
     @Override
     public String dualUsage() {
-        return "[Blep]";
+        return null;
     }
 
     @Override
     public String dualType() {
-        return TYPE_ADMIN;
+        return null;
     }
 
     @Override
     public Permissions[] dualPerms() {
-        return new Permissions[]{Permissions.MANAGE_CHANNELS};
+        return new Permissions[0];
     }
 }

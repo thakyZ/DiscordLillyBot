@@ -14,24 +14,24 @@ import java.util.stream.Collectors;
 /**
  * Created by Vaerys on 31/01/2017.
  */
-public class Toggle implements Command {
+public class Module implements Command {
     @Override
     public String execute(String args, CommandObject command) {
         StringBuilder builder = new StringBuilder();
         if (!args.isEmpty()) {
             for (GuildToggle t : command.guildToggles) {
-                if (!t.isModule()) {
+                if (t.isModule()) {
                     if (args.equalsIgnoreCase(t.name())) {
                         t.toggle(command.guildConfig);
                         return "> **" + t.name() + " is now " + t.get(command.guildConfig) + "**.";
                     }
                 }
             }
-            builder.append("> Could not find toggle \"" + args + "\".\n");
+            builder.append("> Could not find Module \"" + args + "\".\n");
         }
         EmbedBuilder embedBuilder = new EmbedBuilder();
-        String title = "> Here is a list of available Guild Toggles:\n";
-        ArrayList<String> types = command.guildToggles.stream().filter(t -> !t.isModule()).map(GuildToggle::name).collect(Collectors.toCollection(ArrayList::new));
+        String title = "> Here is a list of available Guild Modules:\n";
+        ArrayList<String> types = command.guildToggles.stream().filter(t -> t.isModule()).map(GuildToggle::name).collect(Collectors.toCollection(ArrayList::new));
         Collections.sort(types);
         embedBuilder.withDesc(builder.toString());
         Utility.listFormatterEmbed(title, embedBuilder, types, true);
@@ -43,17 +43,17 @@ public class Toggle implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{"Toggle"};
+        return new String[]{"Module"};
     }
 
     @Override
     public String description() {
-        return "Toggles Certain Parts of the Guild Config.";
+        return "Allows for the toggle of certain commands.";
     }
 
     @Override
     public String usage() {
-        return "(Toggle Type)";
+        return "(Module Type)";
     }
 
     @Override

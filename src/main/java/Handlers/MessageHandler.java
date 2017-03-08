@@ -11,9 +11,11 @@ import POGOs.GuildConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.api.IDiscordClient;
+import sx.blah.discord.handle.impl.events.guild.member.UserRoleUpdateEvent;
 import sx.blah.discord.handle.obj.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -39,6 +41,7 @@ public class MessageHandler {
 
         checkBlacklist(commandObject);
         checkMentionCount(commandObject);
+        commandObject.guildUsers.addXP(commandObject);
         if (rateLimiting(commandObject)) {
             return;
         }
@@ -49,8 +52,10 @@ public class MessageHandler {
         if (command.toLowerCase().startsWith(commandObject.guildConfig.getPrefixCommand().toLowerCase())) {
             handleCommand(commandObject, command, args);
         }
-        if (command.toLowerCase().startsWith(commandObject.guildConfig.getPrefixCC().toLowerCase())) {
-            new CCHandler(command, args, commandObject);
+        if (commandObject.guildConfig.moduleCC) {
+            if (command.toLowerCase().startsWith(commandObject.guildConfig.getPrefixCC().toLowerCase())) {
+                new CCHandler(command, args, commandObject);
+            }
         }
     }
 
@@ -113,7 +118,7 @@ public class MessageHandler {
         if (!args.isEmpty()) {
             builder.append(" with args: `" + args + "`");
         }
-        builder.append(" in channel " + commandObject.channel.mention() + " .");
+        builder.append(" in channel " + commandObject.channel.mention() + ".");
         Utility.sendMessage(builder.toString(), loggingChannel);
     }
 
@@ -121,6 +126,7 @@ public class MessageHandler {
         IMessage message = command.message;
         GuildConfig guildConfig = command.guildConfig;
         IUser author = command.author;
+        List<IRole> oldRoles = new ArrayList<>(command.author.getRolesForGuild(command.guild));
         IGuild guild = command.guild;
 
         if (message.toString().contains("@everyone") || message.toString().contains("@here")) {
@@ -138,6 +144,7 @@ public class MessageHandler {
                         i++;
                         if (o.getCount() > Globals.maxWarnings) {
                             Utility.roleManagement(author, guild, guildConfig.getMutedRole().getRoleID(), true);
+                            command.client.getDispatcher().dispatch(new UserRoleUpdateEvent(guild,author,oldRoles,command.author.getRolesForGuild(guild)));
                             Utility.sendMessage("> " + author.mention() + " Has been Muted for repeat offences of spamming Mentions.", command.channel);
                         }
                     }
@@ -166,6 +173,7 @@ public class MessageHandler {
         }
         if (command.guildConfig.rateLimiting) {
             if (command.guildContent.rateLimit(command.authorID)) {
+                List<IRole> oldRoles = new ArrayList<>(command.author.getRolesForGuild(command.guild));
                 command.message.delete();
                 Utility.sendDM("Your message was deleted because you are being rate limited.\nMax messages per 10 seconds : " + command.guildConfig.messageLimit, command.authorID);
                 if (command.guildConfig.muteRepeatOffenders) {
@@ -173,6 +181,7 @@ public class MessageHandler {
                     if (rate - 3 > command.guildConfig.messageLimit) {
                         //mutes users if they abuse it.
                         boolean failed = Utility.roleManagement(command.author, command.guild, command.guildConfig.getMutedRole().getRoleID(), true).get();
+                        command.client.getDispatcher().dispatch(new UserRoleUpdateEvent(command.guild,command.author,oldRoles,command.author.getRolesForGuild(command.guild)));
                         if (!failed) {
                             IChannel adminChannel = command.client.getChannelByID(command.guildConfig.getChannelTypeID(Command.CHANNEL_ADMIN));
                             if (adminChannel == null){

@@ -2,22 +2,18 @@ package Commands;
 
 import Commands.Admin.*;
 import Commands.CC.*;
-import Commands.Characters.DelChar;
-import Commands.Characters.ListChars;
-import Commands.Characters.SelectChar;
-import Commands.Characters.UpdateChar;
+import Commands.Characters.*;
+import Commands.Characters.EditModes.CharAvatar;
 import Commands.Competition.EnterComp;
 import Commands.Competition.EnterVote;
 import Commands.Competition.FinalTally;
 import Commands.Competition.GetCompEntries;
+import Commands.Creator.GetMessageData;
 import Commands.Creator.Shutdown;
 import Commands.Creator.Sudo;
 import Commands.Creator.UpdateAvatar;
 import Commands.DMCommands.*;
-import Commands.General.GetAvatar;
-import Commands.General.Hello;
-import Commands.General.RemindMe;
-import Commands.General.Test;
+import Commands.General.*;
 import Commands.Help.GetGuildInfo;
 import Commands.Help.*;
 import Commands.RoleSelect.CosmeticRoles;
@@ -40,10 +36,12 @@ public class CommandInit {
         commands.add(new Shutdown());
         commands.add(new Sudo());
         commands.add(new UpdateAvatar());
+        commands.add(new GetMessageData());
 
         //Admin commands
         commands.add(new ChannelHere());
         commands.add(new MaxMessages());
+        commands.add(new Module());
         commands.add(new FinalTally());
         commands.add(new GetCompEntries());
         commands.add(new SetAdminRole());
@@ -56,7 +54,10 @@ public class CommandInit {
         commands.add(new GetAvatar());
         commands.add(new Hello());
         commands.add(new RemindMe());
+        commands.add(new SetGender());
+        commands.add(new SetQuote());
         commands.add(new Test());
+        commands.add(new UserInfo());
         //Help commands
         commands.add(new GetGuildInfo());
         commands.add(new Help());
@@ -64,6 +65,7 @@ public class CommandInit {
         commands.add(new Info());
         commands.add(new Report());
         commands.add(new SilentReport());
+        commands.add(new StartUpGuide());
         //RoleSelect commands
         commands.add(new CosmeticRoles());
         commands.add(new ModifierRoles());
@@ -78,7 +80,9 @@ public class CommandInit {
         commands.add(new ListServers());
         commands.add(new Server());
         //Character Commands
+        commands.add(new CharInfo());
         commands.add(new DelChar());
+        commands.add(new EditChar());
         commands.add(new ListChars());
         commands.add(new SelectChar());
         commands.add(new UpdateChar());

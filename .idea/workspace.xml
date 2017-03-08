@@ -92,6 +92,9 @@
         <option value="$PROJECT_DIR$/src/main/java/Main/TimedEvents.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
         <option value="$PROJECT_DIR$/src/main/java/Listeners/AnnotationListener.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Commands/RoleSelect/CosmeticRoles.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Commands/RoleSelect/ModifierRoles.java" />
+        <option value="$PROJECT_DIR$/src/main/java/Handlers/MessageHandler.java" />
       </list>
     </option>
   </component>
@@ -191,9 +194,12 @@
     <property name="project.structure.side.proportion" value="0.4827586" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\Repositories\DiscordSailv2\Storage\176434793674833920" />
-      <recent name="E:\Repositories\DiscordSailv2\Storage\Images" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="Objects" />
+      <recent name="Commands.DMCommands" />
+      <recent name="Commands" />
+      <recent name="Commands.Servers" />
+      <recent name="Commands.RoleSelect" />
     </key>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="Commands.Competition" />
@@ -208,16 +214,16 @@
       <recent name="E:\Repositories\DiscordSailv2\Storage\176434793674833920\Images" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="Commands.Admin" />
+      <recent name="Commands" />
       <recent name="GuildToggles.Modules" />
       <recent name="GuildToggles.Toggles" />
       <recent name="" />
     </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="Objects" />
-      <recent name="Commands.DMCommands" />
-      <recent name="Commands" />
-      <recent name="Commands.Servers" />
-      <recent name="Commands.RoleSelect" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Repositories\DiscordSailv2\Storage\254790152851816458" />
+      <recent name="E:\Repositories\DiscordSailv2\Storage\176434793674833920" />
+      <recent name="E:\Repositories\DiscordSailv2\Storage\Images" />
     </key>
   </component>
   <component name="RunManager" selected="Maven.DiscordLillyBot [package]">
