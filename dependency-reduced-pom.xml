@@ -11,7 +11,7 @@
         <directory>src/main/resources</directory>
       </resource>
     </resources>
-    <finalName>DiscordLillyBotv1</finalName>
+    <finalName>DiscordLillyBot</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-eclipse-plugin</artifactId>

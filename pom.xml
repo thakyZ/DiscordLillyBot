@@ -9,7 +9,7 @@
     <artifactId>DiscordLillyBot</artifactId>
 
     <build>
-        <finalName>DiscordLillyBotv1</finalName>
+        <finalName>DiscordLillyBot</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>

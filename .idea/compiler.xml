@@ -7,14 +7,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="DiscordLillyBot" />
-        <module name="DiscordSAIL" />
-        <module name="DiscordSailv2" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="DiscordLillyBot" target="1.8" />
-      <module name="DiscordSAIL" target="1.8" />
-      <module name="DiscordSailv2" target="1.5" />
     </bytecodeTargetLevel>
   </component>
 </project>

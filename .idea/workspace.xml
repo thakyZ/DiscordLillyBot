@@ -175,11 +175,11 @@
         <subPane>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="DiscordLillyBotv1" />
+              <option name="myItemId" value="DiscordLillyBot" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="DiscordLillyBotv1" />
+              <option name="myItemId" value="DiscordLillyBot" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -196,23 +196,13 @@
     <property name="project.structure.side.proportion" value="0.4827586" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="E:\Repositories\DiscordSailv2\Storage\254790152851816458" />
-      <recent name="E:\Repositories\DiscordSailv2\Storage\176434793674833920" />
-      <recent name="E:\Repositories\DiscordSailv2\Storage\Images" />
-    </key>
+    <key name="MoveFile.RECENT_KEYS"/>
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
       <recent name="Commands.Competition" />
       <recent name="Commands" />
       <recent name="" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="E:\Repositories\DiscordSailv2\Storage\254790152851816458" />
-      <recent name="E:\Repositories\DiscordSailv2\Storage\Backups\176434793674833920" />
-      <recent name="E:\Repositories\DiscordSailv2\src\main\java\BadCode" />
-      <recent name="E:\Repositories\DiscordSailv2\Storage\Old_Files" />
-      <recent name="E:\Repositories\DiscordSailv2\Storage\176434793674833920\Images" />
-    </key>
+    <key name="CopyFile.RECENT_KEYS"/>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="Commands.Admin" />
       <recent name="Commands" />
