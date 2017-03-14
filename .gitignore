@@ -48,17 +48,8 @@ Temporary Items
 
 # Custom files that should not be pushed
 *.json
-*.json1
-*.json2
-*.json3
-*.txt1
-*.txt2
-*.txt3
-*.png
-*.log
-*.txt
-*.class
 bot.log
-target/
+target
 *.jar
 Storage
+modules
