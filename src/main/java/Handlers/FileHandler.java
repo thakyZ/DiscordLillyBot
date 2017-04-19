@@ -1,8 +1,5 @@
 package Handlers;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.slf4j.Logger;
@@ -72,22 +69,6 @@ public class FileHandler {
         } catch (IOException e) {
             logger.error(e.getCause().toString());
         }
-    }
-
-    /**saves data from POGO of type "object" to temp file using String "name".*/
-    public static File createTempFile(Object object, String name){
-
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        try {
-            File file = File.createTempFile(name,".json");
-            FileWriter writer = new FileWriter(file);
-            gson.toJson(object,writer);
-            writer.close();
-            return file;
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     /**Reads from a .Json File using path "file" and returns a POGO based on "objClass".*/

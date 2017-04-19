@@ -3,10 +3,7 @@ package Commands;
 import Commands.Admin.*;
 import Commands.CC.*;
 import Commands.Characters.*;
-import Commands.Competition.EnterComp;
-import Commands.Competition.EnterVote;
-import Commands.Competition.FinalTally;
-import Commands.Competition.GetCompEntries;
+import Commands.Competition.*;
 import Commands.Creator.*;
 import Commands.Creator.Shutdown;
 import Commands.DMCommands.*;
@@ -37,14 +34,13 @@ public class CommandInit {
         commands.add(new UpdateAvatar());
         commands.add(new GetMessageData());
         commands.add(new TempCommand());
+        commands.add(new ResetPlayingStatus());
 
         //Admin commands
         commands.add(new ChannelHere());
         commands.add(new MaxMessages());
         commands.add(new Module());
         commands.add(new Mute());
-        commands.add(new FinalTally());
-        commands.add(new GetCompEntries());
         commands.add(new SetAdminRole());
         commands.add(new SetMutedRole());
         commands.add(new SetTrustedRoles());
@@ -60,6 +56,7 @@ public class CommandInit {
         commands.add(new Test());
         commands.add(new UserInfo());
         commands.add(new SlashList());
+        commands.add(new ClearReminder());
         //Help commands
         commands.add(new GetGuildInfo());
         commands.add(new Help());
@@ -98,8 +95,11 @@ public class CommandInit {
         commands.add(new SearchCCs());
         commands.add(new TransferCC());
         //Competition commands
+        commands.add(new FinalTally());
+        commands.add(new GetCompEntries());
         commands.add(new EnterComp());
         commands.add(new EnterVote());
+        commands.add(new PurgeComp());
 
         return commands;
     }
@@ -114,7 +114,8 @@ public class CommandInit {
         commands.add(new Respond());
         commands.add(new HelpDM());
         commands.add(new InfoDM());
-
+        commands.add(new ReminderDM());
+        commands.add(new ClearReminderDM());
         return commands;
     }
 }

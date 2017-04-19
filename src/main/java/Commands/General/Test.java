@@ -1,7 +1,12 @@
 package Commands.General;
 
-import Interfaces.Command;
 import Commands.CommandObject;
+import Interfaces.Command;
+import Main.Utility;
+import Objects.ChannelSettingObject;
+import Objects.ChannelTypeObject;
+import sx.blah.discord.api.internal.json.objects.WebhookObject;
+import sx.blah.discord.handle.impl.obj.Webhook;
 import sx.blah.discord.handle.obj.Permissions;
 
 /**
@@ -11,7 +16,11 @@ public class Test implements Command {
 
     @Override
     public String execute(String args, CommandObject command) {
-        return "> Nothing to test right now come back later.";
+        String channels = "Channel Settings: \n";
+        for (ChannelSettingObject c: command.guildConfig.getChannelSettings()){
+            channels += c.getType() + ": "  + Utility.listFormatter(c.getChannelIDs(),true) + "\n";
+        }
+        return channels;
     }
 
     @Override
@@ -31,7 +40,7 @@ public class Test implements Command {
 
     @Override
     public String type() {
-        return TYPE_GENERAL;
+        return TYPE_ADMIN;
     }
 
     @Override
@@ -56,21 +65,21 @@ public class Test implements Command {
 
     @Override
     public String dualDescription() {
-        return "This is another test.";
+        return null;
     }
 
     @Override
     public String dualUsage() {
-        return "[Blep]";
+        return null;
     }
 
     @Override
     public String dualType() {
-        return TYPE_ADMIN;
+        return null;
     }
 
     @Override
     public Permissions[] dualPerms() {
-        return new Permissions[]{Permissions.MANAGE_CHANNELS};
+        return new Permissions[0];
     }
 }

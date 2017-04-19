@@ -1,7 +1,7 @@
 package GuildToggles.Modules;
 
-import Interfaces.Command;
 import Commands.CommandObject;
+import Interfaces.Command;
 import Interfaces.GuildToggle;
 import POGOs.GuildConfig;
 
@@ -26,13 +26,14 @@ public class ModuleServers implements GuildToggle {
     }
 
     @Override
+    public boolean getDefault() {
+        return new GuildConfig().moduleServers;
+    }
+
+    @Override
     public void execute(CommandObject command) {
-        if (command.guildConfig.moduleServers){
-            return;
-        }else {
-            command.removeCommandsByType(Command.TYPE_SERVERS);
-            command.removeChannel(Command.CHANNEL_SERVERS);
-        }
+        command.removeCommandsByType(Command.TYPE_SERVERS);
+        command.removeChannel(Command.CHANNEL_SERVERS);
     }
 
     @Override

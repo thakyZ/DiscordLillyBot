@@ -1,11 +1,13 @@
 package Main;
 
-import Interfaces.Command;
 import Commands.CommandObject;
-import Interfaces.DMCommand;
 import Commands.DMCommandObject;
 import Handlers.FileHandler;
-import Objects.*;
+import Interfaces.Command;
+import Interfaces.DMCommand;
+import Objects.BlackListObject;
+import Objects.GuildContentObject;
+import Objects.XEmbedBuilder;
 import POGOs.GuildConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -255,6 +257,7 @@ public class Utility {
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (MissingPermissionsException e) {
+                sendMessage("> Could not send File, missing permissions.",channel);
                 logger.debug("Error sending File to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
                         ".\n" + Constants.PREFIX_EDT_LOGGER_INDENT + "Reason: Missing permissions.");
                 return true;
@@ -263,63 +266,61 @@ public class Utility {
         });
     }
 
-    public static RequestBuffer.RequestFuture<Boolean> sendFile(String message, String imageURL, IChannel channel) {
-        return RequestBuffer.request(() -> {
-            String messageID = "";
+    public static boolean sendFileURL(String message, String imageURL, IChannel channel, boolean loadMessage) {
+        String messageID = null;
+        if (loadMessage) {
+            messageID = sendMessage("`Loading...`", channel).get();
+        }
+        boolean failed = RequestBuffer.request(() -> {
             try {
-                messageID = sendMessage("`Loading...`", channel).get();
                 final HttpURLConnection connection = (HttpURLConnection) new URL(imageURL).openConnection();
                 connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) " + "AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.65 Safari/537.31");
                 InputStream stream = connection.getInputStream();
+
+                //tests to see if the URL specified is a valid Image URL
                 String[] urlSplit = imageURL.split(Pattern.quote("."));
                 String suffix = "." + urlSplit[urlSplit.length - 1];
+
                 if (!isImageLink(suffix)) {
                     sendMessage(message + " " + imageURL, channel);
-                    deleteMessage(Globals.getClient().getMessageByID(messageID));
                     return true;
                 }
-                if (StringUtils.containsOnly(message, "\n") || (message == null) || message.equals("")) {
-                    if (imageURL != null) {
-                        channel.sendFile("", stream, suffix);
-                    } else {
-                        logger.debug("Error sending File to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
-                                ".\n" + Constants.PREFIX_EDT_LOGGER_INDENT + "Reason: No file to send");
-                        return true;
-                    }
+
+                //tests to see if the URL is valid.
+
+                if (StringUtils.containsOnly(message, "\n") || (message == null) || message.equals("") && imageURL != null) {
+                    channel.sendFile("", stream, suffix);
+                } else if (message != null && !message.isEmpty() && imageURL != null) {
+                    channel.sendFile(removeMentions(message), false, stream, suffix);
                 } else {
-                    if (imageURL != null) {
-                        channel.sendFile(removeMentions(message), true, stream, suffix);
-                    } else {
-                        sendMessage(message, channel);
-                        return true;
-                    }
+                    logger.debug("Error sending File to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
+                            ".\n" + Constants.PREFIX_EDT_LOGGER_INDENT + "Reason: No file to send");
                 }
-                Globals.getClient().getMessageByID(messageID).delete();
             } catch (DiscordException e) {
                 if (e.getMessage().contains("CloudFlare")) {
-                    sendFile(message, imageURL, channel);
-                    deleteMessage(Globals.getClient().getMessageByID(messageID));
+                    return sendFileURL(message, imageURL, channel, false);
                 } else {
                     e.printStackTrace();
                     return true;
                 }
             } catch (MalformedURLException e) {
                 sendMessage(message + " " + imageURL, channel);
-                deleteMessage(Globals.getClient().getMessageByID(messageID));
             } catch (FileNotFoundException e) {
                 Utility.sendMessage("> Image Not Found : " + imageURL, channel);
-                deleteMessage(Globals.getClient().getMessageByID(messageID));
             } catch (IOException e) {
                 e.printStackTrace();
+                return true;
             } catch (MissingPermissionsException e) {
                 sendMessage(message + " <" + imageURL + ">", channel);
-                deleteMessage(Globals.getClient().getMessageByID(messageID));
                 logger.debug("Error sending File to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
                         ".\n" + Constants.PREFIX_EDT_LOGGER_INDENT + "Reason: Missing permissions.");
-                return true;
             }
             return false;
-        });
+        }).get();
+        if (loadMessage) {
+            deleteMessage(Globals.getClient().getMessageByID(messageID));
+        }
+        return failed;
     }
 
     public static boolean sendDMEmbed(String message, XEmbedBuilder embed, String userID) {
@@ -352,18 +353,18 @@ public class Utility {
             } catch (MissingPermissionsException e) {
                 logger.debug("Error sending File to channel with id: " + channel.getID() + " on guild with id: " + channel.getGuild().getID() +
                         ".\n" + Constants.PREFIX_EDT_LOGGER_INDENT + "Reason: Missing permissions.");
-                StringBuilder embedtoString = new StringBuilder();
-                if (embed.author != null) embedtoString.append("**" + embed.author.name + "**\n");
-                if (embed.title != null) embedtoString.append("**" + embed.title + "**\n");
-                if (embed.description != null) embedtoString.append(embed.description + "\n");
+                StringBuilder embedToString = new StringBuilder();
+                if (embed.author != null) embedToString.append("**" + embed.author.name + "**\n");
+                if (embed.title != null) embedToString.append("**" + embed.title + "**\n");
+                if (embed.description != null) embedToString.append(embed.description + "\n");
                 if (embed.fields != null) {
                     for (EmbedObject.EmbedFieldObject field : embed.fields) {
-                        embedtoString.append("**" + field.name + "**\n" + field.value + "\n");
+                        embedToString.append("**" + field.name + "**\n" + field.value + "\n");
                     }
                 }
-                if (embed.footer != null) embedtoString.append("*" + embed.footer.text + "*");
-                if (embed.image != null) embedtoString.append(embed.image.url);
-                sendMessage(embedtoString.toString(), channel);
+                if (embed.footer != null) embedToString.append("*" + embed.footer.text + "*");
+                if (embed.image != null) embedToString.append(embed.image.url);
+                sendMessage(embedToString.toString(), channel);
                 return true;
             }
             return false;
@@ -386,6 +387,29 @@ public class Utility {
             } catch (DiscordException e) {
                 if (e.getMessage().contains("CloudFlare")) {
                     sendDM(message, userID);
+                } else {
+                    e.printStackTrace();
+                    return true;
+                }
+            } catch (NullPointerException e) {
+                logger.debug("[sendDM] " + e.getMessage());
+                return true;
+            }
+            return false;
+        });
+    }
+
+    public static RequestBuffer.RequestFuture<Boolean> sendFileDM(String message, File attatchment, String userID) {
+        return RequestBuffer.request(() -> {
+            try {
+                IChannel channel = Globals.getClient().getOrCreatePMChannel(Globals.getClient().getUserByID(userID));
+                if (message == null || message.isEmpty()) {
+                    return true;
+                }
+                sendFile(message, attatchment, channel);
+            } catch (DiscordException e) {
+                if (e.getMessage().contains("CloudFlare")) {
+                    sendFileDM(message,attatchment, userID);
                 } else {
                     e.printStackTrace();
                     return true;
@@ -763,11 +787,11 @@ public class Utility {
             if (!(args == null || args.isEmpty())) {
                 message += " with args: `" + args + "`";
             }
-            if (c.getGuildConfig().getChannelTypeID(Command.CHANNEL_SERVER_LOG) != null) {
-                channel = commandObject.client.getChannelByID(c.getGuildConfig().getChannelTypeID(Command.CHANNEL_SERVER_LOG));
+            if (c.getGuildConfig().getChannelIDsByType(Command.CHANNEL_SERVER_LOG) != null) {
+                channel = commandObject.client.getChannelByID(c.getGuildConfig().getChannelIDsByType(Command.CHANNEL_SERVER_LOG).get(0));
             }
-            if (c.getGuildConfig().getChannelTypeID(Command.CHANNEL_ADMIN_LOG) != null) {
-                channel = commandObject.client.getChannelByID(c.getGuildConfig().getChannelTypeID(Command.CHANNEL_ADMIN_LOG));
+            if (c.getGuildConfig().getChannelIDsByType(Command.CHANNEL_ADMIN_LOG) != null) {
+                channel = commandObject.client.getChannelByID(c.getGuildConfig().getChannelIDsByType(Command.CHANNEL_ADMIN_LOG).get(0));
             }
             if (channel != null) {
                 sendMessage(message, channel);
@@ -860,15 +884,18 @@ public class Utility {
         return from;
     }
 
-    public static boolean isImageLink(String suffix) {
+    public static boolean isImageLink(String link) {
         ArrayList<String> suffixes = new ArrayList<String>() {{
             add(".png");
             add(".gif");
             add(".jpg");
             add(".webp");
         }};
+        if (link.contains("\n") || link.contains(" ")){
+            return false;
+        }
         for (String s : suffixes) {
-            if (suffix.toLowerCase().endsWith(s)) {
+            if (link.toLowerCase().endsWith(s)) {
                 return true;
             }
         }
@@ -936,9 +963,15 @@ public class Utility {
     public static void sendLog(String content, GuildConfig config, boolean isAdmin) {
         IChannel logChannel;
         if (isAdmin) {
-            logChannel = Globals.getClient().getChannelByID(config.getChannelTypeID(Command.CHANNEL_ADMIN_LOG));
+            if (config.getChannelIDsByType(Command.CHANNEL_ADMIN_LOG) == null){
+                return;
+            }
+            logChannel = Globals.getClient().getChannelByID(config.getChannelIDsByType(Command.CHANNEL_ADMIN_LOG).get(0));
         } else {
-            logChannel = Globals.getClient().getChannelByID(config.getChannelTypeID(Command.CHANNEL_SERVER_LOG));
+            if (config.getChannelIDsByType(Command.CHANNEL_SERVER_LOG) == null){
+                return;
+            }
+            logChannel = Globals.getClient().getChannelByID(config.getChannelIDsByType(Command.CHANNEL_SERVER_LOG).get(0));
         }
         if (logChannel == null) {
             return;
@@ -955,6 +988,10 @@ public class Utility {
             from = from.replace(mention, "__@" + user.getDisplayName(message.getGuild()) + "__");
             from = from.replace(mentionNic, "__@" + user.getDisplayName(message.getGuild()) + "__");
         }
+        for (IRole role : message.getRoleMentions()){
+            String roleMention = "<@&" + role.getID() + ">";
+            from = from.replace(roleMention,"__**@" + role.getName() + "**__");
+        }
         return from;
     }
 
@@ -969,4 +1006,3 @@ public class Utility {
         return content;
     }
 }
-

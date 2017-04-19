@@ -1,10 +1,10 @@
 package GuildToggles.Modules;
 
-import Interfaces.Command;
 import Commands.CommandObject;
-import Interfaces.GuildToggle;
 import GuildToggles.Toggles.CompEntries;
 import GuildToggles.Toggles.Voting;
+import Interfaces.Command;
+import Interfaces.GuildToggle;
 import POGOs.GuildConfig;
 
 /**
@@ -30,14 +30,15 @@ public class ModuleComp implements GuildToggle {
     }
 
     @Override
+    public boolean getDefault() {
+        return new GuildConfig().moduleComp;
+    }
+
+    @Override
     public void execute(CommandObject command) {
-        if (command.guildConfig.moduleComp){
-            return;
-        }else {
-            command.removeCommandsByType(Command.TYPE_COMPETITION);
-            command.removeToggle(new Voting().name());
-            command.removeToggle(new CompEntries().name());
-        }
+        command.removeCommandsByType(Command.TYPE_COMPETITION);
+        command.removeToggle(new Voting().name());
+        command.removeToggle(new CompEntries().name());
     }
 
     @Override

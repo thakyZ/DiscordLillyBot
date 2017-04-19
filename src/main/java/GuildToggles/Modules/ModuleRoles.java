@@ -1,7 +1,7 @@
 package GuildToggles.Modules;
 
-import Interfaces.Command;
 import Commands.CommandObject;
+import Interfaces.Command;
 import Interfaces.GuildToggle;
 import POGOs.GuildConfig;
 
@@ -26,12 +26,13 @@ public class ModuleRoles implements GuildToggle {
     }
 
     @Override
+    public boolean getDefault() {
+        return new GuildConfig().moduleRoles;
+    }
+
+    @Override
     public void execute(CommandObject command) {
-        if (command.guildConfig.moduleRoles){
-            return;
-        }else {
-            command.removeCommandsByType(Command.TYPE_ROLE_SELECT);
-        }
+        command.removeCommandsByType(Command.TYPE_ROLE_SELECT);
     }
 
     @Override

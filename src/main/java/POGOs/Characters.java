@@ -49,36 +49,6 @@ public class Characters {
         return "> Character: \"" + newCharacter.getName() + "\" Added";
     }
 
-    public String selChar(String character, IUser author, IGuild guild, GuildConfig guildConfig) {
-        List<IRole> userRoles = author.getRolesForGuild(guild);
-        for (CharacterObject c : characters) {
-            if (c.getName().equalsIgnoreCase(character)) {
-                if (author.getID().equals(c.getUserID())) {
-                    for (RoleTypeObject r : guildConfig.getCosmeticRoles()) {
-                        for (int i = 0; i < userRoles.size(); i++) {
-                            if (r.getRoleID().equalsIgnoreCase(userRoles.get(i).getID())) {
-                                userRoles.remove(i);
-                            }
-                        }
-
-                    }
-                    for (int i = 0; i < c.getRoles().size(); i++) {
-                        IRole newRole = guild.getRoleByID(c.getRoles().get(i).getRoleID());
-                        if (newRole != null) {
-                            userRoles.add(newRole);
-                        }
-                    }
-                    Utility.roleManagement(author, guild, userRoles);
-                    Utility.updateUserNickName(author, guild, c.getNickname());
-                    return "> Loaded Character.";
-                } else {
-                    return "> That is not your character.";
-                }
-            }
-        }
-        return Constants.ERROR_CHAR_NOT_FOUND;
-    }
-
     public ArrayList<CharacterObject> getCharacters() {
         return characters;
     }

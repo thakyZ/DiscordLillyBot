@@ -22,6 +22,20 @@ public class Constants {
 
     //------------------------------------
 
+    //BlackList Types
+    public static final String BL_PENDING = "!PENDING";
+    public static final String BL_ALL = "ALL";
+    public static final String BL_CC = "CC";
+    public static final String BL_SERVER = "SERVER";
+    public static final String BL_TRUSTED = "TRUSTED";
+
+    //Patch Levels
+    public static final String PATCH_1 = "UPDATE_TAGS_1";
+    public static final String PATCH_2 = "UPDATE_CHANNELS";
+    public static final String PATCH_3 = "UPDATE_TAGS_2";
+    public static final String PATCH_4 = "INFO_FIX";
+    public static final String PATCH_GLOBAL_1 = "UPDATE_CONFIG";
+
     //Error Constants
     public static final String ERROR = "> An Error Occurred";
     public static final String ERROR_ROLE_NOT_FOUND = "> Role with that name not found.";

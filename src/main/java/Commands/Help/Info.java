@@ -1,7 +1,7 @@
 package Commands.Help;
 
-import Interfaces.Command;
 import Commands.CommandObject;
+import Interfaces.Command;
 import Main.Globals;
 import Main.Utility;
 import Objects.XEmbedBuilder;
@@ -50,6 +50,7 @@ public class Info implements Command {
                         for (Permissions p : c.perms()) {
                             permList.add(p.toString());
                         }
+                        builder.append("**");
                         builder.append(Utility.listFormatter(permList, true));
                     }
                     //dual command info
@@ -76,7 +77,10 @@ public class Info implements Command {
                         builder.append(builderDual.toString());
                     }
                     infoEmbed.appendField("> Info - " + c.names()[0], builder.toString(), false);
-                    IChannel commandChannel = command.client.getChannelByID(command.guildConfig.getChannelTypeID(c.channel()));
+                    IChannel commandChannel = null;
+                    if (command.guildConfig.getChannelIDsByType(c.channel()) != null){
+                        command.client.getChannelByID(command.guildConfig.getChannelIDsByType(c.channel()).get(0));
+                    }
                     //channel
                     if (commandChannel != null) {
                         infoEmbed.appendField("Channel: ", commandChannel.mention(), false);

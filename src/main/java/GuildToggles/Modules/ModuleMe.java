@@ -10,7 +10,7 @@ import POGOs.GuildConfig;
 /**
  * Created by Vaerys on 02/03/2017.
  */
-public class ModuleMe implements GuildToggle{
+public class ModuleMe implements GuildToggle {
 
     @Override
     public String name() {
@@ -28,14 +28,15 @@ public class ModuleMe implements GuildToggle{
     }
 
     @Override
+    public boolean getDefault() {
+        return new GuildConfig().moduleMe;
+    }
+
+    @Override
     public void execute(CommandObject command) {
-        if (command.guildConfig.moduleMe) {
-            return;
-        } else {
-            command.removeCommand(new UserInfo().names());
-            command.removeCommand(new SetGender().names());
-            command.removeCommand(new SetQuote().names());
-        }
+        command.removeCommand(new UserInfo().names());
+        command.removeCommand(new SetGender().names());
+        command.removeCommand(new SetQuote().names());
     }
 
     @Override

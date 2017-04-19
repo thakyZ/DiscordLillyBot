@@ -1,8 +1,8 @@
 package Commands.CC;
 
-import Interfaces.Command;
 import Commands.CommandObject;
 import Handlers.FileHandler;
+import Interfaces.Command;
 import Main.Constants;
 import Main.Utility;
 import Objects.CCommandObject;
@@ -28,10 +28,10 @@ public class SearchCCs implements Command {
             toSearch.append(c.getName().toLowerCase());
             toSearch.append(c.getContents(false).toLowerCase());
             if (c.isLocked()) {
-                toSearch.append("#locked#");
+                toSearch.append("<locked>");
             }
             if (c.isShitPost()) {
-                toSearch.append("#shitpost#");
+                toSearch.append("<shitpost>");
             }
             if ((toSearch.toString()).contains(args.toLowerCase())) {
                 searched.add(c);

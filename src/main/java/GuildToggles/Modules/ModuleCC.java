@@ -1,9 +1,9 @@
 package GuildToggles.Modules;
 
-import Interfaces.Command;
 import Commands.CommandObject;
-import Interfaces.GuildToggle;
 import GuildToggles.Toggles.ShitpostFiltering;
+import Interfaces.Command;
+import Interfaces.GuildToggle;
 import POGOs.GuildConfig;
 
 /**
@@ -27,14 +27,15 @@ public class ModuleCC implements GuildToggle {
     }
 
     @Override
+    public boolean getDefault() {
+        return new GuildConfig().moduleCC;
+    }
+
+    @Override
     public void execute(CommandObject command) {
-        if (command.guildConfig.moduleCC) {
-            return;
-        } else {
-            command.removeCommandsByType(Command.TYPE_CC);
-            command.removeChannel(Command.CHANNEL_SHITPOST);
-            command.removeToggle(new ShitpostFiltering().name());
-        }
+        command.removeCommandsByType(Command.TYPE_CC);
+        command.removeChannel(Command.CHANNEL_SHITPOST);
+        command.removeToggle(new ShitpostFiltering().name());
     }
 
     @Override
