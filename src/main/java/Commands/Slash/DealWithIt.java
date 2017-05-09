@@ -1,4 +1,4 @@
-package SlashCommands.Commands;
+package Commands.Slash;
 
 import Interfaces.SlashCommand;
 

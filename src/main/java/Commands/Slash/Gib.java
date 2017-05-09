@@ -1,18 +1,18 @@
-package SlashCommands.Commands;
+package Commands.Slash;
 
 import Interfaces.SlashCommand;
 
 /**
  * Created by Vaerys on 13/03/2017.
  */
-public class Lenny implements SlashCommand {
+public class Gib implements SlashCommand {
     @Override
     public String call() {
-        return "/Lenny";
+        return "/Gib";
     }
 
     @Override
     public String response() {
-        return "( ͡° ͜ʖ ͡°)";
+        return "༼ つ ◕_◕ ༽つ";
     }
 }

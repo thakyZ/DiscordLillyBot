@@ -183,6 +183,7 @@
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS" />
     <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="Commands.Slash" />
       <recent name="Commands.Competition" />
       <recent name="Commands" />
       <recent name="" />
@@ -196,6 +197,7 @@
       <recent name="GuildToggles.Toggles" />
     </key>
     <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="Commands.CommandInit" />
       <recent name="Commands.Characters.CharEditModes" />
       <recent name="Commands.Characters.CharEditModes.gender" />
     </key>
