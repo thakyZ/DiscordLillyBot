@@ -1,7 +1,5 @@
 package POGOs;
 
-import Interfaces.ChannelSetting;
-import Interfaces.Command;
 import Main.Globals;
 import Objects.*;
 import sx.blah.discord.handle.obj.IChannel;
@@ -20,9 +18,11 @@ public class GuildConfig {
     boolean properlyInit = false;
     String guildName = "";
     //toggles
-    //--AutoMessages
+    //--Auto Tasks
     public boolean loginMessage = true;
     public boolean dailyMessage = true;
+    public boolean artPinning = false;
+    public boolean autoArtPinning = false;
     //--Logging
     public boolean generalLogging = false;
     public boolean adminLogging = false;
@@ -46,13 +46,14 @@ public class GuildConfig {
     public boolean compEntries = false;
     public boolean compVoting = false;
     //modules
-    public boolean moduleServers = true;
-    public boolean moduleChars = true;
+    public boolean moduleServers = false;
+    public boolean moduleChars = false;
     public boolean moduleComp = false;
     public boolean moduleRoles = true;
     public boolean moduleCC = true;
     public boolean moduleMe = true;
-    public boolean moduleModMute = true;
+    public boolean moduleModMute = false;
+    public boolean moduleGroups = false;
     public int maxMentionLimit = 8;
     public int messageLimit = 10;
 
@@ -67,10 +68,13 @@ public class GuildConfig {
     ArrayList<RoleTypeObject> trustedRoles = new ArrayList<>();
     ArrayList<BlackListObject> blackList = new ArrayList<>();
     ArrayList<OffenderObject> repeatOffenders = new ArrayList<>();
+    ArrayList<RewardRoleObject> rewardRoles = new ArrayList<>();
     RoleTypeObject roleToMention = new RoleTypeObject("No Role Set", null);
     RoleTypeObject mutedRole = new RoleTypeObject("No Role Set", null);
 
-
+    public ArrayList<RewardRoleObject> getRewardRoles() {
+        return rewardRoles;
+    }
 
     public String getPrefixCommand() {
         return prefixCommand;

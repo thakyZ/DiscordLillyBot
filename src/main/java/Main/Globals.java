@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Properties;
 
 /**
@@ -55,6 +56,7 @@ public class Globals {
     private static GlobalData globalData;
     public static int baseXPModifier;
     public static int xpForLevelOne;
+    public static long lastDmUserID = -1;
 
     public static void initConfig(IDiscordClient ourClient, Config config, GlobalData newGlobalData) {
         if (newGlobalData != null) {
@@ -117,6 +119,7 @@ public class Globals {
                 commandTypes.add(c.type());
             }
         }
+        Collections.sort(commandTypes);
 
         logger.info(commands.size() + " Commands Loaded.");
         logger.info(commandsDM.size() + " DM Commands Loaded.");
@@ -228,7 +231,7 @@ public class Globals {
         }
     }
 
-    public static void initGuild(String guildID, GuildConfig guildConfig, Servers servers, CustomCommands customCommands, Characters characters, Competition competition, GuildUsers guildUsers) {
+    public static void initGuild(String guildID, GuildConfig guildConfig, Servers servers, CustomCommands customCommands, Characters characters, Competition competition, GuildUsers guildUsers, ChannelData channelData) {
         for (GuildContentObject contentObject : guildContentObjects) {
             if (guildID.equals(contentObject.getGuildID())) {
                 return;
@@ -238,7 +241,7 @@ public class Globals {
         IGuild guild = client.getGuildByID(guildID);
         guildConfig.updateVariables(guild);
 
-        GuildContentObject guildContentObject = new GuildContentObject(guildID, guildConfig, customCommands, servers, characters, competition, guildUsers);
+        GuildContentObject guildContentObject = new GuildContentObject(guildID, guildConfig, customCommands, servers, characters, competition, guildUsers, channelData);
         guildContentObjects.add(guildContentObject);
     }
 

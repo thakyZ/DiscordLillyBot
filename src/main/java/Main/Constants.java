@@ -33,7 +33,7 @@ public class Constants {
     public static final String PATCH_1 = "UPDATE_TAGS_1";
     public static final String PATCH_2 = "UPDATE_CHANNELS";
     public static final String PATCH_3 = "UPDATE_TAGS_2";
-    public static final String PATCH_4 = "INFO_FIX";
+    public static final String PATCH_4 = "RESET_XP";
     public static final String PATCH_GLOBAL_1 = "UPDATE_CONFIG";
 
     //Error Constants
@@ -55,7 +55,8 @@ public class Constants {
     public static final String DIRECTORY_TEMP = DIRECTORY_STORAGE + "Temp/";
     public static final String DIRECTORY_OLD_FILES = DIRECTORY_STORAGE + "Old_Files/";
     public static final String DIRECTORY_ERROR = DIRECTORY_STORAGE + "Error/";
-
+    public static final String DIRECTORY_WIKI = "DiscordSailv2.wiki/";
+    public static final String DIRECTORY_WIKI_COMMANDS = DIRECTORY_WIKI + "Commands/";
 
     //Files
     public static final String FILE_TOKEN = DIRECTORY_STORAGE + "Token.txt";
@@ -64,6 +65,7 @@ public class Constants {
     public static final String FILE_SERVERS = "Servers.json";
     public static final String FILE_CHARACTERS = "Characters.json";
     public static final String FILE_GUILD_USERS = "Guild_Users.json";
+    public static final String FILE_CHANNEl_DATA = "Channel_Data.json";
     public static final String FILE_INFO = "Info.txt";
     public static final String FILE_CONFIG = DIRECTORY_STORAGE + "Config.json";
     public static final String FILE_CONFIG_BACKUP = DIRECTORY_BACKUPS + "Config.json";

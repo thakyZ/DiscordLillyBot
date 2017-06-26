@@ -1,10 +1,13 @@
 package Objects;
 
+import Enums.UserSetting;
 import Handlers.MessageHandler;
 import Main.Globals;
 import POGOs.GuildConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
 
 /**
  * Created by Vaerys on 27/08/2016.
@@ -12,15 +15,21 @@ import org.slf4j.LoggerFactory;
 public class UserTypeObject {
     String ID;
     long xp = 0;
-    long level = 0;
-    String rewardRoleID = "";
+    long rewardID = -1;
     String gender = "Unknown";
     String quote = "This person doesn't seem to have much to say for themselves.";
+    ArrayList<UserSetting> settings = new ArrayList<>();
+    ArrayList<UserLinkObject> links = new ArrayList<>();
+
+    public UserTypeObject() {
+        if (links == null) links = new ArrayList<>();
+        if (settings == null) settings = new ArrayList<>();
+    }
 
     private final static Logger logger = LoggerFactory.getLogger(MessageHandler.class);
 
     public String getQuote() {
-        if (quote == null){
+        if (quote == null) {
             quote = "This person doesn't seem to have much to say for themselves.";
         }
         return quote;
@@ -31,7 +40,7 @@ public class UserTypeObject {
     }
 
     public String getGender() {
-        if (gender == null){
+        if (gender == null) {
             gender = "Unknown";
         }
         return gender;
@@ -41,12 +50,12 @@ public class UserTypeObject {
         this.gender = gender;
     }
 
-    public String getRewardRoleID() {
-        return rewardRoleID;
+    public long getRewardID() {
+        return rewardID;
     }
 
-    public void setRewardRoleID(String rewardRoleID) {
-        this.rewardRoleID = rewardRoleID;
+    public void setRewardID(long rewardID) {
+        this.rewardID = rewardID;
     }
 
     public UserTypeObject(String ID) {
@@ -58,30 +67,29 @@ public class UserTypeObject {
     }
 
     public void addXP(GuildConfig config) {
-        xp += 1;
-        logger.trace(Globals.getClient().getUserByID(ID)+ " - Xp gained");
-    }
-
-    public void addLevel(){
-        level += 1;
+        xp += 20;
+        logger.trace(Globals.getClient().getUserByID(ID) + " - Xp gained");
     }
 
     public void setXp(long xp) {
         this.xp = xp;
-        calculateLevel();
     }
 
-    private void calculateLevel() {
-        int xpForLvlOne = Globals.xpForLevelOne;
-        int baseModifier = Globals.baseXPModifier;
-
+    public long getXP() {
+        return xp;
     }
 
-    public long getLevel() {
-        return level;
+    public ArrayList<UserSetting> getSettings() {
+        return settings;
     }
 
-    public int getXP() {
-        return Math.round(xp);
+    public ArrayList<UserLinkObject> getLinks() {
+        return links;
+    }
+
+    public void setLinks() {
+        if (links == null) {
+            links = new ArrayList<>();
+        }
     }
 }

@@ -1,7 +1,13 @@
-package Main;
+package Handlers;
 
 import Interfaces.Command;
-import Objects.*;
+import Main.Constants;
+import Main.Globals;
+import Main.Utility;
+import Objects.DailyMessageObject;
+import Objects.GuildContentObject;
+import Objects.ReminderObject;
+import Objects.UserCountDown;
 import POGOs.GuildConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,26 +16,43 @@ import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.Image;
 
 import java.io.File;
-import java.time.*;
+import java.time.DayOfWeek;
+import java.time.Month;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * Created by Vaerys on 14/08/2016.
  */
-public class TimedEvents {
+public class EventHandler {
 
-    final static Logger logger = LoggerFactory.getLogger(TimedEvents.class);
+    final static Logger logger = LoggerFactory.getLogger(EventHandler.class);
 
-    public TimedEvents() {
+    public EventHandler() {
         ZonedDateTime nowUTC = ZonedDateTime.now(ZoneOffset.UTC);
         doEventSec();
         doEventTenSec();
+        doEventMin();
         doEventFiveMin(nowUTC);
         doEventDaily(nowUTC);
+    }
+
+    private void doEventMin() {
+        int intialdelay = 4000;
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                logger.trace("Reset speakers.");
+                for (GuildContentObject g : Globals.getGuildContentObjects()) {
+                    g.getSpokenUsers().clear();
+                }
+            }
+        }, intialdelay, 60* 1000);
     }
 
     //Reminder new setup.
@@ -45,7 +68,7 @@ public class TimedEvents {
             @Override
             public void run() {
                 Utility.sendMessage(object.getMessage(), Globals.getClient().getChannelByID(object.getChannelID()));
-                Globals.getGlobalData().removeReminder(object.getUserID(),object.getMessage());
+                Globals.getGlobalData().removeReminder(object.getUserID(), object.getMessage());
             }
         }, initialDelay * 1000);
     }
@@ -117,7 +140,6 @@ public class TimedEvents {
                     Utility.backupFile(task.getGuildID(), Constants.FILE_GUILD_USERS);
                     GuildConfig guildConfig = Globals.getGuildContent(task.getGuildID()).getGuildConfig();
                     GuildContentObject contentObject = Globals.getGuildContent(task.getGuildID());
-                    contentObject.getGuildUsers().addLevels();
 
                     //daily messages
                     if (guildConfig.getChannelIDsByType(Command.CHANNEL_GENERAL) != null) {
@@ -218,11 +240,11 @@ public class TimedEvents {
 
                 for (ReminderObject object : Globals.getGlobalData().getReminders()) {
                     if (object.getExecuteTime() - now.toEpochSecond() < 350) {
-                        if (!object.isSent()){
+                        if (!object.isSent()) {
                             sendReminder(object);
                             object.setSent(true);
-                        }else {
-                            if (object.getExecuteTime() - now.toEpochSecond() < 0){
+                        } else {
+                            if (object.getExecuteTime() - now.toEpochSecond() < 0) {
                                 sendReminder(object);
                             }
                         }
@@ -231,7 +253,7 @@ public class TimedEvents {
 
                 //Sending isAlive Check.
                 try {
-                    logger.debug("Backup in 5 seconds do not restart.");
+                    logger.info("Backup in 5 seconds do not restart.");
                     Thread.sleep(5000);
                     Globals.getClient().checkLoggedIn("IsAlive");
                 } catch (DiscordException e) {
@@ -239,17 +261,81 @@ public class TimedEvents {
                     logger.info("Logging back in.");
                     try {
                         Globals.getClient().login();
+                        Globals.getClient().changePlayingText("Recovered From Crash.");
+                        Thread.sleep(30000);
+                        Globals.getClient().changePlayingText(Globals.playing);
                         return;
                     } catch (IllegalStateException ex) {
                         //ignore exception
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
                     }
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                randomPlayingStatus();
                 Globals.saveFiles();
                 logger.debug("Files Saved.");
             }
         }, initialDelay * 1000, 5 * 60 * 1000);
     }
 
+    private static void randomPlayingStatus() {
+        Random random = new Random();
+        String status;
+        switch (random.nextInt(26)) {
+            case 1:
+                status = "Stardew Valley";
+                break;
+            case 2:
+                status = "Pocket Rumble";
+                break;
+            case 3:
+                status = "The Siege and the SandFox";
+                break;
+            case 4:
+                status = "Treasure Adventure World";
+                break;
+            case 5:
+                status = "Interstellaria";
+                break;
+            case 6:
+                status = "Halfway";
+                break;
+            case 7:
+                status = "Lenna's Inception";
+                break;
+            case 8:
+                status = "Risk of Rain";
+                break;
+            case 9:
+                status = "Witchmarsh";
+                break;
+            case 10:
+                status = "Wanderlust Adventure";
+                break;
+            case 11:
+                status = "Wanderlust Rebirth";
+                break;
+            case 12:
+                status = "WarGroove";
+                break;
+            case 13:
+                status = "WarGroove";
+                break;
+            case 14:
+                status = "WarGroove";
+                break;
+            case 15:
+                status = "WarGroove";
+                break;
+            case 16:
+                status = "WarGroove";
+                break;
+            default:
+                status = Globals.playing;
+                break;
+        }
+        Globals.client.changePlayingText(status);
+    }
 }

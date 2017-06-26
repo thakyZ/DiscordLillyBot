@@ -18,7 +18,9 @@ public class FileHandler {
 
     private final static Logger logger = LoggerFactory.getLogger(FileHandler.class);
 
-    /**Creates Directory using "dirName" as the path.*/
+    /**
+     * Creates Directory using "dirName" as the path.
+     */
     public static void createDirectory(String dirName) {
         File file = new File(dirName);
         if (!file.exists()) {
@@ -27,7 +29,9 @@ public class FileHandler {
         }
     }
 
-    /**Reads from File using "file" as the path and returns a ArrayList<String>.*/
+    /**
+     * Reads from File using "file" as the path and returns a ArrayList<String>.
+     */
     public static List<String> readFromFile(String file) {
         try {
             if (!Paths.get(file).toFile().exists()) {
@@ -43,7 +47,9 @@ public class FileHandler {
         }
     }
 
-    /**Writes to File on line "line" using "file" as the path.*/
+    /**
+     * Writes to File on line "line" using "file" as the path.
+     */
     public static void writeToFile(String file, int line, String text) {
         try {
             List<String> fileContents = readFromFile(file);
@@ -55,24 +61,35 @@ public class FileHandler {
         }
     }
 
-    /**Writes to File using "file" as the path.*/
-    public static void writeToFile(String file, String text){
+    /**
+     * Writes to File using "file" as the path.
+     */
+    public static void writeToFile(String file, String text,boolean overwrite) {
         try {
-            if(!Files.exists(Paths.get(file))){
+            if (!Files.exists(Paths.get(file))) {
                 Files.createFile(Paths.get(file));
             }
-            FileWriter fileWriter = new FileWriter(file, true);
-            fileWriter.append(text + "\n");
-            fileWriter.flush();
-            fileWriter.close();
+            if (overwrite){
+                FileWriter fileWriter = new FileWriter(file, false);
+                fileWriter.write(text);
+                fileWriter.flush();
+                fileWriter.close();
+            }else {
+                FileWriter fileWriter = new FileWriter(file, true);
+                fileWriter.append(text + "\n");
+                fileWriter.flush();
+                fileWriter.close();
+            }
             logger.trace("Writing to file: " + file);
         } catch (IOException e) {
             logger.error(e.getCause().toString());
         }
     }
 
-    /**Reads from a .Json File using path "file" and returns a POGO based on "objClass".*/
-    public static Object readFromJson(String file, Class<?> objClass){
+    /**
+     * Reads from a .Json File using path "file" and returns a POGO based on "objClass".
+     */
+    public static Object readFromJson(String file, Class<?> objClass) {
         Gson gson = new Gson();
         try (Reader reader = new InputStreamReader(new FileInputStream(new File(file)), StandardCharsets.UTF_8)) {
             Object newObject = gson.fromJson(reader, objClass);
@@ -86,8 +103,10 @@ public class FileHandler {
         return null;
     }
 
-    /**saves data from POGO of type "object" using path "file".*/
-    public static void writeToJson(String file, Object object){
+    /**
+     * saves data from POGO of type "object" using path "file".
+     */
+    public static void writeToJson(String file, Object object) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8))) {
             gson.toJson(object, writer);
@@ -98,15 +117,15 @@ public class FileHandler {
         }
     }
 
-    private static boolean exists(String path){
+    private static boolean exists(String path) {
         return Files.exists(Paths.get(path));
     }
 
-    public static void initFile(String path, Object object){
-        if (!exists(path)) writeToJson(path,object);
+    public static void initFile(String path, Object object) {
+        if (!exists(path)) writeToJson(path, object);
     }
 
-    public static void initFile(String path){
-        if (!exists(path)) writeToFile(path, "");
+    public static void initFile(String path) {
+        if (!exists(path)) writeToFile(path, "",false);
     }
 }
