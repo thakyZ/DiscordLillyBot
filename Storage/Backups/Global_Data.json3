@@ -1,0 +1,27 @@
+{
+  "blockedFromDMS": [],
+  "reminders": [],
+  "patches": [
+    {
+      "PatchLevel": "UPDATE_TAGS_1",
+      "patchedGuildIDs": [
+        "83985251872833536"
+      ]
+    },
+    {
+      "PatchLevel": "UPDATE_CHANNELS",
+      "patchedGuildIDs": [
+        "83985251872833536"
+      ]
+    },
+    {
+      "PatchLevel": "UPDATE_TAGS_2",
+      "patchedGuildIDs": [
+        "83985251872833536"
+      ]
+    }
+  ],
+  "globalPatches": [
+    "UPDATE_CONFIG"
+  ]
+}

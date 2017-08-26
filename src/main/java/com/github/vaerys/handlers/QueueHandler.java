@@ -106,7 +106,11 @@ public class QueueHandler {
                                             uID = Long.parseLong(f.getValue());
                                         }
                                     }
+<<<<<<< HEAD
                                     Utility.sendDM("> A daily message you sent was approved.", userID);
+=======
+                                    Utility.sendDM("> A daily message you sent was approved. **[" + uID + "]**", userID);
+>>>>>>> master
                                     Globals.getDailyMessages().getMessages().add(new DailyUserMessageObject(embed.getDescription(), day, userID, uID));
                                     XRequestBuffer.request(() -> message.addReaction(ok)).get();
                                     iterator.remove();

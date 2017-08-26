@@ -1,0 +1,168 @@
+{
+  "prefixCommand": "$",
+  "prefixCC": "$$",
+  "properlyInit": true,
+  "guildName": "Void Inc.",
+  "loginMessage": false,
+  "dailyMessage": true,
+  "generalLogging": false,
+  "adminLogging": false,
+  "deleteLogging": true,
+  "joinLeaveLogging": true,
+  "userRoleLogging": false,
+  "editLogging": true,
+  "extendEditLog": false,
+  "channelLogging": false,
+  "useTimeStamps": true,
+  "dontLogBot": true,
+  "denyInvites": true,
+  "maxMentions": true,
+  "shitPostFiltering": true,
+  "muteRepeatOffenders": true,
+  "rateLimiting": true,
+  "slashCommands": true,
+  "roleIsToggle": false,
+  "compEntries": true,
+  "compVoting": false,
+  "moduleServers": false,
+  "moduleChars": true,
+  "moduleComp": false,
+  "moduleRoles": true,
+  "moduleCC": true,
+  "moduleMe": true,
+  "moduleModMute": true,
+  "maxMentionLimit": 8,
+  "messageLimit": 10,
+  "xpRate": 20,
+  "xpModifier": 1.0,
+  "channelSettings": [
+    {
+      "type": "Info",
+      "channelIDs": [
+        "177939031932272640"
+      ]
+    },
+    {
+      "type": "ShitPost",
+      "channelIDs": [
+        "177940362151723008"
+      ]
+    },
+    {
+      "type": "Admin",
+      "channelIDs": [
+        "83988022319681536"
+      ]
+    },
+    {
+      "type": "ServerLog",
+      "channelIDs": [
+        "250771079935557633"
+      ]
+    },
+    {
+      "type": "General",
+      "channelIDs": [
+        "83985251872833536"
+      ]
+    },
+    {
+      "type": "BotCommands",
+      "channelIDs": [
+        "250771507763085314"
+      ]
+    }
+  ],
+  "cosmeticRoles": [],
+  "modifierRoles": [
+    {
+      "RoleName": "Starbound",
+      "RoleID": "234399646334582784"
+    },
+    {
+      "RoleName": "StarMade",
+      "RoleID": "234399494312165377"
+    },
+    {
+      "RoleName": "Stardew Valley",
+      "RoleID": "234399847501791232"
+    },
+    {
+      "RoleName": "Minecraft",
+      "RoleID": "234401218573762560"
+    },
+    {
+      "RoleName": "Touhou",
+      "RoleID": "250829993699966978"
+    },
+    {
+      "RoleName": "GTA 5",
+      "RoleID": "234399779214458881"
+    },
+    {
+      "RoleName": "Space Engineers",
+      "RoleID": "281824440097177600"
+    },
+    {
+      "RoleName": "RegularDJ",
+      "RoleID": "183629397872345089"
+    },
+    {
+      "RoleName": "Rust",
+      "RoleID": "311513777281564672"
+    },
+    {
+      "RoleName": "Reign of Kings",
+      "RoleID": "311513704338292739"
+    },
+    {
+      "RoleName": "Garrys Mod",
+      "RoleID": "311513647715319812"
+    },
+    {
+      "RoleName": "No Mans Sky",
+      "RoleID": "281824531285540864"
+    },
+    {
+      "RoleName": "ARK",
+      "RoleID": "326174458178043904"
+    },
+    {
+      "RoleName": "Unturned",
+      "RoleID": "326186921619357699"
+    }
+  ],
+  "trustedRoles": [
+    {
+      "RoleName": "Kitten",
+      "RoleID": "233288015483633667"
+    },
+    {
+      "RoleName": "Kitty",
+      "RoleID": "233287562595270656"
+    },
+    {
+      "RoleName": "Kat",
+      "RoleID": "233288595190841345"
+    }
+  ],
+  "blackList": [
+    {
+      "phrase": "discord.gg",
+      "reason": "Please do not put **invites** in Custom Commands."
+    },
+    {
+      "phrase": "discordapp.com/Invite/",
+      "reason": "Please do not put **invites** in Custom Commands."
+    }
+  ],
+  "repeatOffenders": [],
+  "roleToMention": {
+    "RoleName": "Staff",
+    "RoleID": "281817707517706240"
+  },
+  "mutedRole": {
+    "RoleName": "Muted",
+    "RoleID": "250777641987080192"
+  }
+}

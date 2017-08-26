@@ -50,6 +50,7 @@ Temporary Items
 *.json
 bot.log
 target
-*.jar
-Storage
-modules
+*.class
+<<<<<<< HEAD
+=======
+.idea/workspace.xml

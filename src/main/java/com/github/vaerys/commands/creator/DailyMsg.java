@@ -10,6 +10,10 @@ import com.github.vaerys.objects.XEmbedBuilder;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
 
+<<<<<<< HEAD
+=======
+import java.time.DayOfWeek;
+>>>>>>> master
 import java.util.Formatter;
 import java.util.ListIterator;
 
@@ -17,6 +21,10 @@ public class DailyMsg implements Command {
 
     String modes = "> Edit - `args = new Contents`\n" +
             "> Delete\n" +
+<<<<<<< HEAD
+=======
+            "> MoveDay\n" +
+>>>>>>> master
             "> Info - `Default`\n";
 
     @Override
@@ -44,6 +52,12 @@ public class DailyMsg implements Command {
             }
             switch (totest.toLowerCase()) {
                 case "edit":
+<<<<<<< HEAD
+=======
+                    if (mode.getRest() == null) {
+                        return "> Missing args";
+                    }
+>>>>>>> master
                     messageObject.setContents(mode.getRest());
                     return "> Daily Message contents updated";
                 case "delete":
@@ -55,6 +69,21 @@ public class DailyMsg implements Command {
                         }
                     }
                     return "> Daily Message Deleted";
+<<<<<<< HEAD
+=======
+                case "moveday":
+                    if (mode.getRest() == null) {
+                        return "> Missing args";
+                    }
+                    String day = mode.getRest().toUpperCase();
+                    try {
+                        DayOfWeek dayOfWeek = DayOfWeek.valueOf(day);
+                        messageObject.setDay(dayOfWeek);
+                        return "> Moved message to " + dayOfWeek + ".";
+                    } catch (IllegalArgumentException e) {
+                        return "> Not a valid day of the week.";
+                    }
+>>>>>>> master
                 case "info":
                     Utility.sendEmbedMessage("", getInfo(messageObject, command), command.channel.get());
                     return null;

@@ -1,0 +1,100 @@
+{
+  "properlyInit": true,
+  "blackList": [
+    {
+      "phrase": "\u003c@",
+      "reason": "Please do not put **mentions** in Custom Commands."
+    },
+    {
+      "phrase": "discord.gg",
+      "reason": "Please do not put **invites** in Custom Commands."
+    },
+    {
+      "phrase": "discordapp.com/Invite/",
+      "reason": "Please do not put **invites** in Custom Commands."
+    },
+    {
+      "phrase": "@everyone",
+      "reason": "Please go not put **mentions** in Custom Commands."
+    },
+    {
+      "phrase": "@here",
+      "reason": "Please go not put **mentions** in Custom Commands."
+    }
+  ],
+  "commands": [
+    {
+      "name": "Echo",
+      "userID": "250716879981772801",
+      "isLocked": true,
+      "shitPost": false,
+      "timesRun": 1,
+      "contents": [
+        "\u003cargs\u003e"
+      ]
+    },
+    {
+      "name": "Wiki",
+      "userID": "250716879981772801",
+      "isLocked": true,
+      "shitPost": false,
+      "timesRun": 0,
+      "contents": [
+        "http://starbounder.org/Special:Search/\u003cargs\u003e#regex#{ ;_}"
+      ]
+    },
+    {
+      "name": "TotalCCs",
+      "userID": "250716879981772801",
+      "isLocked": true,
+      "shitPost": false,
+      "timesRun": 0,
+      "contents": [
+        "Base User **+10**",
+        "Trusted Role **+20**",
+        "Manage Messages Perm **+40**",
+        "Administrator perms **+100**"
+      ]
+    },
+    {
+      "name": "Soon",
+      "userID": "83984886494400512",
+      "isLocked": false,
+      "shitPost": false,
+      "timesRun": 3,
+      "contents": [
+        "Soon™"
+      ]
+    },
+    {
+      "name": "Slap",
+      "userID": "83984886494400512",
+      "isLocked": false,
+      "shitPost": false,
+      "timesRun": 3,
+      "contents": [
+        "\u003cusername\u003e slaps \u003cargs!\u003e{1} with \u003crandom\u003e{a stick;;1337 damage;;a bat;;a whip;;a wet fish;;turkey;;a fist;;99999999999 damage}!"
+      ]
+    },
+    {
+      "name": "scrubnet",
+      "userID": "83984886494400512",
+      "isLocked": false,
+      "shitPost": false,
+      "timesRun": 4,
+      "contents": [
+        "\u003cembedImage\u003e{https://cdn.discordapp.com/attachments/83985251872833536/273684044565184514/ScrubNet_Logo.png}"
+      ]
+    },
+    {
+      "name": "LillyKitteh",
+      "userID": "83984886494400512",
+      "isLocked": false,
+      "shitPost": false,
+      "timesRun": 3,
+      "contents": [
+        "\u003cembedImage\u003e{https://cdn.discordapp.com/attachments/250771507763085314/274020128050511872/d673f943983c7b8f.jpg}\u003cdelCall\u003e"
+      ]
+    }
+  ]
+}

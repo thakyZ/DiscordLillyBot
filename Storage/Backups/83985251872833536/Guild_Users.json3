@@ -1,0 +1,230 @@
+{
+  "properlyInit": true,
+  "users": [
+    {
+      "ID": "83984886494400512",
+      "xp": 150,
+      "level": 105,
+      "rewardRoleID": "",
+      "gender": "Demi-guy",
+      "quote": "\"Life would be tragic if it weren\u0027t funny.\" -Stephen Hawking"
+    },
+    {
+      "ID": "159985870458322944",
+      "xp": 20,
+      "level": 105,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "288777641228763146",
+      "xp": 2195,
+      "level": 105,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "241011428708843520",
+      "xp": 192,
+      "level": 105,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "137230155096522753",
+      "xp": 7,
+      "level": 105,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "166584769646166017",
+      "xp": 159,
+      "level": 103,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "125514368992542730",
+      "xp": 1,
+      "level": 103,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "84349048839999488",
+      "xp": 3,
+      "level": 103,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "264271037468901377",
+      "xp": 12,
+      "level": 102,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "173958459509833728",
+      "xp": 7,
+      "level": 102,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "If I go down, I\u0027m taking myself down with me."
+    },
+    {
+      "ID": "107240777469411328",
+      "xp": 4,
+      "level": 102,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "182287959867785216",
+      "xp": 105,
+      "level": 100,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "217628841399681024",
+      "xp": 2,
+      "level": 100,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "210946735441182720",
+      "xp": 0,
+      "level": 44,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "176247098688143360",
+      "xp": 0,
+      "level": 43,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "145431660987547648",
+      "xp": 0,
+      "level": 43,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "183360767700107266",
+      "xp": 0,
+      "level": 43,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "186252950857842688",
+      "xp": 0,
+      "level": 43,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "198274749074374656",
+      "xp": 0,
+      "level": 42,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "224010201664192525",
+      "xp": 0,
+      "level": 40,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "135224721968070656",
+      "xp": 0,
+      "level": 30,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "317141805915308033",
+      "xp": 0,
+      "level": 29,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "273250314512236546",
+      "xp": 0,
+      "level": 25,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "134403435976982528",
+      "xp": 0,
+      "level": 25,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "188729597301489664",
+      "xp": 0,
+      "level": 20,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "179385553177935873",
+      "xp": 0,
+      "level": 20,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "277542101049409546",
+      "xp": 0,
+      "level": 8,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    },
+    {
+      "ID": "176806635317100544",
+      "xp": 0,
+      "level": 0,
+      "rewardRoleID": "",
+      "gender": "Unknown",
+      "quote": "This person doesn\u0027t seem to have much to say for themselves."
+    }
+  ],
+  "mutedUsers": []
+}

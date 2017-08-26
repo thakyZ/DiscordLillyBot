@@ -1,0 +1,67 @@
+{
+  "resetToDefault": false,
+  "botName": "LillyBot",
+  "creatorID": "83984886494400512",
+  "defaultPrefixCommand": "$",
+  "defaultPrefixCC": "$$",
+  "defaultAvatarFile": "Avatar.png",
+  "doDailyAvatars": true,
+  "dailyAvatarName": "Avatar_For_#day#.png",
+  "playing": "with space and time",
+  "argsMax": 500,
+  "maxWarnings": 3,
+  "dailyMessages": [
+    {
+      "dayOfWeek": "MONDAY",
+      "contents": [
+        ":cat: Mow WOW!"
+      ],
+      "fileName": "Avatar_For_MONDAY.png"
+    },
+    {
+      "dayOfWeek": "TUESDAY",
+      "contents": [
+        ":cat: I love Kitty Treats!"
+      ],
+      "fileName": "Avatar_For_TUESDAY.png"
+    },
+    {
+      "dayOfWeek": "WEDNESDAY",
+      "contents": [
+        ":cat: There is something out side in the backyard!"
+      ],
+      "fileName": "Avatar_For_WEDNESDAY.png"
+    },
+    {
+      "dayOfWeek": "THURSDAY",
+      "contents": [
+        ":cat: HI TOBY! HOW ARE YOU!?!?"
+      ],
+      "fileName": "Avatar_For_THURSDAY.png"
+    },
+    {
+      "dayOfWeek": "FRIDAY",
+      "contents": [
+        ":cat: Can I haz Kitty Treats?"
+      ],
+      "fileName": "Avatar_For_FRIDAY.png"
+    },
+    {
+      "dayOfWeek": "SATURDAY",
+      "contents": [
+        ":cat: I wanna play!"
+      ],
+      "fileName": "Avatar_For_SATURDAY.png"
+    },
+    {
+      "dayOfWeek": "SUNDAY",
+      "contents": [
+        ":cat: Give me your finger so I can suckle on it!"
+      ],
+      "fileName": "Avatar_For_SUNDAY.png"
+    }
+  ],
+  "baseXpModifier": 5,
+  "xpForLevelOne": 100,
+  "avgMessagesPerDay": 20
+}

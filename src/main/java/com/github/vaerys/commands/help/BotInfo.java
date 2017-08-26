@@ -15,7 +15,11 @@ public class BotInfo implements Command {
     public String execute(String args, CommandObject command) {
         XEmbedBuilder builder = new XEmbedBuilder();
         StringBuilder response = new StringBuilder();
+<<<<<<< HEAD
         IUser creator = command.client.get().getUserByID(Globals.creatorID);
+=======
+        IUser creator = command.client.get().fetchUser(153159020528533505L);
+>>>>>>> master
         builder.withTitle("Information about " + Globals.botName);
         response.append("Created by: **@" + creator.getName() + "#" + creator.getDiscriminator() + "**.");
         response.append("\nCreated entirely using Java 8 and the **[Discord4J Libraries](https://discord4j.com/)**.");
