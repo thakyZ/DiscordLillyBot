@@ -2,21 +2,19 @@ package com.github.vaerys.commands.general;
 
 import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.handlers.QueueHandler;
-import com.github.vaerys.interfaces.Command;
+import com.github.vaerys.handlers.RequestHandler;
 import com.github.vaerys.main.Constants;
-import com.github.vaerys.main.Globals;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.objects.SplitFirstObject;
-<<<<<<< HEAD
-=======
+import com.github.vaerys.tags.TagList;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.IMessage;
 >>>>>>> master
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.time.DayOfWeek;
-import java.util.Arrays;
 
-public class NewDailyMessage implements Command {
+public class NewDailyMessage extends Command {
 
     @Override
     public String execute(String args, CommandObject command) {
@@ -24,13 +22,9 @@ public class NewDailyMessage implements Command {
             SplitFirstObject day = new SplitFirstObject(args);
             DayOfWeek dayOfWeek = DayOfWeek.valueOf(day.getFirstWord().toUpperCase());
             if (day.getRest() != null) {
-<<<<<<< HEAD
+                IMessage working = RequestHandler.sendMessage("`Working...`", command.channel.get()).get();
                 QueueHandler.addToQueue(command, day.getRest(), dayOfWeek, Constants.QUEUE_DAILY);
-=======
-                IMessage working = Utility.sendMessage("`Working...`", command.channel.get()).get();
-                QueueHandler.addToQueue(command, day.getRest(), dayOfWeek, Constants.QUEUE_DAILY);
-                Utility.deleteMessage(working);
->>>>>>> master
+                RequestHandler.deleteMessage(working);
                 return "> Request Sent.";
             } else {
                 return Utility.getCommandInfo(this, command);
@@ -40,37 +34,23 @@ public class NewDailyMessage implements Command {
         }
     }
 
-    public static void checkIsEnabled(boolean enabled) {
-        boolean commandFound = false;
-        for (Command c : Globals.commands) {
-            if (Arrays.equals(c.names(), new NewDailyMessage().names())) {
-                commandFound = true;
-            }
-        }
-        if (!commandFound && enabled) {
-            Globals.commands.add(new NewDailyMessage());
-        } else if (commandFound && !enabled) {
-            for (Command c : Globals.commands) {
-                if (Arrays.equals(c.names(), new NewDailyMessage().names())) {
-                    Globals.commands.remove(c);
-                    return;
-                }
-            }
-        } else {
-            return;
-        }
-    }
-
     @Override
     public String[] names() {
-        return new String[]{"RequestDailyMessage", "RequestDailyMsg", "ReqDailyMsg"};
+        return new String[]{"RequestDailyMessage", "RequestDailyMsg", "ReqDailyMsg","NewDailyMsg","NewDailyMessage"};
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Allows you to request a new Daily message to be added.\n" +
-                "**Available Tags:**\n" +
-                "<random>, <randEmote>, <randNum>.";
+                "**Tags:** " + Utility.listFormatter(TagList.getNames(TagList.DAILY), true) +
+                "\n\n**Themes:**\n" +
+                "Monday - Cat\n" +
+                "Tuesday - Portal\n" +
+                "Wednesday - Avali\n" +
+                "Thursday - Joke\n" +
+                "Friday - Ruin\n" +
+                "Saturday - Anything\n" +
+                "Sunday - Anything\n";
     }
 
     @Override
@@ -101,6 +81,11 @@ public class NewDailyMessage implements Command {
     @Override
     public boolean doAdminLogging() {
         return false;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

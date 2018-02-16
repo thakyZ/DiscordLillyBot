@@ -1,20 +1,20 @@
 package com.github.vaerys.commands.admin;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-public class DenyXpPrefix implements Command {
+public class DenyXpPrefix extends Command {
 
     @Override
     public String execute(String args, CommandObject command) {
         if (args.equalsIgnoreCase("list")) {
             return "> Here are all of the prefixes that are registered.\n```" +
-                    Utility.listFormatter(command.guild.config.getXPDeniedPrefixes(), true) + "```";
+                    Utility.listFormatter(command.guild.config.getXpDeniedPrefixes(), true) + "```";
         }
         boolean isAlphanumeric = args.matches("[A-Za-z0-9]+");
         if (args.length() > 5) {
@@ -35,7 +35,7 @@ public class DenyXpPrefix implements Command {
         if (args.startsWith("@")) {
             return "> Prefix cannot start with a `@`.";
         }
-        ArrayList<String> prefixes = command.guild.config.getXPDeniedPrefixes();
+        ArrayList<String> prefixes = command.guild.config.getXpDeniedPrefixes();
         ListIterator iterator = prefixes.listIterator();
         while (iterator.hasNext()) {
             String prefix = (String) iterator.next();
@@ -54,7 +54,7 @@ public class DenyXpPrefix implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "prefixes added to this list will stop commands starting with the prefix granting xp.";
     }
 
@@ -86,6 +86,11 @@ public class DenyXpPrefix implements Command {
     @Override
     public boolean doAdminLogging() {
         return true;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

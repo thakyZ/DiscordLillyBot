@@ -1,15 +1,15 @@
 package com.github.vaerys.commands.admin;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
 import com.github.vaerys.main.Globals;
 import com.github.vaerys.objects.*;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.util.ListIterator;
 
-public class PurgeBannedData implements Command {
+public class PurgeBannedData extends Command {
     long purgedProfiles = 0;
     long purgedCCs = 0;
     long purgedCharacters = 0;
@@ -29,13 +29,13 @@ public class PurgeBannedData implements Command {
         try {
             userId = Long.parseLong(args);
             userStringID = args;
-            if (userStringID.equalsIgnoreCase(Globals.creatorID)) {
+            if (userStringID.equalsIgnoreCase(Globals.creatorID + "")) {
                 return "> You cannot purge the bot owner's data, if you have found an error in their data please DM me with the details.";
             }
-            if (userId == command.guild.get().getOwnerLongID()) {
+            if (userId == command.guild.getOwnerID()) {
                 return "> You cannot purge the servers owner's data, if you have found an error in their data please DM me with the details.";
             }
-            IUser toTest = command.guild.get().getUserByID(userId);
+            IUser toTest = command.guild.getUserByID(userId);
             if (toTest != null) {
                 if (toTest.getPermissionsForGuild(command.guild.get()).contains(Permissions.ADMINISTRATOR)) {
                     return "> You cannot purge a user with the administrator permission, if you have found an error in their data please DM me with the details.";
@@ -44,29 +44,29 @@ public class PurgeBannedData implements Command {
         } catch (NumberFormatException e) {
             //do nothing
         }
-        if (!command.client.bot.getPermissionsForGuild(command.guild.get()).contains(Permissions.BAN)) {
-            return "> I cant purge the data of banned profiles unless I get the ban permission.\n" +
+        if (!command.client.bot.get().getPermissionsForGuild(command.guild.get()).contains(Permissions.BAN)) {
+            return "> I cant purge the data of banned user unless I get the ban permission.\n" +
                     "Feel free to remove the permission after you purge the data as I don't need it.";
         }
         if (userId != -1 && userStringID != null) {
-            purgeData(userId, userStringID, command);
+            purgeData(userId, command);
         } else {
             for (IUser user : command.guild.get().getBannedUsers()) {
-                purgeData(user.getLongID(), user.getStringID(), command);
+                purgeData(user.getLongID(), command);
             }
         }
         return "> Purged Profiles: **" + purgedProfiles + "**." +
                 "\n> Purged CCs: **" + purgedCCs + "**." +
                 "\n> Purged Characters: **" + purgedCharacters + "**." +
-                "\n> Purged Server Listings: **" + purgedServers + "**." +
-                "\n> Purged Daily Messages: **" + purgedDailyMessages + "**.";
+                "\n> Purged Server Listings: **" + purgedServers + "**.";
+//                "\n> Purged Daily Messages: **" + purgedDailyMessages + "**.";
     }
 
-    public void purgeData(long userID, String userStringID, CommandObject command) {
+    public void purgeData(long userID, CommandObject command) {
         ListIterator iterator = command.guild.users.profiles.listIterator();
         while (iterator.hasNext()) {
             ProfileObject object = (ProfileObject) iterator.next();
-            if (userStringID.equalsIgnoreCase(object.getID())) {
+            if (userID == object.getUserID()){
                 iterator.remove();
                 purgedProfiles++;
             }
@@ -74,7 +74,7 @@ public class PurgeBannedData implements Command {
         iterator = command.guild.customCommands.getCommandList().listIterator();
         while (iterator.hasNext()) {
             CCommandObject ccObject = (CCommandObject) iterator.next();
-            if (userStringID.equalsIgnoreCase(ccObject.getUserID())) {
+            if (userID == ccObject.getUserID()) {
                 iterator.remove();
                 purgedCCs++;
             }
@@ -82,7 +82,7 @@ public class PurgeBannedData implements Command {
         iterator = command.guild.characters.getCharacters(command.guild.get()).listIterator();
         while (iterator.hasNext()) {
             CharacterObject charObject = (CharacterObject) iterator.next();
-            if (charObject.getUserID().equalsIgnoreCase(userStringID)) {
+            if (charObject.getUserID() == userID) {
                 iterator.remove();
                 purgedCharacters++;
             }
@@ -90,19 +90,19 @@ public class PurgeBannedData implements Command {
         iterator = command.guild.servers.getServers().listIterator();
         while (iterator.hasNext()) {
             ServerObject serverObject = (ServerObject) iterator.next();
-            if (serverObject.getCreatorID().equalsIgnoreCase(userStringID)) {
+            if (serverObject.getCreatorID() == userID) {
                 iterator.remove();
                 purgedServers++;
             }
         }
-        iterator = Globals.getDailyMessages().getMessages().listIterator();
-        while (iterator.hasNext()) {
-            DailyUserMessageObject dailyObject = (DailyUserMessageObject) iterator.next();
-            if (dailyObject.getUserID() == userID) {
-                iterator.remove();
-                purgedDailyMessages++;
-            }
-        }
+//        iterator = Globals.getDailyMessages().getMessages().listIterator();
+//        while (iterator.hasNext()) {
+//            DailyMessage dailyObject = (DailyMessage) iterator.next();
+//            if (dailyObject.getUserID() == userID) {
+//                iterator.remove();
+//                purgedDailyMessages++;
+//            }
+//        }
     }
 
     @Override
@@ -111,8 +111,8 @@ public class PurgeBannedData implements Command {
     }
 
     @Override
-    public String description() {
-        return "Removes all data related to banned profiles from the server's data. or just the data from one user.\n\n" +
+    public String description(CommandObject command) {
+        return "Removes all data related to banned users from the server's data. or just the data from one user.\n\n" +
                 "***!!! WARNING: IF YOU USE A USER_ID YOU WILL PURGE ALL DATA FOR THAT USER REGARDLESS OF STATUS SO BE CAREFUL !!!***\n";
     }
 
@@ -144,6 +144,11 @@ public class PurgeBannedData implements Command {
     @Override
     public boolean doAdminLogging() {
         return true;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

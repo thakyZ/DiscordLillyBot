@@ -1,10 +1,11 @@
 package com.github.vaerys.commands.pixels;
 
 import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.handlers.RequestHandler;
 import com.github.vaerys.handlers.XpHandler;
-import com.github.vaerys.interfaces.Command;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.objects.ProfileObject;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
@@ -12,7 +13,7 @@ import sx.blah.discord.handle.obj.Permissions;
 
 import java.text.NumberFormat;
 
-public class TopUserForRole implements Command {
+public class TopUserForRole extends Command {
 
     @Override
     public String execute(String args, CommandObject command) {
@@ -20,25 +21,25 @@ public class TopUserForRole implements Command {
         if (role == null) {
             return "> Invalid Role.";
         }
-        IMessage working = Utility.sendMessage("`Working...`", command.channel.get()).get();
+        IMessage working = RequestHandler.sendMessage("`Working...`", command.channel.get()).get();
         IUser topUser = null;
         ProfileObject topUserObject;
         ProfileObject userTypeObject;
-        for (IUser user : command.guild.get().getUsers()) {
+        for (IUser user : command.guild.getUsers()) {
             if (user.getRolesForGuild(command.guild.get()).contains(role)) {
                 if (topUser == null) {
                     topUser = user;
-                    topUserObject = command.guild.users.getUserByID(topUser.getStringID());
+                    topUserObject = command.guild.users.getUserByID(topUser.getLongID());
                     if (topUserObject == null) {
                         topUser = null;
-                    } else if (XpHandler.rank(command.guild.users, command.guild.get(), topUserObject.getID()) == -1) {
+                    } else if (XpHandler.rank(command.guild.users, command.guild.get(), topUserObject.getUserID()) == -1) {
                         topUser = null;
                     }
                 } else {
-                    userTypeObject = command.guild.users.getUserByID(user.getStringID());
-                    topUserObject = command.guild.users.getUserByID(topUser.getStringID());
+                    userTypeObject = command.guild.users.getUserByID(user.getLongID());
+                    topUserObject = command.guild.users.getUserByID(topUser.getLongID());
                     if (topUserObject != null && userTypeObject != null) {
-                        if (XpHandler.rank(command.guild.users, command.guild.get(), userTypeObject.getID()) != -1) {
+                        if (XpHandler.rank(command.guild.users, command.guild.get(), userTypeObject.getUserID()) != -1) {
                             if (topUserObject.getXP() < userTypeObject.getXP()) {
                                 topUser = user;
                             }
@@ -48,10 +49,10 @@ public class TopUserForRole implements Command {
             }
         }
         try {
-            topUserObject = command.guild.users.getUserByID(topUser.getStringID());
-            Utility.deleteMessage(working);
+            topUserObject = command.guild.users.getUserByID(topUser.getLongID());
+            RequestHandler.deleteMessage(working);
             if (topUserObject != null) {
-                return "> @" + topUser.getName() + "#" + topUser.getDiscriminator() + ", Pixels: " + NumberFormat.getInstance().format(topUserObject.getXP()) + ", Level: " + topUserObject.getCurrentLevel() + ", UserID: " + topUserObject.getID();
+                return "> @" + topUser.getName() + "#" + topUser.getDiscriminator() + ", Pixels: " + NumberFormat.getInstance().format(topUserObject.getXP()) + ", Level: " + topUserObject.getCurrentLevel() + ", UserID: " + topUserObject.getUserID();
             } else {
                 return "> User could not be found.";
             }
@@ -66,7 +67,7 @@ public class TopUserForRole implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Gets the top user (Pixel wise) for a specific role.";
     }
 
@@ -98,6 +99,11 @@ public class TopUserForRole implements Command {
     @Override
     public boolean doAdminLogging() {
         return true;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

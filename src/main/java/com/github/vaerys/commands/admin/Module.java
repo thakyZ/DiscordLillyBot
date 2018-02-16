@@ -1,13 +1,13 @@
 package com.github.vaerys.commands.admin;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
 /**
  * Created by Vaerys on 31/01/2017.
  */
-public class Module implements Command {
+public class Module extends Command {
     @Override
     public String execute(String args, CommandObject command) {
         return new Toggle().getContent(args, command, true, this);
@@ -15,17 +15,17 @@ public class Module implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{"Module"};
+        return new String[]{"Module","Modules"};
     }
 
     @Override
-    public String description() {
-        return "Allows for the toggle of certain commands.";
+    public String description(CommandObject command) {
+        return "Toggles the specified module.";
     }
 
     @Override
     public String usage() {
-        return "(Module Type)";
+        return "(Module)";
     }
 
     @Override
@@ -51,6 +51,11 @@ public class Module implements Command {
     @Override
     public boolean doAdminLogging() {
         return true;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

@@ -1,20 +1,20 @@
 package com.github.vaerys.commands.admin;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
 import com.github.vaerys.objects.ProfileObject;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-public class PruneEmptyProfiles implements Command {
+public class PruneEmptyProfiles extends Command {
 
     @Override
     public String execute(String args, CommandObject command) {
         ArrayList<ProfileObject> profiles = command.guild.users.getProfiles();
-        ProfileObject defaultProfile = new ProfileObject(null);
+        ProfileObject defaultProfile = new ProfileObject(-1);
         long profileCount = 0;
         ListIterator listIterator = profiles.listIterator();
         while (listIterator.hasNext()) {
@@ -38,7 +38,7 @@ public class PruneEmptyProfiles implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Prunes all of the empty profiles on the server.";
     }
 
@@ -70,6 +70,11 @@ public class PruneEmptyProfiles implements Command {
     @Override
     public boolean doAdminLogging() {
         return true;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

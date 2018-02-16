@@ -1,18 +1,23 @@
 package com.github.vaerys.masterobjects;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.ChannelSetting;
-import com.github.vaerys.interfaces.Command;
-import com.github.vaerys.interfaces.GuildFile;
-import com.github.vaerys.interfaces.GuildToggle;
+import com.github.vaerys.commands.general.NewDailyMessage;
+import com.github.vaerys.handlers.RequestHandler;
+import com.github.vaerys.main.Constants;
 import com.github.vaerys.main.Globals;
+import com.github.vaerys.objects.ChannelSettingObject;
 import com.github.vaerys.objects.UserRateObject;
 import com.github.vaerys.pogos.*;
+import com.github.vaerys.templates.ChannelSetting;
+import com.github.vaerys.templates.Command;
+import com.github.vaerys.templates.GuildFile;
+import com.github.vaerys.templates.GuildToggle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.*;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -20,7 +25,6 @@ public class GuildObject {
     public ClientObject client;
     private IGuild object;
     public long longID;
-    public String stringID;
     public GuildConfig config;
     public CustomCommands customCommands;
     public Servers servers;
@@ -33,10 +37,9 @@ public class GuildObject {
     public List<GuildToggle> toggles;
     public List<ChannelSetting> channelSettings;
     public List<String> commandTypes;
-    private List<UserRateObject> ratelimiting = new ArrayList<>();
+    private List<UserRateObject> rateLimiting = new ArrayList<>();
     private List<Long> spokenUsers = new ArrayList<>();
     private List<GuildToggle> toRemove = new ArrayList<>();
-
 
     private final static Logger logger = LoggerFactory.getLogger(GuildObject.class);
 <<<<<<< HEAD
@@ -47,7 +50,6 @@ public class GuildObject {
     public GuildObject(IGuild object) {
         this.object = object;
         this.longID = object.getLongID();
-        this.stringID = object.getStringID();
         this.config = (GuildConfig) GuildConfig.create(GuildConfig.FILE_PATH, longID, new GuildConfig());
         this.customCommands = (CustomCommands) CustomCommands.create(CustomCommands.FILE_PATH, longID, new CustomCommands());
         this.servers = (Servers) Servers.create(Servers.FILE_PATH, longID, new Servers());
@@ -64,19 +66,14 @@ public class GuildObject {
             add(users);
             add(channelData);
         }};
-        customCommands.initCustomCommands();
+        customCommands.initCustomCommands(get());
         this.client = new ClientObject(object.getClient(), this);
         loadCommandData();
     }
 
     public void loadCommandData() {
         this.commands = new ArrayList<>(Globals.getCommands(false));
-<<<<<<< HEAD
-        this.toggles = (List<GuildToggle>) Globals.getGuildGuildToggles().clone();
-        this.channelSettings = (List<ChannelSetting>) Globals.getChannelSettings().clone();
-        this.commandTypes = (List<String>) Globals.getCommandTypes().clone();
-=======
-        this.toggles = new ArrayList<>(Globals.getGuildGuildToggles());
+        this.toggles = new ArrayList<>(Globals.getGuildToggles());
         this.channelSettings = new ArrayList<>(Globals.getChannelSettings());
         this.commandTypes = new ArrayList<>(Globals.getCommandTypes());
 >>>>>>> master
@@ -87,7 +84,6 @@ public class GuildObject {
         this.client = new ClientObject(Globals.getClient(), this);
         this.object = null;
         this.longID = -1;
-        this.stringID = null;
         this.config = new GuildConfig();
         this.customCommands = new CustomCommands();
         this.servers = new Servers();
@@ -129,6 +125,17 @@ public class GuildObject {
                 }
             }
         }
+        IChannel channel = client.get().getChannelByID(Globals.queueChannelID);
+        if (channel == null) {
+            ListIterator iterator = commands.listIterator();
+            while (iterator.hasNext()) {
+                Command command = (Command) iterator.next();
+                if (command.names()[0] == new NewDailyMessage().names()[0]) {
+                    logger.trace(longID + ": Removed newDailyMsg command.");
+                    iterator.remove();
+                }
+            }
+        }
     }
 
     public void removeCommandsByType(String type) {
@@ -153,9 +160,9 @@ public class GuildObject {
         ListIterator iterator = channelSettings.listIterator();
         while (iterator.hasNext()) {
             ChannelSetting c = (ChannelSetting) iterator.next();
-            if (c.type().equals(channel)) {
+            if (c.name().equals(channel)) {
                 iterator.remove();
-                logger.trace("Channel Setting: " + c.type() + " removed.");
+                logger.trace("Channel Setting: " + c.name() + " removed.");
             }
         }
     }
@@ -179,22 +186,26 @@ public class GuildObject {
         }
     }
 
-    public List<UserRateObject> getRatelimiting() {
-        return ratelimiting;
+    public List<UserRateObject> getRateLimiting() {
+        return rateLimiting;
     }
 
     public List<Long> getSpokenUsers() {
         return spokenUsers;
     }
 
-    public boolean rateLimit(String userID) {
+    public void forceClearRate() {
+        rateLimiting = new ArrayList<>();
+    }
+
+    public boolean rateLimit(long userID) {
         int max = config.messageLimit;
         if (max == -1) {
             return false;
         }
         boolean isfound = false;
-        for (UserRateObject r : ratelimiting) {
-            if (r.userID.equals(userID)) {
+        for (UserRateObject r : rateLimiting) {
+            if (r.getID() == userID) {
                 r.counterUp();
                 isfound = true;
                 if (r.counter > max) {
@@ -203,14 +214,14 @@ public class GuildObject {
             }
         }
         if (!isfound) {
-            ratelimiting.add(new UserRateObject(userID));
+            rateLimiting.add(new UserRateObject(userID));
         }
         return false;
     }
 
-    public int getUserRate(String userID) {
-        for (UserRateObject u : ratelimiting) {
-            if (u.userID.equals(userID)) {
+    public int getUserRate(long userID) {
+        for (UserRateObject u : rateLimiting) {
+            if (u.getID() == userID) {
                 return u.counter;
             }
         }
@@ -218,7 +229,7 @@ public class GuildObject {
     }
 
     public void resetRateLimit() {
-        ratelimiting.clear();
+        rateLimiting.clear();
     }
 
     public List<String> getAllTypes(CommandObject command) {
@@ -236,5 +247,104 @@ public class GuildObject {
             allCommands.addAll(Globals.getALLCreatorCommands());
         }
         return allCommands;
+    }
+
+    public IChannel getChannelByID(long id) {
+        return object.getChannelByID(id);
+    }
+
+    public IUser getUserByID(long id) {
+        return object.getUserByID(id);
+    }
+
+    public IRole getRoleByID(long id) {
+        return object.getRoleByID(id);
+    }
+
+    public IVoiceChannel getVoiceChannelByID(long id) {
+        return object.getVoiceChannelByID(id);
+    }
+
+    public IEmoji getEmojiById(long id) {
+        return object.getEmojiByID(id);
+    }
+
+    public long getOwnerID() {
+        return object.getOwnerLongID();
+    }
+
+    public IUser getOwner() {
+        return object.getOwner();
+    }
+
+    public List<IUser> getUsers() {
+        return object.getUsers();
+    }
+
+    public IEmoji getEmojiByName(String name) {
+        return object.getEmojiByName(name);
+    }
+
+    public void handleWelcome(CommandObject command) {
+        if (config.welcomeMessage) {
+            return;
+        }
+        if (command.guild.get() == null || command.channel == null) {
+            return;
+        }
+        IChannel general = getChannelByType(Command.TYPE_GENERAL);
+        if (general != null && command.channel.longID != general.getLongID()) {
+            return;
+        }
+        IMessage message = RequestHandler.sendMessage(Constants.getWelcomeMessage(command), command.channel.get()).get();
+        if (message != null) {
+            command.guild.config.welcomeMessage = true;
+            Thread thread = new Thread(() -> {
+                try {
+                    Thread.sleep(5 * 60 * 1000);
+                    RequestHandler.deleteMessage(message);
+                } catch (InterruptedException e) {
+                    // do nothing
+                }
+            });
+            thread.start();
+        }
+    }
+
+    public void resetOffenders() {
+        config.resetOffenders();
+    }
+
+    public IChannel getChannelByType(String type) {
+        List<IChannel> channels = getChannelsByType(type);
+        if (channels.size() != 0) {
+            return channels.get(0);
+        }
+        return null;
+    }
+
+    public List<IChannel> getChannelsByType(String type) {
+        List<IChannel> channels = new ArrayList<>();
+        for (ChannelSettingObject c : config.getChannelSettings()) {
+            if (c.getType().equalsIgnoreCase(type)) {
+                for (long s : c.getChannelIDs()) {
+                    IChannel channel = getChannelByID(s);
+                    if (channel != null) {
+                        channels.add(channel);
+                    }
+                }
+            }
+        }
+        return channels;
+    }
+
+    public List<IRole> getRewardRoles() {
+        List<IRole> roles = new LinkedList<>();
+        config.getRewardRoles().forEach(rewardRoleObject -> roles.add(object.getRoleByID(rewardRoleObject.getRoleID())));
+        return roles;
+    }
+
+    public IRole getMutedRole() {
+        return object.getRoleByID(config.getMutedRoleID());
     }
 }

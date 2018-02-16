@@ -51,6 +51,7 @@ Temporary Items
 bot.log
 target
 *.class
-<<<<<<< HEAD
-=======
 .idea/workspace.xml
+*.ttf
+.idea/dictionaries/Vaerys.xml
+*.orig

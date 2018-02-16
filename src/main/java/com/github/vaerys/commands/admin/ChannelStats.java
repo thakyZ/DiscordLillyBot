@@ -1,49 +1,44 @@
 package com.github.vaerys.commands.admin;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.ChannelSetting;
-import com.github.vaerys.interfaces.Command;
+import com.github.vaerys.handlers.RequestHandler;
 import com.github.vaerys.main.Globals;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.objects.ChannelSettingObject;
 import com.github.vaerys.objects.XEmbedBuilder;
+import com.github.vaerys.templates.ChannelSetting;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Vaerys on 01/07/2017.
  */
-public class ChannelStats implements Command {
+public class ChannelStats extends Command {
     @Override
     public String execute(String args, CommandObject command) {
-        XEmbedBuilder builder = new XEmbedBuilder();
+        XEmbedBuilder builder = new XEmbedBuilder(command);
         builder.withTitle("Channel Stats");
-        builder.withColor(command.client.color);
         ArrayList<String> channelTypes = new ArrayList<>();
         ArrayList<String> channelSettings = new ArrayList<>();
 
-        ArrayList<String> channelNames = new ArrayList<>();
         if (args != null && !args.isEmpty()) {
             for (ChannelSetting s : command.guild.channelSettings) {
-                if (s.type().equalsIgnoreCase(args)) {
-                    ArrayList<String> channelIDs = command.guild.config.getChannelIDsByType(s.type());
-                    if (channelIDs != null) {
-                        for (String cID : channelIDs) {
-                            IChannel channel = command.guild.get().getChannelByID(cID);
-                            if (channel != null) {
-                                channelNames.add(channel.mention());
-                            }
-                        }
-                        builder.appendField(s.type(), Utility.listFormatter(channelNames, true), false);
-                        Utility.sendEmbedMessage("", builder, command.channel.get());
+                if (s.name().equalsIgnoreCase(args)) {
+                    List<IChannel> channels = command.guild.getChannelsByType(s.name());
+                    List<String> channelMentions = Utility.getChannelMentions(channels);
+                    if (channels.size() != 0) {
+                        builder.appendField(s.name(), Utility.listFormatter(channelMentions, true), false);
+                        RequestHandler.sendEmbedMessage("", builder, command.channel.get());
                         return null;
                     } else {
                         if (s.isSetting()) {
-                            return "> Could not find any channels with the **" + s.type() + "** setting enabled.";
+                            return "> Could not find any channels with the **" + s.name() + "** setting enabled.";
                         } else {
-                            return "> Could not find a channel with the **" + s.type() + "** type enabled.";
+                            return "> Could not find a channel with the **" + s.name() + "** type enabled.";
                         }
                     }
                 }
@@ -52,9 +47,9 @@ public class ChannelStats implements Command {
         }
 
         for (ChannelSettingObject c : command.guild.config.getChannelSettings()) {
-            if (c.getChannelIDs().contains(command.channel.stringID)) {
+            if (c.getChannelIDs().contains(command.channel.longID)) {
                 for (ChannelSetting setting : Globals.getChannelSettings()) {
-                    if (c.getType().equalsIgnoreCase(setting.type())) {
+                    if (c.getType().equalsIgnoreCase(setting.name())) {
                         if (setting.isSetting()) {
                             channelSettings.add(c.getType());
                         } else {
@@ -74,7 +69,7 @@ public class ChannelStats implements Command {
         if (channelSettings.size() != 0) {
             builder.appendField("Settings:", Utility.listFormatter(channelSettings, true), false);
         }
-        Utility.sendEmbedMessage("", builder, command.channel.get());
+        RequestHandler.sendEmbedMessage("", builder, command.channel.get());
         return null;
     }
 
@@ -84,7 +79,7 @@ public class ChannelStats implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Gives information about the current channel";
     }
 
@@ -116,6 +111,11 @@ public class ChannelStats implements Command {
     @Override
     public boolean doAdminLogging() {
         return false;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

@@ -27,6 +27,9 @@ public class CommandObject {
 
 
     public CommandObject(IMessage message) {
+        if (message == null) {
+            throw new IllegalStateException("Message should never be null.");
+        }
         if (message.getGuild() == null) {
             this.guild = new GuildObject();
         } else {
@@ -36,6 +39,14 @@ public class CommandObject {
         this.channel = new ChannelObject(message.getChannel(), guild);
         this.user = new UserObject(message.getAuthor(), guild);
         this.client = new ClientObject(message.getClient(), guild);
+    }
+
+    public CommandObject() {
+        guild = new GuildObject();
+        user = new UserObject(null, null);
+        message = new MessageObject(null, null);
+        channel = new ChannelObject(null, null);
+        client = new ClientObject(Globals.getClient(), null);
     }
 
     public CommandObject(IMessage message, IGuild guild, IChannel channel, IUser author) {
@@ -48,6 +59,14 @@ public class CommandObject {
         this.channel = new ChannelObject(channel, this.guild);
         this.user = new UserObject(author, this.guild);
         this.client = new ClientObject(message.getClient(), this.guild);
+    }
+
+    public CommandObject(GuildObject task, IChannel channel) {
+        this.client = task.client;
+        this.guild = task;
+        this.channel = new ChannelObject(channel, task);
+        this.message = null;
+        this.user = null;
     }
 
     public CommandObject setAuthor(IUser author) {

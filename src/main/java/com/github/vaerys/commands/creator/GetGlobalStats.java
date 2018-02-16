@@ -1,13 +1,13 @@
 package com.github.vaerys.commands.creator;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
-import com.github.vaerys.interfaces.GuildToggle;
 import com.github.vaerys.main.Globals;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.masterobjects.GuildObject;
 import com.github.vaerys.objects.ProfileObject;
 import com.github.vaerys.objects.ToggleStatsObject;
+import com.github.vaerys.templates.Command;
+import com.github.vaerys.templates.GuildToggle;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.util.ArrayList;
@@ -15,14 +15,14 @@ import java.util.ArrayList;
 /**
  * Created by Vaerys on 25/02/2017.
  */
-public class GetGlobalStats implements Command {
+public class GetGlobalStats extends Command {
     @Override
     public String execute(String args, CommandObject command) {
         ArrayList<ToggleStatsObject> toggleStats = new ArrayList<>();
         ArrayList<String> outToggles = new ArrayList<>();
         ArrayList<String> outModules = new ArrayList<>();
 //        ArrayList<ChannelStatsObject> channelStats = new ArrayList<>();
-        for (GuildToggle g : Globals.getGuildGuildToggles()) {
+        for (GuildToggle g : Globals.getGuildToggles()) {
             toggleStats.add(new ToggleStatsObject(g.name(), g.isModule()));
         }
 //        for (ChannelSetting c : Globals.getChannelSettings()) {
@@ -77,7 +77,7 @@ public class GetGlobalStats implements Command {
         output.append(Utility.listFormatter(outModules, false));
         output.append("\n\n**[PIXEL STATS]**");
         output.append("\nAvg Pixels: " + totalXP / totalXpUsers);
-        Utility.sendDM(output.toString(), command.user.longID);
+        command.user.sendDm(output.toString());
         return "> Data sent to Your DMs";
 
 //        int totalGlobalUsers = 0;
@@ -91,7 +91,7 @@ public class GetGlobalStats implements Command {
 //            long bottomGuild = 0;
 //            String topUser = null;
 //            String bottomUser = null;
-//            GuildContentObject content = Globals.getGuildContent(guild.getStringID());
+//            GuildContentObject content = Globals.getGuildContent(guild.getLongID());
 //            for (UserTypeObject user : content.getGuildUsers().getProfiles()) {
 //                if (bottomGuild == 0) {
 //                    bottomGuild = user.getXP();
@@ -143,7 +143,7 @@ public class GetGlobalStats implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Sends the owner captured message counters.";
     }
 
@@ -175,6 +175,11 @@ public class GetGlobalStats implements Command {
     @Override
     public boolean doAdminLogging() {
         return false;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

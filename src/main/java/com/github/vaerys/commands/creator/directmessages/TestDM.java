@@ -1,12 +1,12 @@
 package com.github.vaerys.commands.creator.directmessages;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.DMCommand;
+import com.github.vaerys.templates.DMCommand;
 
 /**
  * Created by Vaerys on 15/07/2017.
  */
-public class TestDM implements DMCommand {
+public class TestDM extends DMCommand {
     @Override
     public String execute(String args, CommandObject command) {
 //        for (IChannel c : command.client.getGuildByID(176434793674833920L).getChannels()) {
@@ -15,6 +15,7 @@ public class TestDM implements DMCommand {
 //            }
 //        }
 //        return "channel could not be found";
+//        return command.guild.get().getLongID() + "";
         return "> You've done your testing";
     }
 
@@ -24,7 +25,7 @@ public class TestDM implements DMCommand {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Is a test";
     }
 
@@ -41,5 +42,10 @@ public class TestDM implements DMCommand {
     @Override
     public boolean requiresArgs() {
         return true;
+    }
+
+    @Override
+    public void init() {
+
     }
 }

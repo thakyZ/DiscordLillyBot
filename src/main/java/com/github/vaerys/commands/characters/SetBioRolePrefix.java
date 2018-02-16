@@ -1,13 +1,13 @@
 package com.github.vaerys.commands.characters;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
 /**
  * Created by Vaerys on 30/06/2017.
  */
-public class SetBioRolePrefix implements Command {
+public class SetBioRolePrefix extends Command {
     @Override
     public String execute(String args, CommandObject command) {
         if (args == null || args.isEmpty()){
@@ -28,7 +28,7 @@ public class SetBioRolePrefix implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Allows you to set what shows before the roles of a character.";
     }
 
@@ -60,6 +60,11 @@ public class SetBioRolePrefix implements Command {
     @Override
     public boolean doAdminLogging() {
         return true;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

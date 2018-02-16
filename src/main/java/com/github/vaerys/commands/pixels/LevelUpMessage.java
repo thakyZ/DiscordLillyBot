@@ -1,13 +1,15 @@
 package com.github.vaerys.commands.pixels;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
+import com.github.vaerys.main.Utility;
+import com.github.vaerys.tags.TagList;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
 /**
  * Created by Vaerys on 02/07/2017.
  */
-public class LevelUpMessage implements Command {
+public class LevelUpMessage extends Command {
     @Override
     public String execute(String args, CommandObject command) {
         if (args.length() > 100) {
@@ -23,14 +25,13 @@ public class LevelUpMessage implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{"SetLvlMessage"};
+        return new String[]{"SetLvlMessage","SetLevelMessage","SetLvlMsg","SetLevelMsg"};
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Allows you to set the level up message for the server.\n" +
-                "**Available Tags:**" +
-                "<level>, <user>, <randEmote>.";
+                "**Tags:** " + Utility.listFormatter(TagList.getNames(TagList.LEVEL), true);
     }
 
     @Override
@@ -61,6 +62,11 @@ public class LevelUpMessage implements Command {
     @Override
     public boolean doAdminLogging() {
         return false;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

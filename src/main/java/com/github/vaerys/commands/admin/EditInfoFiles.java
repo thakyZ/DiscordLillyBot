@@ -1,16 +1,17 @@
 package com.github.vaerys.commands.admin;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
 import com.github.vaerys.main.Constants;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.objects.SplitFirstObject;
+import com.github.vaerys.tags.TagList;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
 /**
  * Created by Vaerys on 26/06/2017.
  */
-public class EditInfoFiles implements Command {
+public class EditInfoFiles extends Command {
 
     String modes = "**Modes:**\n" +
             "> uploadImage - `Requires image file.`\n" +
@@ -24,17 +25,17 @@ public class EditInfoFiles implements Command {
         SplitFirstObject object = new SplitFirstObject(args);
         switch (object.getFirstWord().toLowerCase()) {
             case "uploadimage":
-                return InfoEditModes.uploadFile(command.message.get());
+                return InfoEditModes.uploadFile(command);
             case "removeimage":
-                return InfoEditModes.removeFile(object.getRest(), command.message.get());
+                return InfoEditModes.removeFile(object.getRest(), command);
             case "listimages":
-                return InfoEditModes.listFiles(command.message.get());
+                return InfoEditModes.listFiles(command);
             case "listfiles":
-                return InfoEditModes.listFiles(command.message.get());
+                return InfoEditModes.listFiles(command);
             case "uploadinfo":
-                return InfoEditModes.uploadInfo(command.message.get());
+                return InfoEditModes.uploadInfo(command);
             case "getinfofile": {
-                return InfoEditModes.getInfoFile(command.message.get());
+                return InfoEditModes.getInfoFile(command);
             }
             default:
                 return "Invalid Edit Mode.\n" + Utility.getCommandInfo(this, command);
@@ -47,8 +48,8 @@ public class EditInfoFiles implements Command {
     }
 
     @Override
-    public String description() {
-        return "Allows for editing of the updateInfo command.\n" + modes;
+    public String description(CommandObject command) {
+        return "Allows for editing of the updateInfo command.\n**Tags:** " + Utility.listFormatter(TagList.getNames(TagList.INFO), true) + "\n" + modes;
     }
 
     @Override
@@ -79,6 +80,11 @@ public class EditInfoFiles implements Command {
     @Override
     public boolean doAdminLogging() {
         return true;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

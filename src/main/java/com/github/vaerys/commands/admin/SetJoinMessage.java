@@ -1,13 +1,13 @@
 package com.github.vaerys.commands.admin;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
 /**
  * Created by Vaerys on 07/07/2017.
  */
-public class SetJoinMessage implements Command {
+public class SetJoinMessage extends Command {
     @Override
     public String execute(String args, CommandObject command) {
         command.guild.config.setJoinMessage(args);
@@ -20,7 +20,7 @@ public class SetJoinMessage implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Allows for the setting of the message that shows when a user joins the server.\n" +
                 "**Available tags**\n" +
                 "<server> = Server Name\n" +
@@ -55,6 +55,11 @@ public class SetJoinMessage implements Command {
     @Override
     public boolean doAdminLogging() {
         return true;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

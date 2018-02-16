@@ -1,10 +1,11 @@
 package com.github.vaerys.commands.roleSelect;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
+import com.github.vaerys.handlers.RequestHandler;
 import com.github.vaerys.main.Constants;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.objects.SplitFirstObject;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.Permissions;
 
@@ -15,54 +16,65 @@ import java.util.ListIterator;
 /**
  * Created by Vaerys on 31/01/2017.
  */
-public class CosmeticRoles implements Command {
+public class CosmeticRoles extends Command {
     @Override
     public String execute(String args, CommandObject command) {
+        if (args == null || args.isEmpty()) {
+            return new ListRoles().execute(args, command);
+        }
+
         SplitFirstObject modif = new SplitFirstObject(args);
 
         //test to see if the first word is a modifier
         Boolean isAdding = Utility.testModifier(modif.getFirstWord());
         if (isAdding != null) {
             //test the permissions of the user to make sure they can modify the role list.
-            if (Utility.testForPerms(dualPerms(), command.user.get(), command.guild.get())) {
-                IRole role = Utility.getRoleFromName(modif.getRest(), command.guild.get());
+            if (Utility.testForPerms(command, dualPerms())) {
+                IRole role = null;
+                try {
+                    role = command.guild.getRoleByID(Utility.stringLong(modif.getRest()));
+                } catch (NumberFormatException e) {
+                    // move on.
+                }
                 if (role == null) {
-                    return "> **" + args + "** is not a valid Role Name.";
-                } else {
-                    //tests to see if the bot is allowed to mess with a role.
-                    if (!Utility.testUserHierarchy(command.client.bot, role, command.guild.get())) {
-                        return "> I do not have permission to modify the **" + role.getName() + "** role.";
-                    }
-                    //test the user's hierarchy to make sure that the are allowed to mess with that role.
-                    if (Utility.testUserHierarchy(command.user.get(), role, command.guild.get())) {
-                        // do if modifier is true
-                        if (isAdding) {
-                            //check for the role and add if its not a cosmetic role.
-                            if (command.guild.config.isRoleCosmetic(role.getLongID())) {
-                                return "> The **" + role.getName() + "** role is already listed as a cosmetic role.";
-                            } else {
-                                command.guild.config.getCosmeticRoleIDs().add(role.getLongID());
-                                return "> The **" + role.getName() + "** role was added to the cosmetic role list.";
-                            }
-                            //do if modifier is false
+                    role = Utility.getRoleFromName(modif.getRest(), command.guild.get());
+                }
+                if (role == null) {
+                    return "> **" + modif.getRest() + "** is not a valid Role Name.";
+                }
+                //tests to see if the bot is allowed to mess with a role.
+                if (!Utility.testUserHierarchy(command.client.bot.get(), role, command.guild.get())) {
+                    return "> I do not have permission to modify the **" + role.getName() + "** role.";
+                }
+                //test the user's hierarchy to make sure that the are allowed to mess with that role.
+                if (Utility.testUserHierarchy(command.user.get(), role, command.guild.get())) {
+                    // do if modifier is true
+                    if (isAdding) {
+                        //check for the role and add if its not a cosmetic role.
+                        if (command.guild.config.isRoleCosmetic(role.getLongID())) {
+                            return "> The **" + role.getName() + "** role is already listed as a cosmetic role.";
                         } else {
-                            //check for the role and remove if it is a cosmetic role.
-                            if (command.guild.config.isRoleCosmetic(role.getLongID())) {
-                                Iterator iterator = command.guild.config.getCosmeticRoleIDs().listIterator();
-                                while (iterator.hasNext()) {
-                                    long id = (long) iterator.next();
-                                    if (role.getLongID() == id) {
-                                        iterator.remove();
-                                    }
-                                }
-                                return "> The **" + role.getName() + "** role was removed from the cosmetic role list.";
-                            } else {
-                                return "> The **" + role.getName() + "** role is not listed as a cosmetic role.";
-                            }
+                            command.guild.config.getCosmeticRoleIDs().add(role.getLongID());
+                            return "> The **" + role.getName() + "** role was added to the cosmetic role list.";
                         }
+                        //do if modifier is false
                     } else {
-                        return "> You do not have permission to modify the **" + role.getName() + "** role.";
+                        //check for the role and remove if it is a cosmetic role.
+                        if (command.guild.config.isRoleCosmetic(role.getLongID())) {
+                            Iterator iterator = command.guild.config.getCosmeticRoleIDs().listIterator();
+                            while (iterator.hasNext()) {
+                                long id = (long) iterator.next();
+                                if (role.getLongID() == id) {
+                                    iterator.remove();
+                                }
+                            }
+                            return "> The **" + role.getName() + "** role was removed from the cosmetic role list.";
+                        } else {
+                            return "> The **" + role.getName() + "** role is not listed as a cosmetic role.";
+                        }
                     }
+                } else {
+                    return "> You do not have permission to modify the **" + role.getName() + "** role.";
                 }
             } else {
                 return command.user.notAllowed;
@@ -79,9 +91,14 @@ public class CosmeticRoles implements Command {
             List<IRole> userRoles = command.user.roles;
             String response = Constants.ERROR_UPDATING_ROLE;
             //check if role is valid
-            IRole role = Utility.getRoleFromName(args, command.guild.get());
+            IRole role;
+            role = Utility.getRoleFromName(args, command.guild.get());
+            if (role == null && args.length() > 3) {
+                role = Utility.getRoleFromName(args, command.guild.get(), true);
+            }
             if (role == null && !args.equalsIgnoreCase("remove")) {
-                return "> **" + args + "** is not a valid Role Name.";
+                RequestHandler.sendEmbedMessage("> **" + args + "** is not a valid Role Name.", ListRoles.getList(command), command.channel.get());
+                return null;
                 //if args = remove. remove the user's cosmetic role
             } else if (args.equalsIgnoreCase("remove")) {
                 ListIterator iterator = userRoles.listIterator();
@@ -138,11 +155,12 @@ public class CosmeticRoles implements Command {
                         }
                     }
                 } else {
-                    return "> **" + args + "** is not a valid cosmetic role.";
+                    RequestHandler.sendEmbedMessage("> **" + args + "** is not a valid cosmetic role.", ListRoles.getList(command), command.channel.get());
+                    return null;
                 }
             }
             // push the changes to the user's roles.
-            if (Utility.roleManagement(command.user.get(), command.guild.get(), userRoles).get()) {
+            if (RequestHandler.roleManagement(command.user.get(), command.guild.get(), userRoles).get()) {
                 return response;
             } else {
                 return Constants.ERROR_UPDATING_ROLE;
@@ -156,13 +174,13 @@ public class CosmeticRoles implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Modifies your cosmetic role from the list of cosmetic roles.";
     }
 
     @Override
     public String usage() {
-        return "[Role Name]/Remove";
+        return "(Role Name)/Remove";
     }
 
     @Override
@@ -182,12 +200,17 @@ public class CosmeticRoles implements Command {
 
     @Override
     public boolean requiresArgs() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean doAdminLogging() {
         return false;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

@@ -1,15 +1,14 @@
 package com.github.vaerys.commands.admin;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.enums.EnumString;
-import com.github.vaerys.enums.UserSetting;
-import com.github.vaerys.interfaces.Command;
+import com.github.vaerys.handlers.RequestHandler;
+import com.github.vaerys.main.UserSetting;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.masterobjects.UserObject;
 import com.github.vaerys.objects.ProfileObject;
 import com.github.vaerys.objects.SplitFirstObject;
 import com.github.vaerys.objects.XEmbedBuilder;
-import sx.blah.discord.handle.obj.IUser;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ import java.util.ListIterator;
 /**
  * Created by Vaerys on 06/07/2017.
  */
-public class UserSettings implements Command {
+public class UserSettings extends Command {
     private String settings = "**Settings**\n" +
             "> DeniedXp\n" +
             "> DontShowRank\n" +
@@ -27,6 +26,8 @@ public class UserSettings implements Command {
             "> DenyUseCCs\n" +
             "> AutoShitpost\n" +
             "> DenyAutoRole\n" +
+            "> DenyArtPinning\n" +
+            "> DontDecay\n" +
             "> List - `Shows the user's settings.`";
 
     @Override
@@ -65,29 +66,48 @@ public class UserSettings implements Command {
                             "> **" + user.displayName + "** now has the shitpost tag automatically added to all of their new Custom Commands.");
                 case "denyautorole":
                     return toggleSetting(profile, UserSetting.DENY_AUTO_ROLE,
-                            "> **" + user.displayName + "** will no longer automatically be granted roles.",
-                            "> **" + user.displayName + "** will now automatically be granted roles.");
+                            "> **" + user.displayName + "** will now automatically be granted roles.",
+                            "> **" + user.displayName + "** will no longer automatically be granted roles.");
+                case "dontdecay":
+                    return toggleSetting(profile, UserSetting.DONT_DECAY,
+                            "> **" + user.displayName + "** will now have pixel decay.",
+                            "> **" + user.displayName + "** will no longer have pixel decay.");
+                case "denyartpinning":
+                    return toggleSetting(profile, UserSetting.DENY_ART_PINNING,
+                            "> **" + user.displayName + "** can now pin art.",
+                            "> **" + user.displayName + "** can no longer pin art.");
                 case "list":
-                    List<String> userSettings = new ArrayList<>();
-                    for (UserSetting s : profile.getSettings()) {
-                        userSettings.add(EnumString.get(s));
-                    }
-                    XEmbedBuilder builder = new XEmbedBuilder();
-                    builder.withTitle(user.displayName + "'s User settings:");
-                    if (userSettings.size() == 0) {
-                        return "> **" + user.displayName + "** has no settings on their profile.";
-                    } else {
-                        builder.withDesc("```\n" + Utility.listFormatter(userSettings, true) + "```");
-                    }
-                    builder.withColor(command.client.color);
-                    Utility.sendEmbedMessage("", builder, command.channel.get());
-                    return "";
+                    return sendList(profile, command, user, false);
                 default:
-                    return settings + "\n\n" + Utility.getCommandInfo(this, command);
+                    if (profile.getSettings().size() == 0) {
+                        return "> **" + user.displayName + "** has no settings attached to their profile.\n\n" + settings + "\n\n" + Utility.getCommandInfo(this, command);
+                    } else {
+                        return sendList(profile, command, user, true);
+                    }
             }
         } else {
             return "> Invalid user.";
         }
+    }
+
+    private String sendList(ProfileObject profile, CommandObject command, UserObject user, boolean showCommand) {
+        List<String> userSettings = new ArrayList<>();
+        for (UserSetting s : profile.getSettings()) {
+            userSettings.add(UserSetting.get(s));
+        }
+        XEmbedBuilder builder = new XEmbedBuilder(command);
+        builder.withTitle(user.displayName + "'s User settings:");
+        if (userSettings.size() == 0) {
+            return "> **" + user.displayName + "** has no settings on their profile.";
+        } else {
+            String desc = "```\n" + Utility.listFormatter(userSettings, true) + "```";
+            if (showCommand) {
+                desc += "\n" + Utility.getCommandInfo(this, command);
+            }
+            builder.withDesc(desc);
+        }
+        RequestHandler.sendEmbedMessage("", builder, command.channel.get());
+        return "";
     }
 
     private String toggleSetting(ProfileObject user, UserSetting setting, String remove, String add) {
@@ -112,7 +132,7 @@ public class UserSettings implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "allows setting of certain user settings.\n" + settings;
     }
 
@@ -144,6 +164,11 @@ public class UserSettings implements Command {
     @Override
     public boolean doAdminLogging() {
         return true;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

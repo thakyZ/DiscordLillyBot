@@ -1,7 +1,7 @@
 package com.github.vaerys.commands.help;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.text.NumberFormat;
@@ -9,7 +9,7 @@ import java.text.NumberFormat;
 /**
  * Created by Vaerys on 12/07/2017.
  */
-public class Ping implements Command {
+public class Ping extends Command {
 
     @Override
     public String execute(String args, CommandObject command) {
@@ -22,7 +22,7 @@ public class Ping implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Sends a ping.";
     }
 
@@ -54,6 +54,11 @@ public class Ping implements Command {
     @Override
     public boolean doAdminLogging() {
         return false;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

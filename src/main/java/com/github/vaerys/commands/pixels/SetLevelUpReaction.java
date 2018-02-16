@@ -1,15 +1,15 @@
 package com.github.vaerys.commands.pixels;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
 import com.github.vaerys.objects.SplitFirstObject;
+import com.github.vaerys.templates.Command;
 import com.vdurmont.emoji.Emoji;
 import com.vdurmont.emoji.EmojiManager;
 import sx.blah.discord.handle.obj.IEmoji;
 import sx.blah.discord.handle.obj.Permissions;
 import sx.blah.discord.util.MessageTokenizer;
 
-public class SetLevelUpReaction implements Command {
+public class SetLevelUpReaction extends Command {
 
     @Override
     public String execute(String args, CommandObject command) {
@@ -40,7 +40,7 @@ public class SetLevelUpReaction implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Sets the Reaction that the bot will post to the message a user sent to level up.";
     }
 
@@ -72,6 +72,11 @@ public class SetLevelUpReaction implements Command {
     @Override
     public boolean doAdminLogging() {
         return false;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

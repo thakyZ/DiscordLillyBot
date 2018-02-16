@@ -1,19 +1,24 @@
 package com.github.vaerys.commands.dmCommands;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
-import com.github.vaerys.interfaces.DMCommand;
-import com.github.vaerys.main.Utility;
+import com.github.vaerys.commands.help.Info;
+import com.github.vaerys.handlers.RequestHandler;
+import com.github.vaerys.main.Globals;
+import com.github.vaerys.templates.Command;
+import com.github.vaerys.templates.DMCommand;
 
 import java.util.List;
 
 /**
  * Created by Vaerys on 05/02/2017.
  */
-public class InfoDM implements DMCommand {
+public class InfoDM extends DMCommand {
     @Override
     public String execute(String args, CommandObject command) {
         List<Command> commands = command.guild.getAllCommands(command);
+        if (command.user.longID == command.client.creator.longID) {
+            commands.addAll(Globals.getCreatorCommands(true));
+        }
 
         String error = "> Could not find information on any commands named **" + args + "**.";
         for (Command c : commands) {
@@ -22,7 +27,7 @@ public class InfoDM implements DMCommand {
 //                    if (!Utility.testForPerms(c.perms(), command.user.get(), command.guild.get())) {
 //                        return error;
 //                    }
-                    Utility.sendEmbedMessage("", c.getCommandInfo(command), command.channel.get());
+                    RequestHandler.sendEmbedMessage("", c.getCommandInfo(command), command.channel.get());
                     return "";
                 }
             }
@@ -69,11 +74,11 @@ public class InfoDM implements DMCommand {
 
     @Override
     public String[] names() {
-        return new String[]{"Info"};
+        return new Info().names();
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Tells you information about DM commands.";
     }
 
@@ -90,5 +95,10 @@ public class InfoDM implements DMCommand {
     @Override
     public boolean requiresArgs() {
         return true;
+    }
+
+    @Override
+    public void init() {
+
     }
 }

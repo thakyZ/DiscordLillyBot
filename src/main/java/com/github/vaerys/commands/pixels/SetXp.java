@@ -2,18 +2,24 @@ package com.github.vaerys.commands.pixels;
 
 import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.handlers.XpHandler;
-import com.github.vaerys.interfaces.Command;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.masterobjects.UserObject;
 import com.github.vaerys.objects.ProfileObject;
 import com.github.vaerys.objects.SplitFirstObject;
-import sx.blah.discord.handle.obj.IUser;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
 /**
  * Created by Vaerys on 06/07/2017.
  */
-public class SetXp implements Command {
+
+/**
+ * @deprecated
+ * Implementation of EditXP makes this redundant.
+ * Please use EditXP [user] "=" [amount] instead.
+ */
+@Deprecated
+public class SetXp extends Command {
     @Override
     public String execute(String args, CommandObject command) {
         SplitFirstObject xpArgs = new SplitFirstObject(args);
@@ -27,7 +33,7 @@ public class SetXp implements Command {
             if (userObject != null) {
                 userObject.setXp(xp);
                 userObject.removeLevelFloor();
-                XpHandler.checkUsersRoles(user.stringID, command.guild);
+                XpHandler.checkUsersRoles(user.longID, command.guild);
                 return "> " + user.displayName + "'s Pixels is now set to: **" + xp + "**";
             } else {
                 return "> User does not have a profile.";
@@ -43,7 +49,7 @@ public class SetXp implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Allows you to set the xp of a user.";
     }
 
@@ -75,6 +81,11 @@ public class SetXp implements Command {
     @Override
     public boolean doAdminLogging() {
         return true;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

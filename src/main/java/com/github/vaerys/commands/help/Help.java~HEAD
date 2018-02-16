@@ -1,9 +1,11 @@
 package com.github.vaerys.commands.help;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
+import com.github.vaerys.handlers.RequestHandler;
+import com.github.vaerys.main.Globals;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.objects.XEmbedBuilder;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.util.ArrayList;
@@ -16,15 +18,20 @@ import java.util.ListIterator;
  */
 
 
-public class Help implements Command {
+public class Help extends Command {
 
     @Override
     public String execute(String args, CommandObject command) {
-        XEmbedBuilder helpEmbed = new XEmbedBuilder();
-        List<String> types = new ArrayList<>(command.guild.getAllTypes(command));
+        XEmbedBuilder helpEmbed = new XEmbedBuilder(command);
+        List<String> types = new ArrayList<>();
         List<Command> commands = new ArrayList<>(command.guild.getAllCommands(command));
+        if (command.user.longID == command.client.creator.longID) {
+            commands.addAll(Globals.getCreatorCommands(false));
+        }
+        commands.forEach(command1 -> {
+            if (!types.contains(command1.type())) types.add(command1.type());
+        });
         String error = "> There are no commands with the type: **" + args + "**.\n\n" + Utility.getCommandInfo(this, command);
-        helpEmbed.withColor(command.client.color);
         ListIterator iterator = types.listIterator();
         while (iterator.hasNext()) {
             String s = (String) iterator.next();
@@ -41,7 +48,7 @@ public class Help implements Command {
             helpEmbed.withTitle("Here are the Command Types I have available for use:");
             builder.append(Utility.getCommandInfo(this, command) + "\n");
             helpEmbed.withDescription(builder.toString());
-            Utility.sendEmbedMessage("", helpEmbed, command.channel.get());
+            RequestHandler.sendEmbedMessage("", helpEmbed, command.channel.get());
             return null;
         } else {
             for (String s : types) {
@@ -59,16 +66,17 @@ public class Help implements Command {
                     List<String> commandNames = new ArrayList<>();
                     for (Command c : Utility.getCommandsByType(commands, command, s, true)) {
                         StringBuilder commandCall = new StringBuilder(c.getCommand(command));
-                        if (c.dualType() != null) {
+                        if (c.dualType() != null && Utility.testForPerms(command, c.dualPerms())) {
                             commandCall.append(indent + "*");
                         }
                         commandNames.add(commandCall.toString());
                     }
+                    Collections.sort(commandNames);
                     builder.append(Utility.listFormatter(commandNames, false));
                     builder.append(codeBlock + "\n");
                     builder.append(suffix);
                     helpEmbed.withDescription(builder.toString());
-                    Utility.sendEmbedMessage("", helpEmbed, command.channel.get());
+                    RequestHandler.sendEmbedMessage("", helpEmbed, command.channel.get());
                     return null;
                 }
             }
@@ -78,12 +86,12 @@ public class Help implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{"Help"};
+        return new String[]{"Commands"};
     }
 
     @Override
-    public String description() {
-        return "Lists the commands that profiles can run.";
+    public String description(CommandObject command) {
+        return "Lists the commands that users can run.";
     }
 
     @Override
@@ -114,6 +122,11 @@ public class Help implements Command {
     @Override
     public boolean doAdminLogging() {
         return false;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

@@ -1,14 +1,14 @@
 package com.github.vaerys.commands.pixels;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.enums.UserSetting;
-import com.github.vaerys.interfaces.Command;
+import com.github.vaerys.main.UserSetting;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
 /**
  * Created by Vaerys on 02/07/2017.
  */
-public class DefaultLevelMode implements Command {
+public class DefaultLevelMode extends Command {
     private String settings = "**Settings:**\n" +
             "- LevelChannel\n" +
             "- CurrentChannel\n" +
@@ -42,7 +42,7 @@ public class DefaultLevelMode implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Allows you to set the default place that level up messages will be sent.\n" + settings;
     }
 
@@ -74,6 +74,11 @@ public class DefaultLevelMode implements Command {
     @Override
     public boolean doAdminLogging() {
         return false;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

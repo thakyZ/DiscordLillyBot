@@ -1,8 +1,10 @@
 package com.github.vaerys.commands.help;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
+import com.github.vaerys.handlers.RequestHandler;
+import com.github.vaerys.main.Globals;
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.util.List;
@@ -10,20 +12,23 @@ import java.util.List;
 /**
  * Created by Vaerys on 29/01/2017.
  */
-public class Info implements Command {
+public class Info extends Command {
 
     @Override
     public String execute(String args, CommandObject command) {
         List<Command> commands = command.guild.getAllCommands(command);
+        if (command.user.longID == command.client.creator.longID) {
+            commands.addAll(Globals.getCreatorCommands(false));
+        }
 
         String error = "> Could not find information on any commands named **" + args + "**.";
         for (Command c : commands) {
             for (String s : c.names()) {
-                if (args.equalsIgnoreCase(s)) {
-                    if (!Utility.testForPerms(c.perms(), command.user.get(), command.guild.get())) {
+                if (args.equalsIgnoreCase(s) || args.equalsIgnoreCase(command.guild.config.getPrefixCommand() + s)) {
+                    if (!Utility.testForPerms(command, c.perms())) {
                         return error;
                     }
-                    Utility.sendEmbedMessage("", c.getCommandInfo(command), command.channel.get());
+                    RequestHandler.sendEmbedMessage("", c.getCommandInfo(command), command.channel.get());
                     return "";
                 }
             }
@@ -34,11 +39,11 @@ public class Info implements Command {
 
     @Override
     public String[] names() {
-        return new String[]{"Info"};
+        return new String[]{"Help"};
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Gives information about a command.";
     }
 
@@ -70,6 +75,11 @@ public class Info implements Command {
     @Override
     public boolean doAdminLogging() {
         return false;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

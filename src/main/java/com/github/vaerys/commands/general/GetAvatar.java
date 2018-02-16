@@ -1,27 +1,25 @@
 package com.github.vaerys.commands.general;
 
 import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.interfaces.Command;
+import com.github.vaerys.handlers.RequestHandler;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.masterobjects.UserObject;
-import sx.blah.discord.handle.obj.IUser;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
-
-import java.util.List;
 
 /**
  * Created by Vaerys on 30/01/2017.
  */
-public class GetAvatar implements Command {
+public class GetAvatar extends Command {
     @Override
     public String execute(String args, CommandObject command) {
-        UserObject user = Utility.getUser(command, args, true);
+        UserObject user = Utility.getUser(command, args, true,false);
         if (user != null) {
             String message = user.displayName + ":\n" + user.get().getAvatarURL();
             if (user.isPrivateProfile(command.guild) && user.longID != command.user.longID) {
                 return "> User has set their profile to private.";
             } else if (user.isPrivateProfile(command.guild) && user.longID == command.user.longID) {
-                Utility.sendMessage(message, user.get().getOrCreatePMChannel());
+                RequestHandler.sendMessage(message, user.get().getOrCreatePMChannel());
                 return "> Avatar sent to your direct messages.";
             }
             return message;
@@ -36,7 +34,7 @@ public class GetAvatar implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Gets the Mentionee's Profile Image.";
     }
 
@@ -68,6 +66,11 @@ public class GetAvatar implements Command {
     @Override
     public boolean doAdminLogging() {
         return false;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

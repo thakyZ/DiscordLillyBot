@@ -1,13 +1,13 @@
 package com.github.vaerys.commands.pixels;
 
 import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.handlers.RequestHandler;
 import com.github.vaerys.handlers.XpHandler;
-import com.github.vaerys.interfaces.Command;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.objects.ProfileObject;
 import com.github.vaerys.objects.RewardRoleObject;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.IMessage;
-import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
 
@@ -17,7 +17,7 @@ import java.time.ZonedDateTime;
 /**
  * Created by Vaerys on 06/07/2017.
  */
-public class TransferLevels implements Command {
+public class TransferLevels extends Command {
     @Override
     public String execute(String args, CommandObject command) {
         if (command.guild.config.xpGain) {
@@ -26,33 +26,29 @@ public class TransferLevels implements Command {
         if (command.guild.config.getRewardRoles().size() == 0) {
             return "> No rewards available to grant. cannot transfer levels";
         }
-        IMessage message = Utility.sendMessage("`Working...`", command.channel.get()).get();
+        IMessage message = RequestHandler.sendMessage("`Working...`", command.channel.get()).get();
 
         Utility.sortRewards(command.guild.config.getRewardRoles());
-        for (IUser user : command.guild.get().getUsers()) {
+
+        for (IUser user : command.guild.getUsers()) {
             if (!user.isBot()) {
-                ProfileObject uObject = command.guild.users.getUserByID(user.getStringID());
+                ProfileObject uObject = command.guild.users.getUserByID(user.getLongID());
                 if (uObject == null) {
-                    uObject = new ProfileObject(user.getStringID());
+                    uObject = command.guild.users.addUser(user.getLongID());
                 }
                 uObject.lastTalked = ZonedDateTime.now(ZoneOffset.UTC).toEpochSecond();
-//                uObject.setRewardID(-1);
                 uObject.setXp(0);
                 uObject.setCurrentLevel(-1);
-
                 for (RewardRoleObject r : command.guild.config.getRewardRoles()) {
-                    for (IRole uRole : user.getRolesForGuild(command.guild.get())) {
-                        if (r.getRoleID() == uRole.getLongID()) {
-                            uObject.setXp(XpHandler.totalXPForLevel(r.getLevel()));
-//                            uObject.setRewardID(r.getRoleID());
-                            uObject.setCurrentLevel(r.getLevel());
-                        }
+                    if (user.getRolesForGuild(command.guild.get()).contains(r.get(command.guild))) {
+                        uObject.setXp(r.getXp());
+                        uObject.setCurrentLevel(r.getLevel());
                     }
                 }
-                XpHandler.checkUsersRoles(uObject.getID(), command.guild);
+                XpHandler.checkUsersRoles(uObject.getUserID(), command.guild);
             }
         }
-        Utility.deleteMessage(message);
+        RequestHandler.deleteMessage(message);
         command.guild.config.xpGain = true;
         return "> Transfer Complete.";
     }
@@ -63,7 +59,7 @@ public class TransferLevels implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Allows for the transfer of levels.";
     }
 
@@ -95,6 +91,11 @@ public class TransferLevels implements Command {
     @Override
     public boolean doAdminLogging() {
         return true;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override

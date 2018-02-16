@@ -10,10 +10,10 @@ public class InitEvent {
     final static Logger logger = LoggerFactory.getLogger(Main.class);
 
     @EventSubscriber
-    public void initBot(ReadyEvent event){
+    public void initBot(ReadyEvent event) {
         //makes sure that nothing in the config file will cause an error
-        Globals.validateConfig();
-        Globals.setVersion();
+
+
 //        if (args.length > 0 && args[0].equals("-w")) {
 //            WikiBuilder.handleCommandLists();
 //        }

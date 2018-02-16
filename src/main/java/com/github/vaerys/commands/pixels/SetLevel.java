@@ -2,18 +2,18 @@ package com.github.vaerys.commands.pixels;
 
 import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.handlers.XpHandler;
-import com.github.vaerys.interfaces.Command;
+import com.github.vaerys.main.Constants;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.masterobjects.UserObject;
 import com.github.vaerys.objects.ProfileObject;
 import com.github.vaerys.objects.SplitFirstObject;
-import sx.blah.discord.handle.obj.IUser;
+import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
 /**
  * Created by Vaerys on 06/07/2017.
  */
-public class SetLevel implements Command {
+public class SetLevel extends Command {
     @Override
     public String execute(String args, CommandObject command) {
         SplitFirstObject xpArgs = new SplitFirstObject(args);
@@ -23,16 +23,19 @@ public class SetLevel implements Command {
         }
         try {
             long level = Long.parseLong(xpArgs.getRest());
+            if (level > Constants.LEVEL_CAP) return "> No... " + level + " Is way too many levels. Im not setting your level that high.";
             long xp = XpHandler.totalXPForLevel(level);
             ProfileObject userObject = user.getProfile(command.guild);
-            if (userObject != null) {
-                userObject.setXp(xp);
-                userObject.removeLevelFloor();
-                XpHandler.checkUsersRoles(user.stringID, command.guild);
-                return "> " + user.displayName + "'s Level is now set to: **" + level + "**";
-            } else {
+            if (userObject == null) {
                 return "> User does not have a profile.";
             }
+            if (Utility.testUserHierarchy(user, command.user, command.guild)) {
+                return "> You do not have permission to edit " + user.displayName + "'s pixels.";
+            }
+            userObject.setXp(xp);
+            userObject.removeLevelFloor();
+            XpHandler.checkUsersRoles(user.longID, command.guild);
+            return "> " + user.displayName + "'s Level is now set to: **" + level + "**";
         } catch (NumberFormatException e) {
             return "> Invalid number";
         }
@@ -44,7 +47,7 @@ public class SetLevel implements Command {
     }
 
     @Override
-    public String description() {
+    public String description(CommandObject command) {
         return "Allows you to set the level of a user.";
     }
 
@@ -65,7 +68,7 @@ public class SetLevel implements Command {
 
     @Override
     public Permissions[] perms() {
-        return new Permissions[]{Permissions.MANAGE_SERVER};
+        return new Permissions[]{Permissions.MANAGE_ROLES, Permissions.MANAGE_MESSAGES};
     }
 
     @Override
@@ -76,6 +79,11 @@ public class SetLevel implements Command {
     @Override
     public boolean doAdminLogging() {
         return true;
+    }
+
+    @Override
+    public void init() {
+
     }
 
     @Override
