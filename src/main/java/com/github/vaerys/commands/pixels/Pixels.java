@@ -1,14 +1,16 @@
 package com.github.vaerys.commands.pixels;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.enums.UserSetting;
+import com.github.vaerys.handlers.PixelHandler;
 import com.github.vaerys.handlers.RequestHandler;
-import com.github.vaerys.handlers.XpHandler;
 import com.github.vaerys.main.Constants;
-import com.github.vaerys.main.UserSetting;
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.masterobjects.UserObject;
 import com.github.vaerys.objects.ProfileObject;
-import com.github.vaerys.objects.XEmbedBuilder;
+import com.github.vaerys.utilobjects.XEmbedBuilder;
 import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
@@ -18,6 +20,7 @@ import java.text.NumberFormat;
  * Created by Vaerys on 01/07/2017.
  */
 public class Pixels extends Command {
+
     @Override
     public String execute(String args, CommandObject command) {
         XEmbedBuilder builder = new XEmbedBuilder();
@@ -41,13 +44,13 @@ public class Pixels extends Command {
 
         String rankTitle = "Rank: ";
         String rankTotal;
-        if (XpHandler.rank(command.guild.users, command.guild.get(), profile.getUserID()) != -1 && profile.getXP() != 0) {
-            rankTotal = XpHandler.rank(command.guild.users, command.guild.get(), profile.getUserID()) + "/" + XpHandler.totalRanked(command);
+        if (PixelHandler.rank(command.guild.users, command.guild.get(), profile.getUserID()) != -1 && profile.getXP() != 0) {
+            rankTotal = PixelHandler.rank(command.guild.users, command.guild.get(), profile.getUserID()) + "/" + PixelHandler.totalRanked(command);
         } else {
             rankTotal = "N/a";
         }
-        long xpForNext = XpHandler.levelToXP(profile.getCurrentLevel() + 1);
-        long xpTillNext = XpHandler.totalXPForLevel(profile.getCurrentLevel() + 1) - profile.getXP();
+        long xpForNext = PixelHandler.levelToXP(profile.getCurrentLevel() + 1);
+        long xpTillNext = PixelHandler.totalXPForLevel(profile.getCurrentLevel() + 1) - profile.getXP();
         long xpProgress = xpForNext - xpTillNext;
         long percentToLvl = (xpProgress * 100) / xpForNext;
         StringBuilder xpBar = new StringBuilder("-------------------");
@@ -58,9 +61,9 @@ public class Pixels extends Command {
         if (pos > xpBar.length()) {
             pos = xpBar.length();
         }
-        if (user.isDecaying(command.guild)){
+        if (user.isDecaying(command.guild)) {
             xpBar.replace(pos, pos, "**<**");
-        }else {
+        } else {
             xpBar.replace(pos, pos, "**>**");
         }
         String levelTotal = "**" + profile.getCurrentLevel() + "** [" + xpBar.toString() + "] **" + (profile.getCurrentLevel() + 1) + "**";
@@ -89,7 +92,7 @@ public class Pixels extends Command {
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"Pixels"};
     }
 
@@ -99,57 +102,37 @@ public class Pixels extends Command {
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return "(@User)";
     }
 
     @Override
-    public String type() {
-        return TYPE_PIXEL;
+    protected SAILType type() {
+        return SAILType.PIXEL;
     }
 
     @Override
-    public String channel() {
-        return CHANNEL_PIXELS;
+    protected ChannelSetting channel() {
+        return ChannelSetting.PIXELS;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[0];
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return false;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return false;
     }
 
     @Override
     public void init() {
 
-    }
-
-    @Override
-    public String dualDescription() {
-        return null;
-    }
-
-    @Override
-    public String dualUsage() {
-        return null;
-    }
-
-    @Override
-    public String dualType() {
-        return null;
-    }
-
-    @Override
-    public Permissions[] dualPerms() {
-        return new Permissions[0];
     }
 }

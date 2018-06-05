@@ -1,21 +1,31 @@
 package com.github.vaerys.commands.dmCommands;
 
-import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.commands.general.ClearReminder;
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/dmCommands/ClearReminderDM.java~HEAD
 import com.github.vaerys.interfaces.DMCommand;
+=======
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.templates.DMCommand;
+>>>>>>> master:src/main/java/com/github/vaerys/commands/dmCommands/ClearReminderDM.java
 
 /**
  * Created by Vaerys on 19/04/2017.
  */
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/dmCommands/ClearReminderDM.java~HEAD
 public class ClearReminderDM implements DMCommand{
+=======
+public class ClearReminderDM extends DMCommand {
+
+>>>>>>> master:src/main/java/com/github/vaerys/commands/dmCommands/ClearReminderDM.java
     @Override
     public String execute(String args, CommandObject command) {
-        return new ClearReminder().execute(args,command);
+        return get(ClearReminder.class).execute(args, command);
     }
 
     @Override
-    public String[] names() {
-        return new ClearReminder().names();
+    protected String[] names() {
+        return new ClearReminder().names;
     }
 
     @Override
@@ -24,17 +34,17 @@ public class ClearReminderDM implements DMCommand{
     }
 
     @Override
-    public String usage() {
-        return new ClearReminder().usage();
+    protected String usage() {
+        return new ClearReminder().usage;
     }
 
     @Override
-    public String type() {
-        return TYPE_GENERAL;
+    protected SAILType type() {
+        return SAILType.GENERAL;
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return false;
     }
 }

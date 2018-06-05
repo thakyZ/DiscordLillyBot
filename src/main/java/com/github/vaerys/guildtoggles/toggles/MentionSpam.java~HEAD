@@ -1,7 +1,12 @@
 package com.github.vaerys.guildtoggles.toggles;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/guildtoggles/toggles/MentionSpam.java~HEAD
 import com.github.vaerys.interfaces.GuildToggle;
 import com.github.vaerys.masterobjects.GuildObject;
+=======
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.SAILType;
+>>>>>>> master:src/main/java/com/github/vaerys/guildtoggles/toggles/MentionSpam.java
 import com.github.vaerys.pogos.GuildConfig;
 
 /**
@@ -10,8 +15,8 @@ import com.github.vaerys.pogos.GuildConfig;
 public class MentionSpam implements GuildToggle {
 
     @Override
-    public String name() {
-        return "MentionSpam";
+    public SAILType name() {
+        return SAILType.MENTION_SPAM;
     }
 
     @Override
@@ -20,7 +25,7 @@ public class MentionSpam implements GuildToggle {
     }
 
     @Override
-    public boolean get(GuildConfig config) {
+    public boolean enabled(GuildConfig config) {
         return config.maxMentions;
     }
 
@@ -30,8 +35,18 @@ public class MentionSpam implements GuildToggle {
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/guildtoggles/toggles/MentionSpam.java~HEAD
     public void execute(GuildObject guild) {
 
+=======
+    public String shortDesc(CommandObject command) {
+        return "Enables mention-spam prevention";
+    }
+
+    @Override
+    public String desc(CommandObject command) {
+        return "Enables the mention spam prevention feature, any message with 8 or more mentions will be automatically deleted.";
+>>>>>>> master:src/main/java/com/github/vaerys/guildtoggles/toggles/MentionSpam.java
     }
 
     @Override

@@ -1,13 +1,24 @@
 package com.github.vaerys.commands.competition;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/competition/PurgeComp.java~HEAD
 import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.interfaces.Command;
+=======
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.templates.Command;
+>>>>>>> master:src/main/java/com/github/vaerys/commands/competition/PurgeComp.java
 import sx.blah.discord.handle.obj.Permissions;
 
 /**
  * Created by Vaerys on 29/03/2017.
  */
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/competition/PurgeComp.java~HEAD
 public class PurgeComp implements Command{
+=======
+public class PurgeComp extends Command {
+>>>>>>> master:src/main/java/com/github/vaerys/commands/competition/PurgeComp.java
 
     @Override
     public String execute(String args, CommandObject command) {
@@ -17,7 +28,7 @@ public class PurgeComp implements Command{
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"PurgeComp"};
     }
 
@@ -27,36 +38,37 @@ public class PurgeComp implements Command{
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return null;
     }
 
     @Override
-    public String type() {
-        return TYPE_COMPETITION;
+    protected SAILType type() {
+        return SAILType.COMPETITION;
     }
 
     @Override
-    public String channel() {
+    protected ChannelSetting channel() {
         return null;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[]{Permissions.ADMINISTRATOR};
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return false;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return false;
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/competition/PurgeComp.java~HEAD
     public String dualDescription() {
         return null;
     }
@@ -74,5 +86,9 @@ public class PurgeComp implements Command{
     @Override
     public Permissions[] dualPerms() {
         return new Permissions[0];
+=======
+    public void init() {
+
+>>>>>>> master:src/main/java/com/github/vaerys/commands/competition/PurgeComp.java
     }
 }

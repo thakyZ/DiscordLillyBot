@@ -1,6 +1,7 @@
 package com.github.vaerys.tags.cctags;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.templates.TagObject;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 public class TagSingleArgs extends TagObject {
 
-    public TagSingleArgs(int priority, String... types) {
+    public TagSingleArgs(int priority, TagType... types) {
         super(priority, types);
     }
 
@@ -34,7 +35,7 @@ public class TagSingleArgs extends TagObject {
                 from = replaceFirstTag(from, splitArgs.get(position));
             }
         } catch (NumberFormatException e) {
-            from = replaceFirstTag(from, "#ERROR#:" + name);
+            from = replaceFirstTag(from, error);
         }
         return from;
     }

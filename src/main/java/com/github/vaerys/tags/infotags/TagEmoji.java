@@ -1,12 +1,13 @@
 package com.github.vaerys.tags.infotags;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.templates.TagObject;
 import sx.blah.discord.handle.obj.IEmoji;
 
 public class TagEmoji extends TagObject {
 
-    public TagEmoji(int priority, String... types) {
+    public TagEmoji(int priority, TagType... types) {
         super(priority, types);
     }
 
@@ -14,7 +15,7 @@ public class TagEmoji extends TagObject {
     public String execute(String from, CommandObject command, String args) {
         IEmoji emoji = command.guild.getEmojiByName(contents(from));
         if (emoji == null) {
-            return replaceFirstTag(from, "#ERROR#:" + name);
+            return replaceFirstTag(from, error);
         }
         return replaceFirstTag(from, emoji.toString());
     }

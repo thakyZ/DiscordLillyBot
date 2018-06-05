@@ -1,8 +1,9 @@
 package com.github.vaerys.handlers;
 
-import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.templates.Command;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.handle.obj.IChannel;
@@ -19,20 +20,28 @@ import java.util.List;
 
 
 @SuppressWarnings({"StringConcatenationInsideStringBufferAppend"})
+// gdi dawn <3
 public class MessageHandler {
 
     private final static Logger logger = LoggerFactory.getLogger(MessageHandler.class);
+
 
     public MessageHandler(String args, CommandObject command, boolean isPrivate) {
         if (!isPrivate) {
             if (SpamHandler.checkForInvites(command)) return;
             if (SpamHandler.checkMentionCount(command)) return;
+            if (SpamHandler.commandBlacklisting(command)) return;
             if (SpamHandler.rateLimiting(command)) return;
             if (SpamHandler.catchWalls(command)) return;
-            XpHandler.grantXP(command);
+            // check for role mentions:
+            if (!GuildHandler.testForPerms(command, command.channel.get(), Permissions.MENTION_EVERYONE)) {
+                // sanitize @everyone and @here mentions.
+                args = args.replaceAll("(?i)@(everyone|here)" , "REDACTED");
+            }
+            PixelHandler.grantXP(command);
             if (command.guild.config.artPinning) {
                 if (command.guild.config.autoArtPinning) {
-                    ArtHandler.pinMessage(command);
+                    ArtHandler.pinMessage(command, command.message.author, command.client.bot);
                 }
             }
             if (command.guild.config.moduleCC) {
@@ -40,12 +49,56 @@ public class MessageHandler {
                     CCHandler.handleCommand(args, command);
                 }
             }
+            if (command.guild.config.moduleAdminCC) {
+                if (args.toLowerCase().startsWith(command.guild.config.getPrefixAdminCC().toLowerCase())) {
+                    CCHandler.handleAdminCC(args, command);
+                }
+            }
+        } else {
+            // check if in setup mode otherwise do nothing.
+            if (SetupHandler.handleMessage(command, args)) return;
         }
         // do the command stuff
         if (handleCommand(command, args)) return;
         if (isPrivate) {
             new DMHandler(command);
         }
+    }
+
+//    public static boolean isActive(boolean isPrivate, CommandObject command) {
+//        if (!isPrivate) return false;
+//        for (GuildObject g : Globals.getGuilds()) {
+//            if (g.config.getSatrtupState().equals(BEGIN_SETUP) && command.user.longID == g.getSetupUser()) {
+//                command.setGuild(g.getAllToggles());
+//                cont(command);
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+
+    protected static void handleLogging(CommandObject commandObject, Command command, String args) {
+        if (command.doAdminLogging && !commandObject.guild.config.adminLogging) {
+            return;
+        } else if (!command.doAdminLogging && !commandObject.guild.config.generalLogging) {
+            return;
+        }
+        StringHandler builder = new StringHandler("> **@").append(commandObject.user.username).append("** Has Used Command `").append(command.getCommand(commandObject)).append("`");
+        if (args != null && !args.isEmpty()) {
+
+            if (args.length() > 1800) {
+                args = StringUtils.truncate(args, 1800);
+                args += "...";
+            }
+
+            builder.append(" with args: `").append(args).append("`");
+        }
+        if (commandObject.channel.get().isPrivate()) {
+            builder.append(" in their DMs.");
+        } else {
+            builder.append(" in channel ").append(commandObject.channel.get().mention()).append(".");
+        }
+        Utility.sendLog(builder.toString(), commandObject.guild, command.doAdminLogging);
     }
 
     //Command Handler
@@ -57,16 +110,16 @@ public class MessageHandler {
             if (c.isCall(args, command)) {
                 commandArgs = c.getArgs(args, command);
                 //log command
-                logger.debug(Utility.loggingFormatter(command, "COMMAND", c.getCommand(command), c.getArgs(args, command)));
+                command.guild.sendDebugLog(command, "COMMAND", c.getCommand(command), c.getArgs(args, command));
                 //test if user has permissions
-                if (!Utility.testForPerms(command, c.perms())) {
+                if (!GuildHandler.testForPerms(command, c.perms)) {
                     RequestHandler.sendMessage(command.user.notAllowed, currentChannel);
                     return true;
                 }
                 //check if it is a valid channel
                 if (!currentChannel.isPrivate()) {
-                    if (c.channel() != null && !Utility.testForPerms(command, Permissions.MANAGE_CHANNELS)) {
-                        List<IChannel> channels = command.guild.getChannelsByType(c.channel());
+                    if (c.channel != null && !GuildHandler.testForPerms(command, Permissions.MANAGE_CHANNELS)) {
+                        List<IChannel> channels = command.guild.getChannelsByType(c.channel);
                         if (channels.size() != 0 && !channels.contains(command.channel.get())) {
                             List<String> list = Utility.getChannelMentions(command.user.getVisibleChannels(channels));
                             RequestHandler.sendMessage(Utility.getChannelMessage(list), command.channel.get());
@@ -74,16 +127,16 @@ public class MessageHandler {
                         }
                     }
                 }
-                if (c.requiresArgs() && (commandArgs == null || commandArgs.isEmpty())) {
+                if (c.requiresArgs && (commandArgs == null || commandArgs.isEmpty())) {
 
-                    RequestHandler.sendMessage(Utility.getCommandInfo(c, command), currentChannel);
+                    RequestHandler.sendMessage(c.missingArgs(command), currentChannel);
                     return true;
                 }
                 //command logging
                 handleLogging(command, c, commandArgs);
                 RequestBuffer.request(() -> command.channel.get().setTypingStatus(true)).get();
-//                if (!command.channel.get().getTypingStatus()) {
-//                    command.channel.get().toggleTypingStatus();
+//                if (!command.channel.getAllToggles().getTypingStatus()) {
+//                    command.channel.getAllToggles().toggleTypingStatus();
 //                }
                 String response = c.execute(commandArgs, command);
                 RequestHandler.sendMessage(response, currentChannel);
@@ -92,19 +145,5 @@ public class MessageHandler {
             }
         }
         return false;
-    }
-
-    protected static void handleLogging(CommandObject commandObject, Command command, String args) {
-        if (!command.doAdminLogging() && !commandObject.guild.config.adminLogging) {
-            return;
-        } else if (!commandObject.guild.config.generalLogging) {
-            return;
-        }
-        StringHandler builder = new StringHandler("> **@").append(commandObject.user.username).append("** Has Used Command `").append(command.getCommand(commandObject)).append("`");
-        if (args != null && !args.isEmpty()) {
-            builder.append(" with args: `").append(args).append("`");
-        }
-        builder.append(" in channel ").append(commandObject.channel.get().mention()).append(".");
-        Utility.sendLog(builder.toString(), commandObject.guild, command.doAdminLogging());
     }
 }

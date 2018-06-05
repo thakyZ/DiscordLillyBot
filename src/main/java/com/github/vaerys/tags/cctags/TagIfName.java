@@ -1,6 +1,7 @@
 package com.github.vaerys.tags.cctags;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.templates.TagObject;
 import org.apache.commons.lang3.StringUtils;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 public class TagIfName extends TagObject {
 
-    public TagIfName(int priority, String... types) {
+    public TagIfName(int priority, TagType... types) {
         super(priority, types);
     }
 

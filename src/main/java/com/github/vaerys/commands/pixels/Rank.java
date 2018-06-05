@@ -1,13 +1,15 @@
 package com.github.vaerys.commands.pixels;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.enums.UserSetting;
+import com.github.vaerys.handlers.PixelHandler;
 import com.github.vaerys.handlers.RequestHandler;
-import com.github.vaerys.handlers.XpHandler;
-import com.github.vaerys.main.UserSetting;
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.masterobjects.UserObject;
 import com.github.vaerys.objects.ProfileObject;
-import com.github.vaerys.objects.XEmbedBuilder;
+import com.github.vaerys.utilobjects.XEmbedBuilder;
 import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
@@ -49,7 +51,7 @@ public class Rank extends Command {
         //sort profiles by Xp in ascending order (lowest Xp to highest XP).
         Utility.sortUserObjects(users, true);
         //test to see if said user actually has rank stats.
-        if (XpHandler.rank(command.guild.users, command.guild.get(), user.longID) == -1) {
+        if (PixelHandler.rank(command.guild.users, command.guild.get(), user.longID) == -1) {
             return error;
         }
         //build the Array of stats
@@ -64,7 +66,7 @@ public class Rank extends Command {
                 int posBottom = 0;
                 //add profiles above
                 while (addedTop < 3 && i + posTop < users.size()) {
-                    if (user.longID != users.get(i + posTop).getUserID() && XpHandler.rank(command.guild.users, command.guild.get(), users.get(i + posTop).getUserID()) != -1) {
+                    if (user.longID != users.get(i + posTop).getUserID() && PixelHandler.rank(command.guild.users, command.guild.get(), users.get(i + posTop).getUserID()) != -1) {
                         addedTop++;
                         ranks.add(users.get(i + posTop));
                     }
@@ -74,7 +76,7 @@ public class Rank extends Command {
                 ranks.add(users.get(i));
                 //add user below
                 while (addedBottom < 3 && i + posBottom > 0) {
-                    if (user.longID != users.get(i + posBottom).getUserID() && XpHandler.rank(command.guild.users, command.guild.get(), users.get(i + posBottom).getUserID()) != -1) {
+                    if (user.longID != users.get(i + posBottom).getUserID() && PixelHandler.rank(command.guild.users, command.guild.get(), users.get(i + posBottom).getUserID()) != -1) {
                         addedBottom++;
                         ranks.add(users.get(i + posBottom));
                     }
@@ -85,7 +87,7 @@ public class Rank extends Command {
                 //format rank stats
                 for (ProfileObject r : ranks) {
                     IUser ranked = command.guild.getUserByID(r.getUserID());
-                    String rankPos = "**" + XpHandler.rank(command.guild.users, command.guild.get(), r.getUserID()) + "** - ";
+                    String rankPos = "**" + PixelHandler.rank(command.guild.users, command.guild.get(), r.getUserID()) + "** - ";
                     String toFormat = ranked.getDisplayName(command.guild.get())
                             + "\n " + indent + "`Level: " + r.getCurrentLevel() + ", Pixels: " + NumberFormat.getInstance().format(r.getXP()) + "`";
                     if (r.getUserID() == user.longID) {
@@ -105,7 +107,7 @@ public class Rank extends Command {
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"Rank"};
     }
 
@@ -115,57 +117,37 @@ public class Rank extends Command {
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return "(@User)";
     }
 
     @Override
-    public String type() {
-        return TYPE_PIXEL;
+    protected SAILType type() {
+        return SAILType.PIXEL;
     }
 
     @Override
-    public String channel() {
-        return CHANNEL_PIXELS;
+    protected ChannelSetting channel() {
+        return ChannelSetting.PIXELS;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[0];
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return false;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return false;
     }
 
     @Override
     public void init() {
 
-    }
-
-    @Override
-    public String dualDescription() {
-        return null;
-    }
-
-    @Override
-    public String dualUsage() {
-        return null;
-    }
-
-    @Override
-    public String dualType() {
-        return null;
-    }
-
-    @Override
-    public Permissions[] dualPerms() {
-        return new Permissions[0];
     }
 }

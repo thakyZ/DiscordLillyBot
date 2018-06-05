@@ -1,6 +1,7 @@
 package com.github.vaerys.objects;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.tags.TagList;
 import com.github.vaerys.templates.TagObject;
 
@@ -36,9 +37,13 @@ public class DailyMessage {
         return day;
     }
 
+    public void setDay(DayOfWeek newDay) {
+        day = newDay;
+    }
+
     public String getContents(CommandObject command) {
         String newContent = content;
-        for (TagObject t : TagList.getType(TagList.DAILY)) {
+        for (TagObject t : TagList.getType(TagType.DAILY)) {
             newContent = t.handleTag(newContent, command, "");
         }
         char[] prefixCheck = new char[4];
@@ -63,10 +68,6 @@ public class DailyMessage {
 
     public long getUserID() {
         return userID;
-    }
-
-    public void setDay(DayOfWeek newDay) {
-        day = newDay;
     }
 
     public String getSpecialID() {

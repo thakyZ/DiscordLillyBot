@@ -1,11 +1,12 @@
 package com.github.vaerys.tags.cctags;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.templates.TagObject;
 
 public class TagSpacer extends TagObject {
 
-    public TagSpacer(int priority, String... types) {
+    public TagSpacer(int priority, TagType... types) {
         super(priority, types);
     }
 

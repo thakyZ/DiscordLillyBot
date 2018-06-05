@@ -1,9 +1,11 @@
 package com.github.vaerys.templates;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.objects.SplitFirstObject;
-import com.github.vaerys.objects.XEmbedBuilder;
+import com.github.vaerys.utilobjects.XEmbedBuilder;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.util.Arrays;
@@ -13,35 +15,38 @@ import java.util.Arrays;
  */
 public abstract class SlashCommand extends Command {
 
+    @Override
     public String description(CommandObject command) {
         return "Returns with " + execute(null, null) + ".";
     }
 
+    @Override
     public String usage() {
         return null;
     }
 
-
-    public String type() {
-        return TYPE_SLASH;
+    @Override
+    protected SAILType type() {
+        return SAILType.SLASH;
     }
 
-
-    public String channel() {
+    @Override
+    protected ChannelSetting channel() {
         return null;
     }
 
-
-    public Permissions[] perms() {
+    @Override
+    protected Permissions[] perms() {
         return new Permissions[0];
     }
 
-
-    public boolean requiresArgs() {
+    @Override
+    protected boolean requiresArgs() {
         return false;
     }
 
-    public boolean doAdminLogging() {
+    @Override
+    protected boolean doAdminLogging() {
         return false;
     }
 
@@ -50,34 +55,18 @@ public abstract class SlashCommand extends Command {
 
     }
 
-    public String dualDescription() {
-        return null;
-    }
-
-    public String dualUsage() {
-        return null;
-    }
-
-    public String dualType() {
-        return null;
-    }
-
-    public Permissions[] dualPerms() {
-        return new Permissions[0];
+    @Override
+    public String getCommand(CommandObject command) {
+        return "/" + names[0];
     }
 
     @Override
-    public String getCommand(CommandObject command) {
-        return "/" + names()[0];
+    public String getCommand(CommandObject command, int i) {
+        return "/" + names[i];
     }
 
     @Override
     public String getUsage(CommandObject command) {
-        return getCommand(command);
-    }
-
-    @Override
-    public String getDualUsage(CommandObject command) {
         return getCommand(command);
     }
 
@@ -102,8 +91,8 @@ public abstract class SlashCommand extends Command {
         XEmbedBuilder builder = new XEmbedBuilder(command);
         builder.withTitle(getCommand(command));
         builder.withDescription(description(command));
-        if (names().length != 1) {
-            builder.appendField("Aliases:", Utility.listFormatter(Arrays.asList(names()),true),true);
+        if (names.length != 1) {
+            builder.appendField("Aliases:", Utility.listFormatter(Arrays.asList(names), true), true);
         }
         return builder;
     }
@@ -113,7 +102,7 @@ public abstract class SlashCommand extends Command {
         StringBuilder response = new StringBuilder();
         boolean isErrored = false;
         response.append("\n>> Begin Error Report: " + this.getClass().getName() + " <<\n");
-        if (names().length == 0 || names()[0].isEmpty()) {
+        if (names.length == 0 || names[0].isEmpty()) {
             response.append("> NAME IS EMPTY.\n");
             isErrored = true;
         }
@@ -123,5 +112,15 @@ public abstract class SlashCommand extends Command {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public boolean isName(String args, CommandObject command) {
+        for (String s : names) {
+            if (s.equalsIgnoreCase(args) || args.equalsIgnoreCase("/" + s)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

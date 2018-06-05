@@ -1,12 +1,13 @@
 package com.github.vaerys.commands.admin;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
 import com.github.vaerys.handlers.RequestHandler;
 import com.github.vaerys.main.Globals;
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.objects.ChannelSettingObject;
-import com.github.vaerys.objects.XEmbedBuilder;
-import com.github.vaerys.templates.ChannelSetting;
+import com.github.vaerys.utilobjects.XEmbedBuilder;
 import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.Permissions;
@@ -18,6 +19,7 @@ import java.util.List;
  * Created by Vaerys on 01/07/2017.
  */
 public class ChannelStats extends Command {
+
     @Override
     public String execute(String args, CommandObject command) {
         XEmbedBuilder builder = new XEmbedBuilder(command);
@@ -27,18 +29,18 @@ public class ChannelStats extends Command {
 
         if (args != null && !args.isEmpty()) {
             for (ChannelSetting s : command.guild.channelSettings) {
-                if (s.name().equalsIgnoreCase(args)) {
-                    List<IChannel> channels = command.guild.getChannelsByType(s.name());
+                if (s.toString().equalsIgnoreCase(args)) {
+                    List<IChannel> channels = command.guild.getChannelsByType(s);
                     List<String> channelMentions = Utility.getChannelMentions(channels);
                     if (channels.size() != 0) {
-                        builder.appendField(s.name(), Utility.listFormatter(channelMentions, true), false);
+                        builder.appendField(s.toString(), Utility.listFormatter(channelMentions, true), false);
                         RequestHandler.sendEmbedMessage("", builder, command.channel.get());
                         return null;
                     } else {
                         if (s.isSetting()) {
-                            return "> Could not find any channels with the **" + s.name() + "** setting enabled.";
+                            return "> Could not find any channels with the **" + s.toString() + "** setting enabled.";
                         } else {
-                            return "> Could not find a channel with the **" + s.name() + "** type enabled.";
+                            return "> Could not find a channel with the **" + s.toString() + "** type enabled.";
                         }
                     }
                 }
@@ -46,14 +48,14 @@ public class ChannelStats extends Command {
             return "> Could not any channel settings with that name.";
         }
 
-        for (ChannelSettingObject c : command.guild.config.getChannelSettings()) {
+        for (ChannelSettingObject c : command.guild.channelData.getChannelSettings()) {
             if (c.getChannelIDs().contains(command.channel.longID)) {
                 for (ChannelSetting setting : Globals.getChannelSettings()) {
-                    if (c.getType().equalsIgnoreCase(setting.name())) {
+                    if (c.getType() == setting) {
                         if (setting.isSetting()) {
-                            channelSettings.add(c.getType());
+                            channelSettings.add(c.getType().toString());
                         } else {
-                            channelTypes.add(c.getType());
+                            channelTypes.add(c.getType().toString());
                         }
                     }
                 }
@@ -73,44 +75,10 @@ public class ChannelStats extends Command {
         return null;
     }
 
-    @Override
-    public String[] names() {
-        return new String[]{"ChannelStats"};
-    }
 
     @Override
     public String description(CommandObject command) {
         return "Gives information about the current channel";
-    }
-
-    @Override
-    public String usage() {
-        return "(Channel setting/type)";
-    }
-
-    @Override
-    public String type() {
-        return TYPE_ADMIN;
-    }
-
-    @Override
-    public String channel() {
-        return null;
-    }
-
-    @Override
-    public Permissions[] perms() {
-        return new Permissions[]{Permissions.MANAGE_CHANNELS};
-    }
-
-    @Override
-    public boolean requiresArgs() {
-        return false;
-    }
-
-    @Override
-    public boolean doAdminLogging() {
-        return false;
     }
 
     @Override
@@ -119,22 +87,37 @@ public class ChannelStats extends Command {
     }
 
     @Override
-    public String dualDescription() {
+    protected String[] names() {
+        return new String[]{"ChannelStats"};
+    }
+
+    @Override
+    protected String usage() {
+        return "(Channel setting/type)";
+    }
+
+    @Override
+    protected SAILType type() {
+        return SAILType.ADMIN;
+    }
+
+    @Override
+    protected ChannelSetting channel() {
         return null;
     }
 
     @Override
-    public String dualUsage() {
-        return null;
+    protected Permissions[] perms() {
+        return new Permissions[]{Permissions.MANAGE_CHANNELS};
     }
 
     @Override
-    public String dualType() {
-        return null;
+    protected boolean requiresArgs() {
+        return false;
     }
 
     @Override
-    public Permissions[] dualPerms() {
-        return new Permissions[0];
+    protected boolean doAdminLogging() {
+        return false;
     }
 }

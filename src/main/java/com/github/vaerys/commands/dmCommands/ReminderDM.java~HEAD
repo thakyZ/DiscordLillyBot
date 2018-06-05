@@ -1,12 +1,16 @@
 package com.github.vaerys.commands.dmCommands;
 
-import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.commands.general.RemindMe;
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/dmCommands/ReminderDM.java~HEAD
 import com.github.vaerys.interfaces.DMCommand;
+=======
+import com.github.vaerys.enums.ChannelSetting;
+>>>>>>> master:src/main/java/com/github/vaerys/commands/dmCommands/ReminderDM.java
 
 /**
- * Created by Vaerys on 19/04/2017.
+ * Created by Vaerys on 27/02/2017.
  */
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/dmCommands/ReminderDM.java~HEAD
 public class ReminderDM implements DMCommand{
     @Override
     public String execute(String args, CommandObject command) {
@@ -36,5 +40,12 @@ public class ReminderDM implements DMCommand{
     @Override
     public boolean requiresArgs() {
         return true;
+=======
+public class ReminderDM extends RemindMe {
+
+    @Override
+    protected ChannelSetting channel() {
+        return ChannelSetting.FROM_DM;
+>>>>>>> master:src/main/java/com/github/vaerys/commands/dmCommands/ReminderDM.java
     }
 }

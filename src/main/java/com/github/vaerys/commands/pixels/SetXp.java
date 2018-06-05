@@ -1,8 +1,10 @@
 package com.github.vaerys.commands.pixels;
 
-import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.handlers.XpHandler;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.handlers.GuildHandler;
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.masterobjects.UserObject;
 import com.github.vaerys.objects.ProfileObject;
 import com.github.vaerys.objects.SplitFirstObject;
@@ -14,12 +16,12 @@ import sx.blah.discord.handle.obj.Permissions;
  */
 
 /**
- * @deprecated
- * Implementation of EditXP makes this redundant.
+ * @deprecated Implementation of EditXP makes this redundant.
  * Please use EditXP [user] "=" [amount] instead.
  */
 @Deprecated
 public class SetXp extends Command {
+
     @Override
     public String execute(String args, CommandObject command) {
         SplitFirstObject xpArgs = new SplitFirstObject(args);
@@ -33,7 +35,7 @@ public class SetXp extends Command {
             if (userObject != null) {
                 userObject.setXp(xp);
                 userObject.removeLevelFloor();
-                XpHandler.checkUsersRoles(user.longID, command.guild);
+                GuildHandler.checkUsersRoles(user.longID, command.guild);
                 return "> " + user.displayName + "'s Pixels is now set to: **" + xp + "**";
             } else {
                 return "> User does not have a profile.";
@@ -44,7 +46,7 @@ public class SetXp extends Command {
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"SetPixels", "SetXP"};
     }
 
@@ -54,57 +56,37 @@ public class SetXp extends Command {
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return "[@User] [Pixels]";
     }
 
     @Override
-    public String type() {
-        return TYPE_PIXEL;
+    protected SAILType type() {
+        return SAILType.PIXEL;
     }
 
     @Override
-    public String channel() {
+    protected ChannelSetting channel() {
         return null;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[]{Permissions.MANAGE_SERVER};
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return true;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return true;
     }
 
     @Override
     public void init() {
 
-    }
-
-    @Override
-    public String dualDescription() {
-        return null;
-    }
-
-    @Override
-    public String dualUsage() {
-        return null;
-    }
-
-    @Override
-    public String dualType() {
-        return null;
-    }
-
-    @Override
-    public Permissions[] dualPerms() {
-        return new Permissions[0];
     }
 }

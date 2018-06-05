@@ -1,6 +1,7 @@
 package com.github.vaerys.tags.cctags;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.templates.TagObject;
 import org.apache.commons.lang3.StringUtils;
 import sx.blah.discord.handle.obj.IRole;
@@ -9,7 +10,7 @@ import java.util.List;
 
 public class TagIfRole extends TagObject {
 
-    public TagIfRole(int priority, String... types) {
+    public TagIfRole(int priority, TagType... types) {
         super(priority, types);
     }
 
@@ -42,7 +43,7 @@ public class TagIfRole extends TagObject {
 
     @Override
     public String usage() {
-        return "Role" + splitter + "True" + "False";
+        return "Role" + splitter + "True" + splitter + "False";
     }
 
     @Override

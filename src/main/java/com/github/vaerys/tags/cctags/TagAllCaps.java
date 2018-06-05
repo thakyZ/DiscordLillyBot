@@ -1,18 +1,21 @@
 package com.github.vaerys.tags.cctags;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.enums.TagType;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.templates.TagObject;
 
 public class TagAllCaps extends TagObject {
 
-    public TagAllCaps(int priority, String... types) {
+    public TagAllCaps(int priority, TagType... types) {
         super(priority, types);
     }
 
     @Override
     public String execute(String from, CommandObject command, String args) {
+        from = removeAllTag(from);
         from = from.toUpperCase();
         from = from.replace("<DELCALL>", "<delCall>");
+        from = from.replace("<DONTSANITIZE>", "<dontSanitize>");
         return from.replace("<EMBEDIMAGE>", "<embedImage>");
     }
 

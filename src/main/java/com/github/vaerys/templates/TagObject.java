@@ -1,28 +1,34 @@
 package com.github.vaerys.templates;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.main.Utility;
-import com.github.vaerys.objects.XEmbedBuilder;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.objects.AdminCCObject;
+import com.github.vaerys.objects.ReplaceObject;
+import com.github.vaerys.tags.TagList;
+import com.github.vaerys.utilobjects.XEmbedBuilder;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public abstract class TagObject {
 
-    private int priority;
     public String name;
     public String prefix;
     public String suffix;
-    public String splitter;
-    public String desc;
-    public String usage;
-    public int requiredArgs;
-    List<String> types = new ArrayList<>();
+    public final String splitter;
+    public final String desc;
+    public final String usage;
+    public String error;
+    public final int requiredArgs;
+    private final int priority;
+    List<TagType> types = new ArrayList<>();
+    public String group = "((.|\n)+?)";
 
-    public TagObject(int priority, String... types) {
+    public TagObject(int priority, TagType... types) {
         this.priority = priority;
         requiredArgs = argsRequired();
         name = tagName();
@@ -31,33 +37,34 @@ public abstract class TagObject {
         splitter = splitter();
         desc = desc();
         usage = usage();
+        error = "#ERROR#:" + tagName();
         this.types = Arrays.asList(types);
+    }
+
+    public abstract String execute(String from, CommandObject command, String args);
+
+    protected abstract String tagName();
+
+    protected abstract int argsRequired();
+
+    protected abstract String usage();
+
+    protected abstract String desc();
+
+    protected boolean isPassive() {
+        return false;
     }
 
     public int getPriority() {
         return priority;
     }
 
-    public abstract String execute(String from, CommandObject command, String args);
-
-    public abstract String tagName();
-
-    public abstract int argsRequired();
-
-    public abstract String usage();
-
-    public abstract String desc();
-
-    public boolean isPassive() {
-        return false;
-    }
-
     public boolean cont(String from) {
         if (requiredArgs != 0) {
-            String toRegex = Utility.escapeRegex(prefix) + "(.|\n)*?" + Utility.escapeRegex(suffix);
-            return Pattern.compile(toRegex).matcher(from).find();
+            String tester = StringUtils.substringBetween(from, prefix, suffix);
+            return tester != null && !tester.isEmpty();
         } else {
-            return Pattern.compile(Utility.escapeRegex(prefix)).matcher(from).find();
+            return from.contains(prefix);
         }
     }
 
@@ -74,22 +81,13 @@ public abstract class TagObject {
         }
     }
 
-    public List<String> getSpliContents(String from){
-        String contents = contents(from);
-        if (contents != null){
-            return Arrays.asList(contents.split(splitter));
-        }else {
-            return new ArrayList<>();
-        }
-    }
-
-    public List<String> getSplit(String args) {
-        String toSplit = contents(args);
+    public List<String> getSplit(String from) {
+        String toSplit = contents(from);
         String[] isSplit = toSplit.split(splitter);
         if (isSplit.length == 0) {
             return new ArrayList<>();
         }
-        return Arrays.asList(toSplit.split(splitter));
+        return new ArrayList<>(Arrays.asList(isSplit));
     }
 
     public String removeFirst(String from, String args) {
@@ -141,7 +139,7 @@ public abstract class TagObject {
         return ";;";
     }
 
-    public String prefix() {
+    protected String prefix() {
         if (requiredArgs == 0) {
             return name;
         } else {
@@ -149,7 +147,7 @@ public abstract class TagObject {
         }
     }
 
-    public String suffix() {
+    protected String suffix() {
         if (requiredArgs == 0) {
             return "";
         } else {
@@ -161,14 +159,33 @@ public abstract class TagObject {
         if (from == null) from = "";
         while (cont(from)) {
             int absoluteArgs = Math.abs(requiredArgs);
-            if (requiredArgs == 0) {
-                from = execute(from, command, args);
-            } else if (requiredArgs < 0 && getSplit(from).size() >= absoluteArgs) {
-                from = execute(from, command, args);
-            } else if (requiredArgs == getSplit(from).size()) {
+            if (requiredArgs == 0 ||
+                    requiredArgs < 0 && getSplit(from).size() >= absoluteArgs ||
+                    requiredArgs == getSplit(from).size()) {
                 from = execute(from, command, args);
             } else {
-                from = replaceFirstTag(from, "#ERROR#:" + name);
+                from = replaceFirstTag(from, error);
+            }
+            if (from == null) from = "";
+        }
+        return from;
+    }
+
+    public String handleTag(String from, CommandObject command, String args, AdminCCObject cc) {
+        if (from == null) from = "";
+        while (cont(from)) {
+            int absoluteArgs = Math.abs(requiredArgs);
+            if (requiredArgs == 0 ||
+                    requiredArgs < 0 && getSplit(from).size() >= absoluteArgs ||
+                    requiredArgs == getSplit(from).size()) {
+                if (this instanceof TagAdminSubTagObject) {
+                    TagAdminSubTagObject specialObject = (TagAdminSubTagObject) this;
+                    from = specialObject.execute(from, command, args, cc);
+                } else {
+                    from = execute(from, command, args);
+                }
+            } else {
+                from = replaceFirstTag(from, error);
             }
             if (from == null) from = "";
         }
@@ -187,9 +204,9 @@ public abstract class TagObject {
         } else if (requiredArgs != 0) {
             descContents.append("\n**Usage:** " + "`" + prefix + usage + suffix + "`");
         } else {
-            descContents.append("\n**Usage:** `" + name + "`");
+            descContents.append("\n**Usage:** `" + prefix + "`");
         }
-        descContents.append("\n\n**Types:** " + Utility.listFormatter(types, true));
+        descContents.append("\n\n**Types:** " + Utility.listEnumFormatter(types, true));
         builder.withDesc(descContents.toString());
         return builder;
     }
@@ -217,7 +234,15 @@ public abstract class TagObject {
         }
     }
 
-    public List<String> getTypes() {
+    public List<TagType> getTypes() {
         return types;
+    }
+
+    public static TagObject get(Class obj) {
+        return TagList.getTag(obj);
+    }
+
+    public String prepReplace(String withThis) {
+        return withThis.replace("$", "\\$");
     }
 }

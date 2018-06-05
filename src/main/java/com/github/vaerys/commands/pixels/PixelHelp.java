@@ -1,15 +1,17 @@
 package com.github.vaerys.commands.pixels;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.handlers.PixelHandler;
 import com.github.vaerys.handlers.RequestHandler;
-import com.github.vaerys.handlers.XpHandler;
 import com.github.vaerys.main.Constants;
 import com.github.vaerys.main.Globals;
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.objects.RewardRoleObject;
 import com.github.vaerys.objects.SplitFirstObject;
-import com.github.vaerys.objects.XEmbedBuilder;
 import com.github.vaerys.templates.Command;
+import com.github.vaerys.utilobjects.XEmbedBuilder;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.Permissions;
@@ -58,26 +60,26 @@ public class PixelHelp extends Command {
                 if (command.guild.config.xpModifier != 1) {
                     embed.appendField("\n**Current Xp Modifier:**\n", "> **x" + command.guild.config.xpModifier + "**.\n", true);
                 }
-                int random = new Random().nextInt(50);
+                int random = new Random().nextInt(25);
                 if (random == 1) {
                     embed.withThumbnail(Constants.RANK_UP_IMAGE_URL);
                 } else {
                     embed.withThumbnail(Constants.LEVEL_UP_IMAGE_URL);
                 }
-                embed.appendField("Pixel and Level Calculators:", getModes(command) + "\n\n" + Utility.getCommandInfo(this, command), false);
+                embed.appendField("Pixel and Level Calculators:", getModes(command) + "\n\n" + missingArgs(command), false);
                 RequestHandler.sendEmbedMessage("", embed, command.channel.get());
                 return null;
         }
     }
 
     private String rules(CommandObject command) {
-        List<IChannel> channels = command.guild.getChannelsByType(CHANNEL_XP_DENIED);
+        List<IChannel> channels = command.guild.getChannelsByType(ChannelSetting.XP_DENIED);
         List<String> channelMentions = Utility.getChannelMentions(channels);
         String rules = "**The rules for gaining pixels are:**\n" +
-                "> Cannot gain pixels if the message starts with a command prefix.\n" +
                 "> Cannot gain pixels if the message contains less than 10 chars.\n" +
-                "> Cannot gain pixels if your profile has NoXp or XpDenied on it.\n" +
-                "> When submitting an image only, ignore the above rules.\n";
+                "> When submitting an image, ignore the rule above.\n" +
+                "> Cannot gain pixels if the message starts with a command prefix.\n" +
+                "> Cannot gain pixels if your profile has NoXp or XpDenied on it.\n";
         if (channelMentions.size() != 0)
             rules += "> Cannot gain pixels in any of these channels: \n**>> " + Utility.listFormatter(channelMentions, true) + " <<**\n";
         rules += "> You can only gain one chunk of pixels a minute.\n\n";
@@ -89,8 +91,8 @@ public class PixelHelp extends Command {
         if (command.guild.config.xpDecay) {
             long maxDecay = (long) ((8) * (Globals.avgMessagesPerDay * command.guild.config.xpRate * command.guild.config.xpModifier) / 8);
             long minDecay = (long) ((Globals.avgMessagesPerDay * command.guild.config.xpRate * command.guild.config.xpModifier) / 8);
-            long minMessageCount = (long) (minDecay / (command.guild.config.xpRate * command.guild.config.xpModifier));
-            long messageCount = (long) (maxDecay / (command.guild.config.xpRate * command.guild.config.xpModifier));
+//            long minMessageCount = (long) (minDecay / (command.guild.config.xpRate * command.guild.config.xpModifier));
+//            long messageCount = (long) (maxDecay / (command.guild.config.xpRate * command.guild.config.xpModifier));
             rules += "**How pixel decay works:** \n" +
                     "> Pixel decay starts after 7 days of no messages sent.\n" +
                     "> The value for the first day of decay is " + minDecay + " pixels.\n" +
@@ -119,7 +121,7 @@ public class PixelHelp extends Command {
             if (level > Constants.LEVEL_CAP) {
                 return "> No, I don't want to calculate the total xp for level " + NumberFormat.getInstance().format(level) + "!";
             }
-            return "> Level: " + level + " = " + NumberFormat.getInstance().format(XpHandler.totalXPForLevel(level)) + " pixels.";
+            return "> Level: " + level + " = " + NumberFormat.getInstance().format(PixelHandler.totalXPForLevel(level)) + " pixels.";
         } catch (NumberFormatException e) {
             return "> You must supply a valid number.";
         }
@@ -134,14 +136,14 @@ public class PixelHelp extends Command {
             if (xp > Constants.PIXELS_CAP) {
                 return "> Its something over level 1000, could you leave me alone.";
             }
-            return "> " + NumberFormat.getInstance().format(xp) + "XP = Level: " + XpHandler.xpToLevel(xp);
+            return "> " + NumberFormat.getInstance().format(xp) + "XP = Level: " + PixelHandler.xpToLevel(xp);
         } catch (NumberFormatException e) {
             return "> You must supply a valid number.";
         }
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"PixelHelp", "HelpPixels"};
     }
 
@@ -166,57 +168,37 @@ public class PixelHelp extends Command {
     }
 
     @Override
-    public String usage() {
-        return ("(Mode) (args)");
+    protected String usage() {
+        return "(Mode) (args)";
     }
 
     @Override
-    public String type() {
-        return TYPE_PIXEL;
+    protected SAILType type() {
+        return SAILType.PIXEL;
     }
 
     @Override
-    public String channel() {
-        return CHANNEL_PIXELS;
+    protected ChannelSetting channel() {
+        return ChannelSetting.PIXELS;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[0];
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return false;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return false;
     }
 
     @Override
     public void init() {
 
-    }
-
-    @Override
-    public String dualDescription() {
-        return null;
-    }
-
-    @Override
-    public String dualUsage() {
-        return null;
-    }
-
-    @Override
-    public String dualType() {
-        return null;
-    }
-
-    @Override
-    public Permissions[] dualPerms() {
-        return new Permissions[0];
     }
 }

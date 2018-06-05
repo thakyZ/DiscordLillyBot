@@ -1,9 +1,20 @@
 package com.github.vaerys.commands.general;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/RemindMe.java~HEAD
 import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.handlers.EventHandler;
 import com.github.vaerys.interfaces.Command;
 import com.github.vaerys.main.Utility;
+=======
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.handlers.StringHandler;
+import com.github.vaerys.handlers.TimerHandler;
+import com.github.vaerys.main.Globals;
+import com.github.vaerys.main.Utility;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.templates.Command;
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/RemindMe.java
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.time.ZoneOffset;
@@ -12,6 +23,7 @@ import java.time.ZonedDateTime;
 /**
  * Created by Vaerys on 30/01/2017.
  */
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/RemindMe.java~HEAD
 public class RemindMe implements Command {
     @Override
     public String execute(String args, CommandObject command) {
@@ -36,12 +48,28 @@ public class RemindMe implements Command {
         } catch (NumberFormatException e) {
             return "> Error Trying to set reminder.\n" +
                     Utility.getCommandInfo(this, command);
+=======
+public class RemindMe extends Command {
+
+    @Override
+    public String execute(String args, CommandObject command) {
+        StringHandler contents = new StringHandler(args);
+        long timeSecs = Utility.getRepeatTimeValue(contents);
+        if (timeSecs == -1) {
+            return "> Could not find a valid time value.\n" +
+                    missingArgs(command);
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/RemindMe.java
         }
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/RemindMe.java~HEAD
     public String[] names() {
         return new String[]{"RemindMe"};
+=======
+    protected String[] names() {
+        return new String[]{"RemindMe", "Reminder"};
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/RemindMe.java
     }
 
     @Override
@@ -50,36 +78,42 @@ public class RemindMe implements Command {
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/RemindMe.java~HEAD
     public String usage() {
         return "[Time Minutes] [Reminder Message]";
+=======
+    protected String usage() {
+        return "[Time...] [Reminder Message]";
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/RemindMe.java
     }
 
     @Override
-    public String type() {
-        return TYPE_GENERAL;
+    protected SAILType type() {
+        return SAILType.GENERAL;
     }
 
     @Override
-    public String channel() {
+    protected ChannelSetting channel() {
         return null;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[0];
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return true;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return false;
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/RemindMe.java~HEAD
     public String dualDescription() {
         return null;
     }
@@ -97,5 +131,9 @@ public class RemindMe implements Command {
     @Override
     public Permissions[] dualPerms() {
         return new Permissions[0];
+=======
+    public void init() {
+
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/RemindMe.java
     }
 }

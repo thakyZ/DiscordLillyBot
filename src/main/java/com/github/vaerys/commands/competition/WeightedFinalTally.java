@@ -1,8 +1,10 @@
 package com.github.vaerys.commands.competition;
 
-import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.handlers.XpHandler;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.handlers.PixelHandler;
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
@@ -14,6 +16,9 @@ public class WeightedFinalTally extends Command {
 
     @Override
     public String execute(String args, CommandObject command) {
+        if (!command.guild.config.modulePixels)
+            return "> Weighted final tally should only be used if the pixel module is enabled, please use **"
+                    + get(FinalTally.class).getUsage(command) + "** instead.";
         Map<Long, Long> entryVotes = new HashMap<>();
         long totalEntries = 0;
         long totalVotes = 0;
@@ -30,7 +35,7 @@ public class WeightedFinalTally extends Command {
                         if (entryVotes.containsKey(vote)) {
                             IUser user = command.guild.getUserByID(Utility.stringLong(splitVotes[0]));
                             if (user != null) {
-                                int weight = XpHandler.getRewardCount(command.guild, user.getLongID());
+                                int weight = PixelHandler.getRewardCount(command.guild, user.getLongID());
                                 entryVotes.put(vote, entryVotes.get(vote).longValue() + weight + 1);
                                 totalVotes += weight + 1;
                             }
@@ -50,7 +55,7 @@ public class WeightedFinalTally extends Command {
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"WeightedFinalTally", "WFinalTally"};
     }
 
@@ -60,57 +65,37 @@ public class WeightedFinalTally extends Command {
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return null;
     }
 
     @Override
-    public String type() {
-        return TYPE_COMPETITION;
+    protected SAILType type() {
+        return SAILType.COMPETITION;
     }
 
     @Override
-    public String channel() {
+    protected ChannelSetting channel() {
         return null;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[]{Permissions.MANAGE_SERVER};
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return false;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return false;
     }
 
     @Override
     public void init() {
 
-    }
-
-    @Override
-    public String dualDescription() {
-        return null;
-    }
-
-    @Override
-    public String dualUsage() {
-        return null;
-    }
-
-    @Override
-    public String dualType() {
-        return null;
-    }
-
-    @Override
-    public Permissions[] dualPerms() {
-        return new Permissions[0];
     }
 }

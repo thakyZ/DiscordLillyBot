@@ -1,14 +1,17 @@
 package com.github.vaerys.main;
 
+import com.github.vaerys.enums.FilePaths;
 import com.github.vaerys.handlers.*;
 import com.github.vaerys.pogos.Config;
 import com.github.vaerys.pogos.GlobalData;
+import com.github.vaerys.templates.FileFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.Discord4J;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
 import sx.blah.discord.handle.obj.IChannel;
+import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.RateLimitException;
 
@@ -44,7 +47,7 @@ public class Main {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Utility.sendStack(e);
                     }
                 }
                 Globals.saveFiles(true);
@@ -64,10 +67,13 @@ public class Main {
             FileHandler.createDirectory(Constants.DIRECTORY_TEMP);
             FileHandler.createDirectory(Constants.DIRECTORY_OLD_FILES);
             FileHandler.createDirectory(Constants.DIRECTORY_ERROR);
+            if (!FileHandler.exists(Constants.INFO_TEMPLATE)) {
+                Constants.initInfoTemplate();
+            }
 
             //load config phase 1
-            Config config = (Config) Config.create(Constants.FILE_CONFIG, new Config());
-            GlobalData globalData = (GlobalData) GlobalData.create(Constants.FILE_GLOBAL_DATA, new GlobalData());
+            Config config = FileFactory.create(FilePaths.CONFIG, Config.class);
+            GlobalData globalData = FileFactory.create(FilePaths.GLOBAL_DATA, GlobalData.class);
 
             config = Config.check(config);
 
@@ -76,7 +82,7 @@ public class Main {
                 token = FileHandler.readFromFile(Constants.FILE_TOKEN).get(0);
             } catch (IndexOutOfBoundsException e) {
                 logger.error("!!!BOT TOKEN NOT VALID PLEASE CHECK \"Storage/Token.txt\" AND UPDATE THE TOKEN!!!");
-                System.exit(Constants.EXITCODE_CONF_ERROR);
+                System.exit(Constants.EXITCODE_STOP);
             }
 
             try {
@@ -86,15 +92,8 @@ public class Main {
                 logger.info("No Pastebin Token found.");
             }
 
-            try {
-                List<String> patreonToken = FileHandler.readFromFile(Constants.FILE_PATREON_TOKEN);
-                Client.initPatreon(patreonToken);
-            } catch (IndexOutOfBoundsException e) {
-                logger.info("No Patreon Token found.");
-            }
 
-
-            //stuff that i cant get to work because reasons, ignore completely
+            //stuff that i cant getAllToggles to work because reasons, ignore completely
 
 //            try{
 //                List<String> richPresesnce = FileHandler.readFromFile(Constants.FILE_RPC_TOKEN);
@@ -116,12 +115,42 @@ public class Main {
             //load config phase 2
             Globals.initConfig(client, config, globalData);
 
+            if (Globals.creatorID == 153159020528533505L) {
+                try {
+                    List<String> patreonToken = FileHandler.readFromFile(Constants.FILE_PATREON_TOKEN);
+                    Client.initPatreon(patreonToken);
+                } catch (IndexOutOfBoundsException e) {
+                    logger.info("No Patreon Token found.");
+                }
+            }
+
+            Globals.validateConfig();
+            if (Globals.errorStack != null) {
+                logger.error(">\n> Begin Config Error Report <<\n" +
+                        "at " + Constants.DIRECTORY_STORAGE + Constants.FILE_CONFIG +
+                        "\n" + Globals.errorStack + ">> End Error Report <<");
+                System.exit(Constants.EXITCODE_STOP);
+            }
+
 
             ThreadGroup group = new ThreadGroup("GuildCreateGroup");
             final int[] count = new int[]{0};
 
             //login + register listener.
             client.login();
+
+            // initialize creatorID if it is completely unset:
+            if (config.creatorID == 0) {
+                IUser botOwner = client.getApplicationOwner();
+                config.creatorID = botOwner.getLongID();
+                Globals.creatorID = config.creatorID;
+
+                logger.info("Default creatorID set to user " + botOwner.getName() + "#" + botOwner.getDiscriminator());
+
+                // save it back out to file.
+                config.flushFile();
+            }
+
             ExecutorService guildService = new ThreadPoolExecutor(2, 50, 1,
                     TimeUnit.MINUTES, new ArrayBlockingQueue<>(1000),
                     r -> new Thread(group, r, group.getName() + "-Thread-" + ++count[0]));
@@ -139,13 +168,6 @@ public class Main {
             dispatcher.registerTemporaryListener(new InitEvent());
 
             //validate config file
-            Globals.validateConfig();
-            if (Globals.errorStack != null) {
-                logger.error(">\n> Begin Config Error Report <<\n" +
-                        "at " + Constants.DIRECTORY_STORAGE + Constants.FILE_CONFIG +
-                        "\n" + Globals.errorStack + ">> End Error Report <<");
-                System.exit(Constants.EXITCODE_CONF_ERROR);
-            }
             Globals.setVersion();
 
             //Init Patch system.
@@ -169,7 +191,7 @@ public class Main {
         while (scanner.hasNextLine()) {
             String message = scanner.nextLine();
             if (message.equalsIgnoreCase("!Shutdown")) {
-                System.exit(Constants.EXITCODE_NORMAL);
+                System.exit(Constants.EXITCODE_STOP);
                 return;
             }
             if (Globals.consoleMessageCID != -1) {

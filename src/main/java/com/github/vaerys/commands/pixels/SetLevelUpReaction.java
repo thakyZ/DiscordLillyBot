@@ -1,6 +1,8 @@
 package com.github.vaerys.commands.pixels;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.objects.SplitFirstObject;
 import com.github.vaerys.templates.Command;
 import com.vdurmont.emoji.Emoji;
@@ -35,7 +37,7 @@ public class SetLevelUpReaction extends Command {
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"SetLevelUpReaction"};
     }
 
@@ -45,57 +47,37 @@ public class SetLevelUpReaction extends Command {
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return "[Emoji]/Remove";
     }
 
     @Override
-    public String type() {
-        return TYPE_PIXEL;
+    protected SAILType type() {
+        return SAILType.PIXEL;
     }
 
     @Override
-    public String channel() {
+    protected ChannelSetting channel() {
         return null;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[]{Permissions.MANAGE_EMOJIS};
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return true;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return false;
     }
 
     @Override
     public void init() {
 
-    }
-
-    @Override
-    public String dualDescription() {
-        return null;
-    }
-
-    @Override
-    public String dualUsage() {
-        return null;
-    }
-
-    @Override
-    public String dualType() {
-        return null;
-    }
-
-    @Override
-    public Permissions[] dualPerms() {
-        return new Permissions[0];
     }
 }

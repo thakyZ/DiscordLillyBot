@@ -1,6 +1,7 @@
 package com.github.vaerys.tags.cctags;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.templates.TagObject;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class TagRandNum extends TagObject {
 
-    public TagRandNum(int priority, String... types) {
+    public TagRandNum(int priority, TagType... types) {
         super(priority, types);
     }
 
@@ -20,9 +21,9 @@ public class TagRandNum extends TagObject {
             long maxNum = Long.parseLong(spitArgs.get(1));
             from = replaceFirstTag(from, ThreadLocalRandom.current().nextLong(minNum, maxNum + 1) + "");
         } catch (NumberFormatException e) {
-            from = replaceFirstTag(from, "#ERROR#:" + name);
+            from = replaceFirstTag(from, error);
         } catch (IllegalArgumentException e) {
-            from = replaceFirstTag(from, "#ERROR#:" + name);
+            from = replaceFirstTag(from, error);
         }
         return from;
     }

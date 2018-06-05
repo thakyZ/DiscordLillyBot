@@ -1,6 +1,7 @@
 package com.github.vaerys.tags.cctags;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.templates.TagObject;
 import org.apache.commons.lang3.StringUtils;
 import sx.blah.discord.handle.obj.IRole;
@@ -10,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class TagRemoveMentions extends TagObject {
 
-    public TagRemoveMentions(int priority, String... types) {
+    public TagRemoveMentions(int priority, TagType... types) {
         super(priority, types);
     }
 

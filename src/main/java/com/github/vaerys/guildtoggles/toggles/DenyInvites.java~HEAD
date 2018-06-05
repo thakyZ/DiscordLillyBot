@@ -1,7 +1,12 @@
 package com.github.vaerys.guildtoggles.toggles;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/guildtoggles/toggles/DenyInvites.java~HEAD
 import com.github.vaerys.interfaces.GuildToggle;
 import com.github.vaerys.masterobjects.GuildObject;
+=======
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.SAILType;
+>>>>>>> master:src/main/java/com/github/vaerys/guildtoggles/toggles/DenyInvites.java
 import com.github.vaerys.pogos.GuildConfig;
 
 /**
@@ -10,8 +15,8 @@ import com.github.vaerys.pogos.GuildConfig;
 public class DenyInvites implements GuildToggle {
 
     @Override
-    public String name() {
-        return "DenyInvites";
+    public SAILType name() {
+        return SAILType.DENY_INVITES;
     }
 
     @Override
@@ -20,7 +25,7 @@ public class DenyInvites implements GuildToggle {
     }
 
     @Override
-    public boolean get(GuildConfig config) {
+    public boolean enabled(GuildConfig config) {
         return config.denyInvites;
     }
 
@@ -30,8 +35,19 @@ public class DenyInvites implements GuildToggle {
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/guildtoggles/toggles/DenyInvites.java~HEAD
     public void execute(GuildObject guild) {
 
+=======
+    public String shortDesc(CommandObject command) {
+        return "Enables deletion of instant invites for non-approved members.";
+    }
+
+    @Override
+    public String desc(CommandObject command) {
+        return "Enables the deletion of instant invites that are sent in chat, will not affect users with the Manage Messages permissions. " +
+                "If any trusted roles are set up this feature will not affect users with those roles.";
+>>>>>>> master:src/main/java/com/github/vaerys/guildtoggles/toggles/DenyInvites.java
     }
 
     @Override

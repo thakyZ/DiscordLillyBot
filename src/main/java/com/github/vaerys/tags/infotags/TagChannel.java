@@ -1,13 +1,14 @@
 package com.github.vaerys.tags.infotags;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.templates.TagObject;
 import sx.blah.discord.handle.obj.IChannel;
 
 public class TagChannel extends TagObject {
 
-    public TagChannel(int priority, String... types) {
+    public TagChannel(int priority, TagType... types) {
         super(priority, types);
     }
 
@@ -17,7 +18,7 @@ public class TagChannel extends TagObject {
         if (channel != null) {
             return replaceFirstTag(from, channel.mention());
         } else {
-            return replaceFirstTag(from, "#ERROR#:" + name);
+            return replaceFirstTag(from, error);
         }
     }
 

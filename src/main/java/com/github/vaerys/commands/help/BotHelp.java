@@ -1,7 +1,9 @@
 package com.github.vaerys.commands.help;
 
-import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.objects.XEmbedBuilder;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.utilobjects.XEmbedBuilder;
 import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
 
@@ -54,7 +56,7 @@ public class BotHelp extends Command {
     private String arguments(CommandObject command) {
         XEmbedBuilder builder = new XEmbedBuilder(command);
         builder.withTitle("Arguments.");
-        builder.withDesc("> `[]` and `()` in the command usage are not needed and in some cases can cause the command to fail.\n" +
+        builder.withDesc("> `[]` and `()` in the command usage are not needed and in most cases can cause the command to fail.\n" +
                 "> `[]` brackets means that this argument is required.\n" +
                 "> `()` brackets means that this argument is optional.\n" +
                 "> When an argument ends in `...` it means you can input as many of this argument as you like.\n" +
@@ -65,7 +67,7 @@ public class BotHelp extends Command {
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"BotHelp"};
     }
 
@@ -75,57 +77,37 @@ public class BotHelp extends Command {
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return "(Mode)";
     }
 
     @Override
-    public String type() {
-        return TYPE_HELP;
+    protected SAILType type() {
+        return SAILType.HELP;
     }
 
     @Override
-    public String channel() {
+    protected ChannelSetting channel() {
         return null;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[0];
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return false;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return false;
     }
 
     @Override
     public void init() {
 
-    }
-
-    @Override
-    public String dualDescription() {
-        return null;
-    }
-
-    @Override
-    public String dualUsage() {
-        return null;
-    }
-
-    @Override
-    public String dualType() {
-        return null;
-    }
-
-    @Override
-    public Permissions[] dualPerms() {
-        return new Permissions[0];
     }
 }

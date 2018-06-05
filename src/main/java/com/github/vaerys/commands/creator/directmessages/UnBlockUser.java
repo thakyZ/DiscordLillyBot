@@ -1,22 +1,24 @@
 package com.github.vaerys.commands.creator.directmessages;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.enums.SAILType;
 import com.github.vaerys.main.Globals;
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.pogos.GlobalData;
 import com.github.vaerys.templates.DMCommand;
 
 import java.util.ListIterator;
 
 public class UnBlockUser extends DMCommand {
+
     @Override
     public String execute(String args, CommandObject command) {
         GlobalData globalData = Globals.getGlobalData();
         ListIterator iterator = globalData.getBlockedFromDMS().listIterator();
         long userID = Utility.stringLong(args.split(" ")[0]);
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             long id = (long) iterator.next();
-            if (id == userID){
+            if (id == userID) {
                 iterator.remove();
                 return "> User Unblocked";
             }
@@ -25,8 +27,8 @@ public class UnBlockUser extends DMCommand {
     }
 
     @Override
-    public String[] names() {
-        return new String[]{"UnBlockUser","UnBlock"};
+    protected String[] names() {
+        return new String[]{"UnBlockUser", "UnBlock"};
     }
 
     @Override
@@ -35,17 +37,17 @@ public class UnBlockUser extends DMCommand {
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return "[UserID]";
     }
 
     @Override
-    public String type() {
-        return TYPE_CREATOR;
+    protected SAILType type() {
+        return SAILType.CREATOR;
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return true;
     }
 

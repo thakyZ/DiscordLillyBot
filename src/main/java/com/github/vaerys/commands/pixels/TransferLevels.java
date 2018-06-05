@@ -1,9 +1,11 @@
 package com.github.vaerys.commands.pixels;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.handlers.GuildHandler;
 import com.github.vaerys.handlers.RequestHandler;
-import com.github.vaerys.handlers.XpHandler;
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.objects.ProfileObject;
 import com.github.vaerys.objects.RewardRoleObject;
 import com.github.vaerys.templates.Command;
@@ -18,6 +20,7 @@ import java.time.ZonedDateTime;
  * Created by Vaerys on 06/07/2017.
  */
 public class TransferLevels extends Command {
+
     @Override
     public String execute(String args, CommandObject command) {
         if (command.guild.config.xpGain) {
@@ -45,7 +48,7 @@ public class TransferLevels extends Command {
                         uObject.setCurrentLevel(r.getLevel());
                     }
                 }
-                XpHandler.checkUsersRoles(uObject.getUserID(), command.guild);
+                GuildHandler.checkUsersRoles(uObject.getUserID(), command.guild);
             }
         }
         RequestHandler.deleteMessage(message);
@@ -54,7 +57,7 @@ public class TransferLevels extends Command {
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"TransferLevels"};
     }
 
@@ -64,57 +67,37 @@ public class TransferLevels extends Command {
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return null;
     }
 
     @Override
-    public String type() {
-        return TYPE_PIXEL;
+    protected SAILType type() {
+        return SAILType.PIXEL;
     }
 
     @Override
-    public String channel() {
+    protected ChannelSetting channel() {
         return null;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[]{Permissions.MANAGE_SERVER};
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return false;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return true;
     }
 
     @Override
     public void init() {
 
-    }
-
-    @Override
-    public String dualDescription() {
-        return null;
-    }
-
-    @Override
-    public String dualUsage() {
-        return null;
-    }
-
-    @Override
-    public String dualType() {
-        return null;
-    }
-
-    @Override
-    public Permissions[] dualPerms() {
-        return new Permissions[0];
     }
 }

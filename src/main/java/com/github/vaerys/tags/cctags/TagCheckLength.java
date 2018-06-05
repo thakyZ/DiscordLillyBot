@@ -1,12 +1,13 @@
 package com.github.vaerys.tags.cctags;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.handlers.RequestHandler;
 import com.github.vaerys.templates.TagObject;
 
 public class TagCheckLength extends TagObject {
 
-    public TagCheckLength(int priority, String... types) {
+    public TagCheckLength(int priority, TagType... types) {
         super(priority, types);
     }
 
@@ -42,5 +43,10 @@ public class TagCheckLength extends TagObject {
     @Override
     public String desc() {
         return "Checks the length of the cc. If the final output is over 2000 chars it sends an error.";
+    }
+
+    @Override
+    public String handleTag(String from, CommandObject command, String args) {
+        return execute(from,command,args);
     }
 }

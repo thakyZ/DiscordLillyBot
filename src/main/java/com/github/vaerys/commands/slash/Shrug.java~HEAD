@@ -1,7 +1,12 @@
 package com.github.vaerys.commands.slash;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/slash/Shrug.java~HEAD
 import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.interfaces.SlashCommand;
+=======
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.templates.SlashCommand;
+>>>>>>> master:src/main/java/com/github/vaerys/commands/slash/Shrug.java
 
 /**
  * Created by Vaerys on 13/03/2017.
@@ -14,7 +19,7 @@ public class Shrug implements SlashCommand {
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"Shrug"};
     }
 }

@@ -1,17 +1,26 @@
 package com.github.vaerys.guildtoggles.toggles;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/guildtoggles/toggles/DontLogBot.java~HEAD
 import com.github.vaerys.interfaces.GuildToggle;
 import com.github.vaerys.masterobjects.GuildObject;
+=======
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.SAILType;
+>>>>>>> master:src/main/java/com/github/vaerys/guildtoggles/toggles/DontLogBot.java
 import com.github.vaerys.pogos.GuildConfig;
 
 /**
  * Created by Vaerys on 09/04/2017.
  */
+<<<<<<< HEAD:src/main/java/com/github/vaerys/guildtoggles/toggles/DontLogBot.java~HEAD
 public class DontLogBot implements GuildToggle{
+=======
+public class DontLogBot extends GuildSetting {
+>>>>>>> master:src/main/java/com/github/vaerys/guildtoggles/toggles/DontLogBot.java
 
     @Override
-    public String name() {
-        return "DontlogBot";
+    public SAILType name() {
+        return SAILType.DONT_LOG_BOT;
     }
 
     @Override
@@ -20,7 +29,7 @@ public class DontLogBot implements GuildToggle{
     }
 
     @Override
-    public boolean get(GuildConfig config) {
+    public boolean enabled(GuildConfig config) {
         return config.dontLogBot;
     }
 
@@ -30,8 +39,18 @@ public class DontLogBot implements GuildToggle{
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/guildtoggles/toggles/DontLogBot.java~HEAD
     public void execute(GuildObject guild) {
 
+=======
+    public String shortDesc(CommandObject command) {
+        return desc(command);
+    }
+
+    @Override
+    public String desc(CommandObject command) {
+        return "Disables the logging of bot actions for the logging system.";
+>>>>>>> master:src/main/java/com/github/vaerys/guildtoggles/toggles/DontLogBot.java
     }
 
     @Override

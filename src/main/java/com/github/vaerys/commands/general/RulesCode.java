@@ -1,10 +1,14 @@
 package com.github.vaerys.commands.general;
 
-import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.main.UserSetting;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.enums.UserSetting;
+import com.github.vaerys.handlers.GuildHandler;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.objects.ProfileObject;
 import com.github.vaerys.templates.Command;
 import org.apache.commons.lang3.StringUtils;
+import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.Permissions;
 
 import java.util.regex.Pattern;
@@ -24,16 +28,20 @@ public class RulesCode extends Command {
             return "> **" + command.user.displayName + "** You have already guessed the code correctly.";
         if (args.equalsIgnoreCase(command.guild.config.getRuleCode())) {
             profile.getSettings().add(UserSetting.READ_RULES);
+            String response = "> Congratulations you have guessed the Rule Code correctly, A Star";
             if (command.guild.config.xpGain) {
-                command.user.sendDm("> Congratulations you have been granted some pixels and a star has been added to your profile for reading the rules.\n" +
-                        "Never tell this code to anyone.");
+                response += " and " + (int) (200 * command.guild.config.xpModifier) + " Pixels have been added to your profile.";
                 profile.addXP(200, command.guild.config);
-                return null;
             } else {
-                command.user.sendDm("> Congratulations a star has been added to your profile for reading the rules.\n" +
-                        "Never tell this code to anyone.");
-                return null;
+                response += " has been added to your profile.";
             }
+            IRole ruleReward = command.guild.getRuleCodeRole();
+            if (ruleReward != null) {
+                response += "\nYou have also been granted the **" + ruleReward.getName() + "** Role.";
+            }
+            GuildHandler.checkUsersRoles(command.user.longID, command.guild);
+            command.user.sendDm(response);
+            return null;
         }
         int diff = (command.guild.config.getRuleCode().length() / 4);
         if (diff < 2) diff += 2;
@@ -52,8 +60,8 @@ public class RulesCode extends Command {
     }
 
     @Override
-    public String[] names() {
-        return new String[]{"RulesCode", "RuleCode"};
+    protected String[] names() {
+        return new String[]{"RuleCode", "RulesCode"};
     }
 
     @Override
@@ -66,57 +74,37 @@ public class RulesCode extends Command {
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return "[Secret code]";
     }
 
     @Override
-    public String type() {
-        return TYPE_GENERAL;
+    protected SAILType type() {
+        return SAILType.GENERAL;
     }
 
     @Override
-    public String channel() {
-        return CHANNEL_BOT_COMMANDS;
+    protected ChannelSetting channel() {
+        return ChannelSetting.BOT_COMMANDS;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[0];
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return true;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return false;
     }
 
     @Override
     public void init() {
 
-    }
-
-    @Override
-    public String dualDescription() {
-        return null;
-    }
-
-    @Override
-    public String dualUsage() {
-        return null;
-    }
-
-    @Override
-    public String dualType() {
-        return null;
-    }
-
-    @Override
-    public Permissions[] dualPerms() {
-        return new Permissions[0];
     }
 }

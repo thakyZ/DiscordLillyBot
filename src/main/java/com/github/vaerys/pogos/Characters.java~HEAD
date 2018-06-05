@@ -1,21 +1,36 @@
 package com.github.vaerys.pogos;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/pogos/Characters.java~HEAD
 import com.github.vaerys.interfaces.GuildFile;
 import com.github.vaerys.main.Constants;
 import com.github.vaerys.main.Globals;
 import com.github.vaerys.objects.CharacterObject;
+=======
+import com.github.vaerys.handlers.GuildHandler;
+import com.github.vaerys.handlers.PixelHandler;
+import com.github.vaerys.main.Constants;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.masterobjects.GuildObject;
+import com.github.vaerys.masterobjects.UserObject;
+import com.github.vaerys.objects.CharacterObject;
+import com.github.vaerys.templates.GlobalFile;
+>>>>>>> master:src/main/java/com/github/vaerys/pogos/Characters.java
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.Permissions;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
+import java.util.stream.Collectors;
 
 /**
  * Created by Vaerys on 14/08/2016.
  */
 
-public class Characters extends GuildFile {
+public class Characters extends GlobalFile {
     public static final String FILE_PATH = "Characters.json";
     boolean properlyInit = false;
     ArrayList<CharacterObject> characters = new ArrayList<>();
@@ -67,16 +82,21 @@ public class Characters extends GuildFile {
         return Constants.ERROR_CHAR_NOT_FOUND;
     }
 
-    public void setRolePrefix(String rolePrefix) {
-        this.rolePrefix = rolePrefix;
-    }
-
     public String getRolePrefix() {
         return rolePrefix;
     }
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/pogos/Characters.java~HEAD
     private void validateRoles(IGuild guild) {
         if (guild == null){
+=======
+    public void setRolePrefix(String rolePrefix) {
+        this.rolePrefix = rolePrefix;
+    }
+
+    public void validateRoles(IGuild guild) {
+        if (guild == null) {
+>>>>>>> master:src/main/java/com/github/vaerys/pogos/Characters.java
             return;
         }
         for (CharacterObject c : characters) {
@@ -89,4 +109,58 @@ public class Characters extends GuildFile {
             }
         }
     }
+<<<<<<< HEAD:src/main/java/com/github/vaerys/pogos/Characters.java~HEAD
+=======
+
+    public void updateVars(IGuild guild) {
+        for (CharacterObject c : characters) {
+            ListIterator iterator = c.getRoleIDs().listIterator();
+            while (iterator.hasNext()) {
+                long id = (long) iterator.next();
+                if (guild.getRoleByID(id) == null) {
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    public CharacterObject getCharByName(String args) {
+        for (CharacterObject c : characters) {
+            if (c.getName().equalsIgnoreCase(args)) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    public List<CharacterObject> getCharactersForUser(UserObject user) {
+        List<CharacterObject> charObjects = new LinkedList<>();
+        for (CharacterObject c : characters) {
+            if (c.getUserID() == user.longID) {
+                charObjects.add(c);
+            }
+        }
+        return charObjects;
+    }
+
+    public int maxCharsForUser(UserObject user, GuildObject guild) {
+        int maxChars = 4;
+        int rewardCount = PixelHandler.getRewardCount(guild, user.longID);
+        maxChars += rewardCount * 2;
+        if (user.isPatron) maxChars += 4;
+        if (GuildHandler.canBypass(user, guild)) maxChars += 4;
+        if (GuildHandler.testForPerms(user, guild, Permissions.MANAGE_MESSAGES)) maxChars += 4;
+        return maxChars;
+    }
+
+    public int maxCharsForUser(CommandObject command) {
+        return maxCharsForUser(command.user, command.guild);
+    }
+
+    public void addChar(String characterID, List<IRole> roles, UserObject user) {
+        characters.add(new CharacterObject(characterID, user.longID, user.displayName, roles.stream().map(iRole -> iRole.getLongID()).collect(Collectors.toList())));
+    }
+
+
+>>>>>>> master:src/main/java/com/github/vaerys/pogos/Characters.java
 }

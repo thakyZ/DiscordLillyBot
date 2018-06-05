@@ -1,25 +1,42 @@
 package com.github.vaerys.commands.characters;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/characters/DelChar.java~HEAD
 import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.interfaces.Command;
 import com.github.vaerys.main.Utility;
+=======
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.handlers.GuildHandler;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.templates.Command;
+>>>>>>> master:src/main/java/com/github/vaerys/commands/characters/DelChar.java
 import sx.blah.discord.handle.obj.Permissions;
 
 /**
  * Created by Vaerys on 31/01/2017.
  */
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/characters/DelChar.java~HEAD
 public class DelChar implements Command{
     @Override
     public String execute(String args, CommandObject command) {
         boolean bypass = false;
         if (Utility.testForPerms(new Permissions[]{Permissions.MANAGE_ROLES}, command.user.get(), command.guild.get())) {
+=======
+public class DelChar extends Command {
+
+    @Override
+    public String execute(String args, CommandObject command) {
+        boolean bypass = false;
+        if (GuildHandler.testForPerms(command, Permissions.MANAGE_MESSAGES)) {
+>>>>>>> master:src/main/java/com/github/vaerys/commands/characters/DelChar.java
             bypass = true;
         }
         return command.guild.characters.delChar(args.split(" ")[0], command.user.get(), command.guild.get(), bypass);
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"DelChar"};
     }
 
@@ -29,36 +46,37 @@ public class DelChar implements Command{
     }
 
     @Override
-    public String usage() {
-        return "[Character Name]";
+    protected String usage() {
+        return "[Character ID]";
     }
 
     @Override
-    public String type() {
-        return TYPE_CHARACTER;
+    protected SAILType type() {
+        return SAILType.CHARACTER;
     }
 
     @Override
-    public String channel() {
-        return CHANNEL_BOT_COMMANDS;
+    protected ChannelSetting channel() {
+        return ChannelSetting.CHARACTER;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[0];
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return true;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return false;
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/characters/DelChar.java~HEAD
     public String dualDescription() {
         return null;
     }
@@ -76,5 +94,9 @@ public class DelChar implements Command{
     @Override
     public Permissions[] dualPerms() {
         return new Permissions[0];
+=======
+    public void init() {
+
+>>>>>>> master:src/main/java/com/github/vaerys/commands/characters/DelChar.java
     }
 }

@@ -4,14 +4,18 @@ import com.github.vaerys.interfaces.GuildFile;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.objects.ProfileObject;
 import com.github.vaerys.objects.UserCountDown;
+<<<<<<< HEAD:src/main/java/com/github/vaerys/pogos/GuildUsers.java~HEAD
 import com.google.gson.annotations.SerializedName;
+=======
+import com.github.vaerys.templates.GlobalFile;
+>>>>>>> master:src/main/java/com/github/vaerys/pogos/GuildUsers.java
 
 import java.util.ArrayList;
 
 /**
  * Created by Vaerys on 03/02/2017.
  */
-public class GuildUsers extends GuildFile {
+public class GuildUsers extends GlobalFile {
     public static final String FILE_PATH = "Guild_Users.json";
     private boolean properlyInit;
     // TODO: 12/08/2017 make this just a liiitle bit less of a hack.

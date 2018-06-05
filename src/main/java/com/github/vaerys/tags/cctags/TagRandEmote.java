@@ -1,6 +1,7 @@
 package com.github.vaerys.tags.cctags;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.templates.TagObject;
 import sx.blah.discord.handle.obj.IEmoji;
 
@@ -9,7 +10,7 @@ import java.util.Random;
 
 public class TagRandEmote extends TagObject {
 
-    public TagRandEmote(int priority, String... types) {
+    public TagRandEmote(int priority, TagType... types) {
         super(priority, types);
     }
 

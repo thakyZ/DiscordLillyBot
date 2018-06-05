@@ -1,9 +1,9 @@
 package com.github.vaerys.guildtoggles.modules;
 
-import com.github.vaerys.channelsettings.settings.Groups;
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
 import com.github.vaerys.pogos.GuildConfig;
-import com.github.vaerys.templates.Command;
 import com.github.vaerys.templates.GuildModule;
 
 /**
@@ -12,8 +12,8 @@ import com.github.vaerys.templates.GuildModule;
 public class ModuleGroups extends GuildModule {
 
     @Override
-    public String name() {
-        return Command.TYPE_GROUPS;
+    public SAILType name() {
+        return SAILType.GROUPS;
     }
 
     @Override
@@ -22,7 +22,7 @@ public class ModuleGroups extends GuildModule {
     }
 
     @Override
-    public boolean get(GuildConfig config) {
+    public boolean enabled(GuildConfig config) {
         return config.moduleGroups;
     }
 
@@ -38,11 +38,16 @@ public class ModuleGroups extends GuildModule {
 
     @Override
     public void setup() {
-        channels.add(new Groups());
+        channels.add(ChannelSetting.GROUPS);
     }
 
     @Override
-    public String stats(CommandObject object) {
+    public String stats(CommandObject command) {
         return null;
+    }
+
+    @Override
+    public String shortDesc(CommandObject command) {
+        return "Helps users find other people willing to group up.";
     }
 }

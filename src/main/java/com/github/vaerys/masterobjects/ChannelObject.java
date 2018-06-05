@@ -1,25 +1,25 @@
 package com.github.vaerys.masterobjects;
 
-import com.github.vaerys.templates.ChannelSetting;
+import com.github.vaerys.enums.ChannelSetting;
 import sx.blah.discord.handle.obj.IChannel;
 import sx.blah.discord.handle.obj.IMessage;
 import sx.blah.discord.util.RequestBuffer;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ChannelObject {
     public ClientObject client;
-    private IChannel object;
     public long longID;
     public String name;
     public long position;
     public String mention = "#DM";
-    public List<String> settings = new ArrayList<>();
+    public List<ChannelSetting> settings = new LinkedList<>();
+    private IChannel object;
 
     public ChannelObject(IChannel channel, GuildObject guild) {
         if (channel == null) return;
-        this.client = new ClientObject(channel.getClient(), guild);
+        this.client = new ClientObject( guild);
         this.object = channel;
         this.longID = channel.getLongID();
         this.name = channel.getName();
@@ -27,10 +27,10 @@ public class ChannelObject {
             this.mention = channel.mention();
             this.position = channel.getPosition();
             for (ChannelSetting setting : guild.channelSettings) {
-                if (setting.getIDs(guild.config).size() == 0) {
+                if (setting.getIDs(guild).size() == 0) {
                     break;
-                } else if (setting.getIDs(guild.config).contains(Long.toUnsignedString(longID))) {
-                    settings.add(setting.name());
+                } else if (setting.getIDs(guild).contains(Long.toUnsignedString(longID))) {
+                    settings.add(setting);
                 }
             }
         }

@@ -1,13 +1,26 @@
 package com.github.vaerys.commands.creator;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/creator/ToggleTypingStatus.java~master
 import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.interfaces.Command;
+=======
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.main.Client;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.templates.Command;
+>>>>>>> master:src/main/java/com/github/vaerys/commands/creator/UpdateAvatar.java
 import sx.blah.discord.handle.obj.Permissions;
 
 /**
  * Created by Vaerys on 10/05/2017.
  */
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/creator/ToggleTypingStatus.java~master
 public class ToggleTypingStatus implements Command {
+=======
+public class UpdateAvatar extends Command {
+
+>>>>>>> master:src/main/java/com/github/vaerys/commands/creator/UpdateAvatar.java
     @Override
     public String execute(String args, CommandObject command) {
 //        command.channel.get().toggleTypingStatus();
@@ -15,8 +28,13 @@ public class ToggleTypingStatus implements Command {
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/creator/ToggleTypingStatus.java~master
     public String[] names() {
         return new String[]{"Typing"};
+=======
+    protected String[] names() {
+        return new String[]{"UpdateAvatar"};
+>>>>>>> master:src/main/java/com/github/vaerys/commands/creator/UpdateAvatar.java
     }
 
     @Override
@@ -25,36 +43,37 @@ public class ToggleTypingStatus implements Command {
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return null;
     }
 
     @Override
-    public String type() {
-        return TYPE_CREATOR;
+    protected SAILType type() {
+        return SAILType.CREATOR;
     }
 
     @Override
-    public String channel() {
+    protected ChannelSetting channel() {
         return null;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[0];
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return false;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return true;
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/creator/ToggleTypingStatus.java~master
     public String dualDescription() {
         return null;
     }
@@ -72,5 +91,9 @@ public class ToggleTypingStatus implements Command {
     @Override
     public Permissions[] dualPerms() {
         return new Permissions[0];
+=======
+    public void init() {
+
+>>>>>>> master:src/main/java/com/github/vaerys/commands/creator/UpdateAvatar.java
     }
 }

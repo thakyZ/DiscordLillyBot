@@ -4,6 +4,10 @@ import com.github.vaerys.interfaces.GuildFile;
 import com.github.vaerys.main.Constants;
 import com.github.vaerys.objects.CompObject;
 import com.github.vaerys.objects.PollObject;
+<<<<<<< HEAD:src/main/java/com/github/vaerys/pogos/Competition.java~HEAD
+=======
+import com.github.vaerys.templates.GlobalFile;
+>>>>>>> master:src/main/java/com/github/vaerys/pogos/Competition.java
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +15,7 @@ import java.util.Arrays;
 /**
  * Created by Vaerys on 29/08/2016.
  */
-public class Competition extends GuildFile {
+public class Competition extends GlobalFile {
     public static final String FILE_PATH = "Competition.json";
     boolean properlyInit = false;
     ArrayList<CompObject> entries = new ArrayList<>();

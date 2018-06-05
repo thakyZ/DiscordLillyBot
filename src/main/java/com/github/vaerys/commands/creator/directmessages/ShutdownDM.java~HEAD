@@ -1,21 +1,31 @@
 package com.github.vaerys.commands.creator.directmessages;
 
-import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.commands.creator.Shutdown;
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/creator/directmessages/ShutdownDM.java~HEAD
 import com.github.vaerys.interfaces.DMCommand;
+=======
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.templates.DMCommand;
+>>>>>>> master:src/main/java/com/github/vaerys/commands/creator/directmessages/ShutdownDM.java
 
 
 /**
  * Created by Vaerys on 23/04/2017.
  */
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/creator/directmessages/ShutdownDM.java~HEAD
 public class ShutdownDM implements DMCommand {
+=======
+public class ShutdownDM extends DMCommand {
+
+>>>>>>> master:src/main/java/com/github/vaerys/commands/creator/directmessages/ShutdownDM.java
     @Override
     public String execute(String args, CommandObject command) {
-        return new Shutdown().execute(args,command);
+        return get(Shutdown.class).execute(args, command);
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"Shutdown"};
     }
 
@@ -25,17 +35,17 @@ public class ShutdownDM implements DMCommand {
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return null;
     }
 
     @Override
-    public String type() {
-        return TYPE_CREATOR;
+    protected SAILType type() {
+        return SAILType.CREATOR;
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return false;
     }
 }

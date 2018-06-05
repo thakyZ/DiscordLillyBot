@@ -1,38 +1,60 @@
 package com.github.vaerys.commands.characters;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/characters/ListChars.java~HEAD
 import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.enums.UserSetting;
 import com.github.vaerys.interfaces.Command;
+=======
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.enums.UserSetting;
+import com.github.vaerys.handlers.RequestHandler;
+>>>>>>> master:src/main/java/com/github/vaerys/commands/characters/ListChars.java
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.masterobjects.UserObject;
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/characters/ListChars.java~HEAD
 import com.github.vaerys.objects.CharacterObject;
 import com.github.vaerys.objects.XEmbedBuilder;
 import sx.blah.discord.handle.obj.IUser;
+=======
+import com.github.vaerys.utilobjects.XEmbedBuilder;
+import com.github.vaerys.templates.Command;
+>>>>>>> master:src/main/java/com/github/vaerys/commands/characters/ListChars.java
 import sx.blah.discord.handle.obj.Permissions;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Vaerys on 31/01/2017.
  */
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/characters/ListChars.java~HEAD
 public class ListChars implements Command {
+=======
+public class ListChars extends Command {
+
+>>>>>>> master:src/main/java/com/github/vaerys/commands/characters/ListChars.java
     @Override
     public String execute(String args, CommandObject command) {
         XEmbedBuilder builder = new XEmbedBuilder();
         UserObject user = command.user;
         String title = "> Here are all of your characters.";
+        //get user
         if (args != null && !args.isEmpty()) {
             user = Utility.getUser(command, args, true);
             if (user == null) {
                 return "> Could not find user.";
             }
             if (user.longID != command.user.longID) {
-                title = "> Here are all of **@" + user.displayName + "'s** Characters.";
+                title = "> Here are all of @" + user.displayName + "'s Characters.";
             }
         }
+        //check private
         if (user.isPrivateProfile(command.guild) && user.longID != command.user.longID) {
             return "> User has set their profile to private.";
         }
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/characters/ListChars.java~HEAD
         ArrayList<String> list = new ArrayList<>();
         for (CharacterObject c : command.guild.characters.getCharacters(command.guild.get())) {
             if (c.getUserID().equals(user.stringID)) {
@@ -42,16 +64,34 @@ public class ListChars implements Command {
         Utility.listFormatterEmbed(title, builder, list, true);
         builder.appendField(spacer, Utility.getCommandInfo(new CharInfo(), command), false);
         builder.withColor(Utility.getUsersColour(command.client.bot, command.guild.get()));
+=======
+        //generate list
+        List<String> list = user.characters.stream().map(c -> c.getName()).collect(Collectors.toList());
+        //give message if empty
+        if (list.size() == 0) {
+            return "> You do not have any characters yet. Create one with **" + new UpdateChar().getUsage(command) + "**.";
+        }
+        //build embed data
+        builder.withTitle(title);
+        builder.withDesc("```\n" + Utility.listFormatter(list, true) + "```\n" + new CharInfo().missingArgs(command));
+        builder.withFooterText(user.characters.size() + "/" + command.guild.characters.maxCharsForUser(user, command.guild) + " Slots used.");
+        //send private char list
+>>>>>>> master:src/main/java/com/github/vaerys/commands/characters/ListChars.java
         if (user.getProfile(command.guild).getSettings().contains(UserSetting.PRIVATE_PROFILE)) {
             Utility.sendEmbedMessage("", builder, command.user.get().getOrCreatePMChannel());
             return "> Char list sent to your Direct messages.";
         }
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/characters/ListChars.java~HEAD
         Utility.sendEmbedMessage("", builder, command.channel.get());
+=======
+        //send regular
+        RequestHandler.sendEmbedMessage("", builder, command.channel.get());
+>>>>>>> master:src/main/java/com/github/vaerys/commands/characters/ListChars.java
         return null;
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"ListChars", "Chars", "CharList"};
     }
 
@@ -61,36 +101,37 @@ public class ListChars implements Command {
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return "(@User)";
     }
 
     @Override
-    public String type() {
-        return TYPE_CHARACTER;
+    protected SAILType type() {
+        return SAILType.CHARACTER;
     }
 
     @Override
-    public String channel() {
-        return CHANNEL_BOT_COMMANDS;
+    protected ChannelSetting channel() {
+        return ChannelSetting.CHARACTER;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[0];
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return false;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return false;
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/characters/ListChars.java~HEAD
     public String dualDescription() {
         return null;
     }
@@ -108,5 +149,9 @@ public class ListChars implements Command {
     @Override
     public Permissions[] dualPerms() {
         return new Permissions[0];
+=======
+    public void init() {
+
+>>>>>>> master:src/main/java/com/github/vaerys/commands/characters/ListChars.java
     }
 }

@@ -1,12 +1,13 @@
 package com.github.vaerys.tags.cctags;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.templates.TagObject;
 
 public class TagArgs extends TagObject {
 
-    public TagArgs(int priority, String... types) {
+    public TagArgs(int priority, TagType... types) {
         super(priority, types);
     }
 
@@ -15,6 +16,7 @@ public class TagArgs extends TagObject {
         if (!from.contains("<dontSanitize>")) {
             args = Utility.prepArgs(args);
         }
+        from = removeAll(from, "<dontSanitize>");
         return replaceAllTag(from, args);
     }
 

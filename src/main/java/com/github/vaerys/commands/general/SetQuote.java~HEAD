@@ -1,12 +1,25 @@
 package com.github.vaerys.commands.general;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/SetQuote.java~HEAD
 import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.interfaces.Command;
+=======
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.handlers.GuildHandler;
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/SetQuote.java
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.masterobjects.UserObject;
 import com.github.vaerys.objects.ProfileObject;
 import com.github.vaerys.objects.SplitFirstObject;
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/SetQuote.java~HEAD
 import sx.blah.discord.handle.obj.IUser;
+=======
+import com.github.vaerys.objects.SubCommandObject;
+import com.github.vaerys.templates.Command;
+import org.apache.commons.lang3.StringUtils;
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/SetQuote.java
 import sx.blah.discord.handle.obj.Permissions;
 
 /**
@@ -14,22 +27,66 @@ import sx.blah.discord.handle.obj.Permissions;
  */
 public class SetQuote implements Command {
 
+    public static final SubCommandObject ADMIN_EDIT = new SubCommandObject(
+            new String[]{"SetUserQuote", "SetUserDesc"},
+            "[@User] [Quote]",
+            "Edits a user's quote.",
+            SAILType.MOD_TOOLS,
+            Permissions.MANAGE_MESSAGES
+    );
+
     @Override
     public String execute(String args, CommandObject command) {
         UserObject user = command.user;
         SplitFirstObject userCall = new SplitFirstObject(args);
         boolean adminEdit = false;
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/SetQuote.java~HEAD
         if (Utility.testForPerms(dualPerms(), command.user.get(), command.guild.get()) || Utility.canBypass(command.user.get(), command.guild.get())) {
             user = Utility.getUser(command, userCall.getFirstWord(), false);
             if (user != null && userCall.getRest() != null && user.getProfile(command.guild) != null) {
+=======
+        if (ADMIN_EDIT.isSubCommand(command)) {
+            if (GuildHandler.testForPerms(command, Permissions.MANAGE_MESSAGES)) {
+                SplitFirstObject userCall = new SplitFirstObject(quote);
+                user = Utility.getUser(command, userCall.getFirstWord(), false, true);
+                if (user == null) return "> Could not find user.";
+                quote = userCall.getRest();
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/SetQuote.java
                 adminEdit = true;
             } else {
                 user = command.user;
             }
         }
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/SetQuote.java~HEAD
         ProfileObject u = user.getProfile(command.guild);
         if (u == null) {
             return "> " + user.displayName + " Has not Spoken yet thus they have nothing to edit.";
+=======
+        int maxLength = 140;
+        if (user.isPatron) {
+            maxLength += 140;
+        }
+        int maxNewlines = 2;
+        if (user.isPatron) {
+            maxNewlines += 2;
+        }
+        ProfileObject u = user.getProfile(command.guild);
+        quote = Utility.removeFun(quote);
+        if (quote == null || quote.isEmpty()) return "> You can't have an empty quote.";
+        if (StringUtils.countMatches(quote, "\n") > maxNewlines)
+            return "> You have too many newlines in that quote. (Max: " + maxNewlines + ")";
+        for (String s : quote.split(" ")) {
+            if (!Utility.checkURL(s)) {
+                return "> Cannot add quote. Malicious link found.";
+            }
+        }
+        if (adminEdit) {
+            if (quote.length() > maxLength) {
+                return "> Quote is too long...\n(must be under " + maxLength + " chars)";
+            }
+            u.setQuote(quote);
+            return "> " + user.displayName + "'s Quote Edited.";
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/SetQuote.java
         } else {
             args = Utility.removeFun(args);
             for (String s : args.split(" ")) {
@@ -54,6 +111,7 @@ public class SetQuote implements Command {
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/SetQuote.java~HEAD
     public String[] names() {
         return new String[]{"SetQuote"};
     }
@@ -61,39 +119,51 @@ public class SetQuote implements Command {
     @Override
     public String description() {
         return "Allows you to set your quote. Limit 140 chars.";
+=======
+    protected String[] names() {
+        return new String[]{"SetQuote", "SetDesc", "SetDescription"};
     }
 
     @Override
-    public String usage() {
+    public String description(CommandObject command) {
+        String response = "Allows you to set your quote. Limit 140 chars (or 280 if you are a patron)";
+        return response;
+
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/SetQuote.java
+    }
+
+    @Override
+    protected String usage() {
         return "[Quote...]";
     }
 
     @Override
-    public String type() {
-        return TYPE_GENERAL;
+    protected SAILType type() {
+        return SAILType.GENERAL;
     }
 
     @Override
-    public String channel() {
-        return CHANNEL_BOT_COMMANDS;
+    protected ChannelSetting channel() {
+        return ChannelSetting.PROFILES;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[0];
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return true;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return false;
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/SetQuote.java~HEAD
     public String dualDescription() {
         return "Allows you to set the quote of a user.";
     }
@@ -111,5 +181,9 @@ public class SetQuote implements Command {
     @Override
     public Permissions[] dualPerms() {
         return new Permissions[]{Permissions.MANAGE_MESSAGES};
+=======
+    public void init() {
+        subCommands.add(ADMIN_EDIT);
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/SetQuote.java
     }
 }

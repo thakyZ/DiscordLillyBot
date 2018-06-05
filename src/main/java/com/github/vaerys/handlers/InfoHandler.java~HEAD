@@ -1,5 +1,10 @@
 package com.github.vaerys.handlers;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/handlers/InfoHandler.java~HEAD
+=======
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.TagType;
+>>>>>>> master:src/main/java/com/github/vaerys/handlers/InfoHandler.java
 import com.github.vaerys.main.Constants;
 import com.github.vaerys.main.Utility;
 import org.apache.commons.lang3.StringUtils;
@@ -15,9 +20,13 @@ import java.util.regex.Pattern;
  * This Class Is the Handler for the updateInfo Method it pulls the info.txt doc and then updates the channel based on the contents of the file.
  */
 public class InfoHandler {
+    List<String> infoContents;
+<<<<<<< HEAD:src/main/java/com/github/vaerys/handlers/InfoHandler.java~HEAD
+=======
+    CommandObject object;
     private IGuild guild;
     private IChannel channel;
-    List<String> infoContents;
+>>>>>>> master:src/main/java/com/github/vaerys/handlers/InfoHandler.java
 
     public InfoHandler(IChannel channel, IGuild guild) {
         this.channel = channel;
@@ -35,7 +44,7 @@ public class InfoHandler {
         String lastChunk;
         String nextChunk;
         String imageTag;
-        String[] splited;
+        String[] split;
         String imagePrefix = "<image>{";
         String imageSuffix = "}";
         String tagBreak = "<split>";
@@ -46,21 +55,36 @@ public class InfoHandler {
             //this ignores commented out code.
             if (!s.startsWith("//")){
                 //code for image handling
+<<<<<<< HEAD:src/main/java/com/github/vaerys/handlers/InfoHandler.java~HEAD
                 if (builder.toString().contains(imagePrefix)){
                     imageTag = imagePrefix + StringUtils.substringBetween(builder.toString(),imagePrefix,imageSuffix) + imageSuffix;
                     splited = builder.toString().split(Pattern.quote(imageTag));
                     lastChunk = splited[0];
                     nextChunk = splited[1];
+=======
+                if (builder.toString().contains(imagePrefix)) {
+                    imageTag = imagePrefix + StringUtils.substringBetween(builder.toString(), imagePrefix, imageSuffix) + imageSuffix;
+                    split = builder.toString().split(Pattern.quote(imageTag));
+                    lastChunk = split[0];
+                    nextChunk = split[1];
+>>>>>>> master:src/main/java/com/github/vaerys/handlers/InfoHandler.java
                     stringChunks.add(lastChunk);
                     stringChunks.add(imageTag);
                     builder.delete(0,builder.length());
                     builder.append(nextChunk);
                 }
                 // tag tells the system to save chunk and move to the next one
+<<<<<<< HEAD:src/main/java/com/github/vaerys/handlers/InfoHandler.java~HEAD
                 if (builder.toString().contains(tagBreak)){
                     splited = builder.toString().split(Pattern.quote(tagBreak));
                     lastChunk = splited[0];
                     nextChunk = splited[1];
+=======
+                if (builder.toString().contains(tagBreak)) {
+                    split = builder.toString().split(Pattern.quote(tagBreak));
+                    lastChunk = split[0];
+                    nextChunk = split[1];
+>>>>>>> master:src/main/java/com/github/vaerys/handlers/InfoHandler.java
                     stringChunks.add(lastChunk);
                     builder.delete(0,builder.length());
                     builder.append(nextChunk);
@@ -88,19 +112,21 @@ public class InfoHandler {
             }else {
                 Utility.sendMessage(contents,channel).get();
             }
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Utility.sendStack(e);
-            }
         }
     }
 
 
     private String doTextTags(String s) {
+<<<<<<< HEAD:src/main/java/com/github/vaerys/handlers/InfoHandler.java~HEAD
         s = TagHandler.tagChannel(s); //links the channel
         s = TagHandler.tagDisplayName(s, guild); //links a non ping displayname
         s = TagHandler.tagSpacer(s); //spacer tag
+=======
+        List<TagObject> tagObjects = TagList.getType(TagType.INFO);
+        for (TagObject t : tagObjects) {
+            s = t.handleTag(s, object, "");
+        }
+>>>>>>> master:src/main/java/com/github/vaerys/handlers/InfoHandler.java
         return s;
     }
 

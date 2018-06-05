@@ -1,0 +1,102 @@
+package com.github.vaerys.commands.cc;
+
+import com.github.vaerys.handlers.GuildHandler;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.objects.CCommandObject;
+import com.github.vaerys.tags.cctags.TagSearchTags;
+import org.apache.commons.lang3.StringUtils;
+import sx.blah.discord.handle.obj.IGuild;
+import sx.blah.discord.handle.obj.IUser;
+import sx.blah.discord.handle.obj.Permissions;
+
+/**
+ * Created by Vaerys on 04/04/2017.
+ */
+public class CCEditModes {
+
+    public static String lock(CCommandObject c, CommandObject command, IUser author, IGuild guild) {
+        if (GuildHandler.testForPerms(author, guild, Permissions.MANAGE_MESSAGES)) {
+            c.toggleLocked();
+            return "> Lock for **" + c.getName() + "** is now " + c.isLocked() + ".";
+        } else {
+            return command.user.notAllowed;
+        }
+    }
+
+    public static String shitPost(CCommandObject c, CommandObject command, IUser author, IGuild guild) {
+        if (GuildHandler.testForPerms(author, guild, Permissions.MANAGE_MESSAGES)) {
+            c.toggleShitPost();
+            return "> Shitpost for **" + c.getName() + "** is now " + c.isShitPost() + ".";
+        } else {
+            return command.user.notAllowed;
+        }
+    }
+
+    public static String deleteTag(CCommandObject c) {
+        String delCall = "<delCall>";
+        if (c.getContents(false).contains(delCall)) {
+            return "> Command will already delete the calling message.";
+        } else {
+            c.setContents(c.getContents(false) + delCall);
+            return "> Tag added";
+        }
+    }
+
+
+    public static String replace(CCommandObject command, String content, CommandObject object) {
+        if (content == null || content.isEmpty() && object.message.get().getAttachments().size() == 0) {
+            return "> Missing content to replace with.";
+        }
+
+        command.setContents(content);
+        return "> Command Edited.";
+    }
+
+    public static String toEmbed(CCommandObject commmand) {
+        String contents = commmand.getContents(false);
+        if (contents.contains(" ") || contents.contains("\n")) {
+            return "> Failed to add embed tag.";
+        }
+        if (contents.contains("<embedImage>{")) {
+            return "> Command already has an EmbedImage Tag, cannot add more than one.";
+        }
+        commmand.setContents("<embedImage>{" + contents + "}");
+        return "> Embed tag added.";
+    }
+
+    public static String append(CCommandObject command, String content, CommandObject commandObject) {
+        if (content == null || content.isEmpty()) {
+            return "> Missing content to append.";
+        }
+        if ((command.getContents(false) + content).length() > 2000) {
+            return "> Cannot append content, would make command to large.";
+        }
+        if (StringUtils.countMatches(command.getContents(false) + content, "<embedImage>{") > 1) {
+            if (commandObject.message.get().getAttachments().size() != 0) {
+                return "> Custom commands cannot contain more than one image.";
+            }
+            return "> Custom Commands Cannot have multiple <embedImage> tags";
+        }
+        command.setContents(command.getContents(false) + content);
+        return "> Content appended to end of command.";
+    }
+
+    public static String addSearchTag(CCommandObject customCommand, String content) {
+        if (content == null || content.isEmpty()) {
+            return "> Missing Any new search tags to be added.";
+        }
+        new TagSearchTags(0).addTag(customCommand, content);
+        return "> Search Tag added.";
+    }
+
+    public static String removeSearchTag(CCommandObject customCommand, String content) {
+        if (content == null || content.isEmpty()) {
+            return "> Missing Any new search tags to be added.";
+        }
+        boolean removed = new TagSearchTags(0).removeTag(customCommand, content);
+        if (removed) {
+            return "> Search Tag removed.";
+        }
+        return "> Tag could not be removed, tag could not be found.";
+    }
+}

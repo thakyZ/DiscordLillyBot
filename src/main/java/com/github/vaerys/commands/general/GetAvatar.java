@@ -1,8 +1,10 @@
 package com.github.vaerys.commands.general;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
 import com.github.vaerys.handlers.RequestHandler;
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.masterobjects.UserObject;
 import com.github.vaerys.templates.Command;
 import sx.blah.discord.handle.obj.Permissions;
@@ -11,9 +13,10 @@ import sx.blah.discord.handle.obj.Permissions;
  * Created by Vaerys on 30/01/2017.
  */
 public class GetAvatar extends Command {
+
     @Override
     public String execute(String args, CommandObject command) {
-        UserObject user = Utility.getUser(command, args, true,false);
+        UserObject user = Utility.getUser(command, args, true, false);
         if (user != null) {
             String message = user.displayName + ":\n" + user.get().getAvatarURL();
             if (user.isPrivateProfile(command.guild) && user.longID != command.user.longID) {
@@ -29,7 +32,7 @@ public class GetAvatar extends Command {
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"GetAvatar"};
     }
 
@@ -39,57 +42,37 @@ public class GetAvatar extends Command {
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return "[@User]";
     }
 
     @Override
-    public String type() {
-        return TYPE_GENERAL;
+    protected SAILType type() {
+        return SAILType.GENERAL;
     }
 
     @Override
-    public String channel() {
+    protected ChannelSetting channel() {
         return null;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[0];
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return true;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return false;
     }
 
     @Override
     public void init() {
 
-    }
-
-    @Override
-    public String dualDescription() {
-        return null;
-    }
-
-    @Override
-    public String dualUsage() {
-        return null;
-    }
-
-    @Override
-    public String dualType() {
-        return null;
-    }
-
-    @Override
-    public Permissions[] dualPerms() {
-        return new Permissions[0];
     }
 }

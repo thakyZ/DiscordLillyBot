@@ -1,11 +1,19 @@
 package com.github.vaerys.commands.general;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/EditLinks.java~HEAD
 import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.interfaces.Command;
+=======
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.handlers.GuildHandler;
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/EditLinks.java
 import com.github.vaerys.main.Utility;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.masterobjects.UserObject;
 import com.github.vaerys.objects.ProfileObject;
 import com.github.vaerys.objects.SplitFirstObject;
+import com.github.vaerys.objects.SubCommandObject;
 import com.github.vaerys.objects.UserLinkObject;
 import sx.blah.discord.handle.obj.IUser;
 import sx.blah.discord.handle.obj.Permissions;
@@ -16,13 +24,30 @@ import java.net.URL;
 /**
  * Created by Vaerys on 17/06/2017.
  */
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/EditLinks.java~HEAD
 public class EditLinks implements Command {
+=======
+public class EditLinks extends Command {
+
+    protected static final SubCommandObject ADMIN_EDIT = new SubCommandObject(
+            new String[]{"EditLinks", "NewLink"},
+            "[@User] [Link Name] (Link)",
+            "Allows the modification of user links.",
+            SAILType.MOD_TOOLS,
+            Permissions.MANAGE_MESSAGES
+    );
+
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/EditLinks.java
     @Override
     public String execute(String args, CommandObject command) {
         UserObject user = command.user;
         SplitFirstObject userCall = new SplitFirstObject(args);
         boolean adminEdit = false;
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/EditLinks.java~HEAD
         if (Utility.testForPerms(dualPerms(), command.user.get(), command.guild.get()) || Utility.canBypass(command.user.get(), command.guild.get())) {
+=======
+        if (GuildHandler.testForPerms(command, ADMIN_EDIT.getPermissions()) || GuildHandler.canBypass(command.user.get(), command.guild.get())) {
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/EditLinks.java
             user = Utility.getUser(command, userCall.getFirstWord(), false);
             if (user != null && userCall.getRest() != null && user.getProfile(command.guild) != null) {
                 adminEdit = true;
@@ -65,6 +90,9 @@ public class EditLinks implements Command {
             if (linkName.getFirstWord().length() > 15) {
                 return "> Link Name too long. (Max 15 chars)";
             }
+            if (linkName.getFirstWord().contains("\n")){
+                return "> Link Name cannot contain Newlines.";
+            }
             if (Utility.checkURL(linkName.getRest())) {
                 try {
                     new URL(linkName.getRest());
@@ -84,7 +112,7 @@ public class EditLinks implements Command {
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"EditLinks", "NewLink"};
     }
 
@@ -94,36 +122,37 @@ public class EditLinks implements Command {
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return "[Link Name] (Link)";
     }
 
     @Override
-    public String type() {
-        return TYPE_GENERAL;
+    protected SAILType type() {
+        return SAILType.GENERAL;
     }
 
     @Override
-    public String channel() {
-        return CHANNEL_BOT_COMMANDS;
+    protected ChannelSetting channel() {
+        return ChannelSetting.PROFILES;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[0];
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return true;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return false;
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/EditLinks.java~HEAD
     public String dualDescription() {
         return "Allows the modification of user links.";
     }
@@ -141,5 +170,9 @@ public class EditLinks implements Command {
     @Override
     public Permissions[] dualPerms() {
         return new Permissions[]{Permissions.MANAGE_MESSAGES};
+=======
+    public void init() {
+        subCommands.add(ADMIN_EDIT);
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/EditLinks.java
     }
 }

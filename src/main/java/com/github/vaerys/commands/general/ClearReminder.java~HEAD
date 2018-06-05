@@ -1,15 +1,26 @@
 package com.github.vaerys.commands.general;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/ClearReminder.java~HEAD
 import com.github.vaerys.commands.CommandObject;
 import com.github.vaerys.interfaces.Command;
+=======
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/ClearReminder.java
 import com.github.vaerys.main.Globals;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.objects.ReminderObject;
 import sx.blah.discord.handle.obj.Permissions;
 
 /**
  * Created by Vaerys on 05/04/2017.
  */
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/ClearReminder.java~HEAD
 public class ClearReminder implements Command{
+=======
+public class ClearReminder extends Command {
+
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/ClearReminder.java
     @Override
     public String execute(String args, CommandObject command) {
         boolean wasfound = false;
@@ -30,7 +41,7 @@ public class ClearReminder implements Command{
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"ClearReminder"};
     }
 
@@ -40,36 +51,37 @@ public class ClearReminder implements Command{
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return null;
     }
 
     @Override
-    public String type() {
-        return TYPE_GENERAL;
+    protected SAILType type() {
+        return SAILType.GENERAL;
     }
 
     @Override
-    public String channel() {
+    protected ChannelSetting channel() {
         return null;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[0];
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return false;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return false;
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/commands/general/ClearReminder.java~HEAD
     public String dualDescription() {
         return null;
     }
@@ -87,5 +99,9 @@ public class ClearReminder implements Command{
     @Override
     public Permissions[] dualPerms() {
         return new Permissions[0];
+=======
+    public void init() {
+
+>>>>>>> master:src/main/java/com/github/vaerys/commands/general/ClearReminder.java
     }
 }

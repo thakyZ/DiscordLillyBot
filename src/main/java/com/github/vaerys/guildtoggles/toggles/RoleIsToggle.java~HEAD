@@ -1,7 +1,13 @@
 package com.github.vaerys.guildtoggles.toggles;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/guildtoggles/toggles/RoleIsToggle.java~HEAD
 import com.github.vaerys.interfaces.GuildToggle;
 import com.github.vaerys.masterobjects.GuildObject;
+=======
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.commands.roleSelect.CosmeticRoles;
+import com.github.vaerys.enums.SAILType;
+>>>>>>> master:src/main/java/com/github/vaerys/guildtoggles/toggles/RoleIsToggle.java
 import com.github.vaerys.pogos.GuildConfig;
 
 /**
@@ -9,8 +15,8 @@ import com.github.vaerys.pogos.GuildConfig;
  */
 public class RoleIsToggle implements GuildToggle {
     @Override
-    public String name() {
-        return "RoleIsToggle";
+    public SAILType name() {
+        return SAILType.ROLE_IS_TOGGLE;
     }
 
     @Override
@@ -19,7 +25,7 @@ public class RoleIsToggle implements GuildToggle {
     }
 
     @Override
-    public boolean get(GuildConfig config) {
+    public boolean enabled(GuildConfig config) {
         return config.roleIsToggle;
     }
 
@@ -29,8 +35,18 @@ public class RoleIsToggle implements GuildToggle {
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/guildtoggles/toggles/RoleIsToggle.java~HEAD
     public void execute(GuildObject guild) {
 
+=======
+    public String shortDesc(CommandObject command) {
+        return desc(command);
+    }
+
+    @Override
+    public String desc(CommandObject command) {
+        return "Changes the " + new CosmeticRoles().getCommand(command) + " command to make it toggle roles.";
+>>>>>>> master:src/main/java/com/github/vaerys/guildtoggles/toggles/RoleIsToggle.java
     }
 
     @Override

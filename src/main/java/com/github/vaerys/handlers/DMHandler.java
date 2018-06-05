@@ -1,10 +1,10 @@
 package com.github.vaerys.handlers;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.main.Globals;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.masterobjects.GuildObject;
-import com.github.vaerys.objects.XEmbedBuilder;
+import com.github.vaerys.utilobjects.XEmbedBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sx.blah.discord.handle.obj.IChannel;
@@ -12,6 +12,7 @@ import sx.blah.discord.handle.obj.IMessage;
 
 import java.awt.*;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by Vaerys on 27/08/2016.
@@ -37,25 +38,30 @@ public class DMHandler {
                 command.message.getAttachments().forEach(attachment -> logging[0] += "\n" + attachment.getUrl());
             }
             logger.info(logging[0]);
+            String step1 = "> Thank you for your message.";
+            String step2 = "> That's what I just said, you don't have to repeat it.";
+            String step3 = "> Okay, do you like repeating the things bots say?";
+            String step4 = "> Alright this was funny to begin with but now its gotten too far. next time you do that, im going to block you.";
+            String step5 = "> I warned you...";
             Globals.lastDmUserID = command.user.longID;
-            if (command.message.getContent().equalsIgnoreCase("> Thank you for your message.")) {
-                command.user.sendDm("> That's what I just said, you don't have to repeat it.");
+            if (command.message.getContent().equalsIgnoreCase(step1)) {
+                command.user.sendDm(step2);
                 return;
             }
-            if (command.message.getContent().equalsIgnoreCase("> That's what I just said, you don't have to repeat it.")) {
-                command.user.sendDm("> Okay, do you like repeating the things bots say?");
+            if (command.message.getContent().equalsIgnoreCase(step2)) {
+                command.user.sendDm(step3);
                 return;
             }
-            if (command.message.getContent().equalsIgnoreCase("> Okay, do you like repeating the things bots say?")) {
-                command.user.sendDm("> Alright this was funny to begin with but now its gotten too far. next time you do that, im going to block you.");
+            if (command.message.getContent().equalsIgnoreCase(step3)) {
+                command.user.sendDm(step4);
                 return;
             }
-            if (command.message.getContent().equalsIgnoreCase("> Alright this was funny to begin with but now its gotten too far. next time you do that, im going to block you.")) {
-                command.user.sendDm("> I warned you...");
+            if (command.message.getContent().equalsIgnoreCase(step4)) {
+                command.user.sendDm(step5);
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    Utility.sendStack(e);
                 }
                 Globals.getGlobalData().getBlockedFromDMS().add(command.user.longID);
                 command.user.sendDm("> You were blocked.");
@@ -72,6 +78,15 @@ public class DMHandler {
                     return;
                 }
             }
+
+            if (Pattern.compile("(?i)(discord\\.gg/|discordapp\\.com/Invite/)").matcher(command.message.getContent()).find()) {
+                command.user.sendDm("> Hey it looks like you are trying to send me a Invite link to a server. If you want me to " +
+                        "join your server please send a request to the Support server found in my info command.\n" +
+                        "Note: My Creator may be busy or asleep when you send the request so please be polite, " +
+                        "I am still an invite only bot that still requires developer help to set up to keep that in mind.");
+                return;
+            }
+
             String content = command.message.getContent();
             XEmbedBuilder builder = new XEmbedBuilder();
             Color color = command.user.getRandomColour();
@@ -98,9 +113,9 @@ public class DMHandler {
 
 //            if (command.)
 //
-//                if (command.message.get().getAttachments().size() > 0) {
+//                if (command.message.getAllToggles().getAttachments().size() > 0) {
 //                    String attachmemts = "";
-//                    for (IMessage.Attachment a : command.message.get().getAttachments()) {
+//                    for (IMessage.Attachment a : command.message.getAllToggles().getAttachments()) {
 //                        attachmemts = "\n" + a.getUrl();
 //                    }
 //                    RequestHandler.sendMessage(logging + attachmemts, ownerDm);

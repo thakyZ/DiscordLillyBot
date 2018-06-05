@@ -1,10 +1,18 @@
 package com.github.vaerys.pogos;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/pogos/Servers.java~HEAD
 import com.github.vaerys.interfaces.GuildFile;
+=======
+import com.github.vaerys.handlers.GuildHandler;
+>>>>>>> master:src/main/java/com/github/vaerys/pogos/Servers.java
 import com.github.vaerys.main.Globals;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.objects.BlackListObject;
 import com.github.vaerys.objects.ServerObject;
+<<<<<<< HEAD:src/main/java/com/github/vaerys/pogos/Servers.java~HEAD
+=======
+import com.github.vaerys.templates.GlobalFile;
+>>>>>>> master:src/main/java/com/github/vaerys/pogos/Servers.java
 import org.apache.commons.lang3.StringUtils;
 import sx.blah.discord.handle.obj.IGuild;
 import sx.blah.discord.handle.obj.Permissions;
@@ -15,7 +23,7 @@ import java.util.Arrays;
 /**
  * Created by Vaerys on 14/08/2016.
  */
-public class Servers extends GuildFile {
+public class Servers extends GlobalFile {
     public static final String FILE_PATH = "Servers.json";
     boolean properlyInit = false;
     ArrayList<BlackListObject> blackList = new ArrayList<>();
@@ -75,8 +83,13 @@ public class Servers extends GuildFile {
     public String editServerDesc(String userID, String serverName, String desc, IGuild guild) {
         for (ServerObject s : servers) {
             if (s.getName().equalsIgnoreCase(serverName)) {
+<<<<<<< HEAD:src/main/java/com/github/vaerys/pogos/Servers.java~HEAD
                 boolean bypass = Utility.testForPerms(new Permissions[]{Permissions.MANAGE_MESSAGES}, Globals.getClient().getUserByID(userID), guild);
                 if (s.getCreatorID().equals(userID) || bypass) {
+=======
+                boolean bypass = GuildHandler.testForPerms(Globals.getClient().getUserByID(userID), guild, Permissions.MANAGE_MESSAGES);
+                if (s.getCreatorID() == userID || bypass) {
+>>>>>>> master:src/main/java/com/github/vaerys/pogos/Servers.java
                     String check = Utility.checkBlacklist(desc, blackList);
                     if (check != null) {
                         return check;
@@ -99,8 +112,13 @@ public class Servers extends GuildFile {
     public String editIP(String userID, String serverName, String IP, String port, IGuild guild) {
         for (ServerObject s : servers) {
             if (s.getName().equalsIgnoreCase(serverName)) {
+<<<<<<< HEAD:src/main/java/com/github/vaerys/pogos/Servers.java~HEAD
                 boolean bypass = Utility.testForPerms(new Permissions[]{Permissions.MANAGE_MESSAGES}, Globals.getClient().getUserByID(userID), guild);
                 if (s.getCreatorID().equals(userID) || bypass) {
+=======
+                boolean bypass = GuildHandler.testForPerms(Globals.getClient().getUserByID(userID), guild, Permissions.MANAGE_MESSAGES);
+                if (s.getCreatorID() == userID || bypass) {
+>>>>>>> master:src/main/java/com/github/vaerys/pogos/Servers.java
                     String check = Utility.checkBlacklist(IP + port, blackList);
                     if (check != null) {
                         return check;
@@ -117,8 +135,13 @@ public class Servers extends GuildFile {
     public String editServerName(String userID, String oldServerName, String newServerName, IGuild guild) {
         for (ServerObject s : servers) {
             if (s.getName().equalsIgnoreCase(oldServerName)) {
+<<<<<<< HEAD:src/main/java/com/github/vaerys/pogos/Servers.java~HEAD
                 boolean bypass = Utility.testForPerms(new Permissions[]{Permissions.MANAGE_MESSAGES}, Globals.getClient().getUserByID(userID), guild);
                 if (s.getCreatorID().equals(userID) || bypass) {
+=======
+                boolean bypass = GuildHandler.testForPerms(Globals.getClient().getUserByID(userID), guild, Permissions.MANAGE_MESSAGES);
+                if (s.getCreatorID() == userID || bypass) {
+>>>>>>> master:src/main/java/com/github/vaerys/pogos/Servers.java
                     for (ServerObject so : servers) {
                         if (so.getName().equalsIgnoreCase(newServerName)) {
                             return "> Cannot change Server name. That server name is already in use.";
@@ -140,8 +163,13 @@ public class Servers extends GuildFile {
         int position = 0;
         for (ServerObject s : servers) {
             if (s.getName().equalsIgnoreCase(serverName)) {
+<<<<<<< HEAD:src/main/java/com/github/vaerys/pogos/Servers.java~HEAD
                 boolean bypass = Utility.testForPerms(new Permissions[]{Permissions.MANAGE_MESSAGES}, Globals.getClient().getUserByID(userID), guild);
                 if (s.getCreatorID().equals(userID) || bypass) {
+=======
+                boolean bypass = GuildHandler.testForPerms(Globals.getClient().getUserByID(userID), guild, Permissions.MANAGE_MESSAGES);
+                if (s.getCreatorID() == userID || bypass) {
+>>>>>>> master:src/main/java/com/github/vaerys/pogos/Servers.java
                     servers.remove(position);
                     return "> Server Deleted.";
                 } else return "> You do not have permission to delete this server.";

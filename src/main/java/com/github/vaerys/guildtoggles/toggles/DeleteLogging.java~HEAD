@@ -1,8 +1,16 @@
 package com.github.vaerys.guildtoggles.toggles;
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/guildtoggles/toggles/DeleteLogging.java~HEAD
 import com.github.vaerys.interfaces.GuildToggle;
 import com.github.vaerys.masterobjects.GuildObject;
 import com.github.vaerys.pogos.GuildConfig;
+=======
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.pogos.GuildConfig;
+import com.github.vaerys.templates.GuildSetting;
+>>>>>>> master:src/main/java/com/github/vaerys/guildtoggles/toggles/DeleteLogging.java
 
 /**
  * Created by Vaerys on 20/02/2017.
@@ -10,8 +18,8 @@ import com.github.vaerys.pogos.GuildConfig;
 public class DeleteLogging implements GuildToggle {
 
     @Override
-    public String name() {
-        return "DeleteLogging";
+    public SAILType name() {
+        return SAILType.DELETE_LOGGING;
     }
 
     @Override
@@ -20,7 +28,7 @@ public class DeleteLogging implements GuildToggle {
     }
 
     @Override
-    public boolean get(GuildConfig config) {
+    public boolean enabled(GuildConfig config) {
         return config.deleteLogging;
     }
 
@@ -30,8 +38,18 @@ public class DeleteLogging implements GuildToggle {
     }
 
     @Override
+<<<<<<< HEAD:src/main/java/com/github/vaerys/guildtoggles/toggles/DeleteLogging.java~HEAD
     public void execute(GuildObject guild) {
 
+=======
+    public String shortDesc(CommandObject command) {
+        return "Enables deleted message logging.";
+    }
+
+    @Override
+    public String desc(CommandObject command) {
+        return "Enables the logging of deleted messages. Requires the " + ChannelSetting.SERVER_LOG.toString() + " Channel to be set up.";
+>>>>>>> master:src/main/java/com/github/vaerys/guildtoggles/toggles/DeleteLogging.java
     }
 
     @Override

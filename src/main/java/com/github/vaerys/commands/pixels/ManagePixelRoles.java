@@ -1,12 +1,17 @@
 package com.github.vaerys.commands.pixels;
 
-import com.github.vaerys.commands.CommandObject;
-import com.github.vaerys.main.Utility;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.handlers.GuildHandler;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.objects.RewardRoleObject;
 import com.github.vaerys.objects.SplitFirstObject;
 import com.github.vaerys.templates.Command;
+import com.github.vaerys.utilobjects.XEmbedBuilder;
 import sx.blah.discord.handle.obj.IRole;
 import sx.blah.discord.handle.obj.Permissions;
+
+import java.util.List;
 
 /**
  * Created by Vaerys on 04/07/2017.
@@ -17,12 +22,40 @@ public class ManagePixelRoles extends Command {
             "> Any positive number up to 256\n" +
             "> xpDenied\n" +
             "> topTen\n" +
-            "> Remove\n";
+            "> Remove\n" +
+            "> List\n";
 
     @Override
     public String execute(String args, CommandObject command) {
+        if (args.equalsIgnoreCase("list")) {
+            XEmbedBuilder builder = new XEmbedBuilder(command);
+            builder.withTitle("Pixel Roles");
+            IRole xpDenied = command.guild.getXPDeniedRole();
+            IRole topTen = command.guild.getTopTenRole();
+            List<RewardRoleObject> rewardRoles = command.guild.config.getRewardRoles();
+            if (xpDenied == null && topTen == null && rewardRoles.size() == 0) {
+                return "> No roles are set up.\n" + missingArgs(command);
+            }
+            String desc = "";
+            if (rewardRoles.size() != 0) {
+                desc += "**Reward Roles**";
+                for (RewardRoleObject r : rewardRoles) {
+                    desc += "\n> **" + command.guild.getRoleByID(r.getRoleID()).getName() + "** -> Level: **" + r.getLevel() + "**";
+                }
+                desc += "\n\n";
+            }
+            if (topTen != null) {
+                desc += "**Top Ten Role**: " + topTen.getName() + "\n\n";
+            }
+            if (xpDenied != null) {
+                desc += "**Pixel Denied Role**: " + xpDenied.getName();
+            }
+            builder.withDesc(desc);
+            builder.send(command.channel);
+            return null;
+        }
         SplitFirstObject mode = new SplitFirstObject(args);
-        IRole role = Utility.getRoleFromName(mode.getRest(), command.guild.get());
+        IRole role = GuildHandler.getRoleFromName(mode.getRest(), command.guild.get());
         if (role == null) {
             return "> **" + mode.getRest() + "** is not a valid Role name.";
         }
@@ -83,13 +116,13 @@ public class ManagePixelRoles extends Command {
                     return "> **" + role.getName() + "** is not a valid Pixel role.";
                 default:
                     return "> Invalid Mode.\n" + modes +
-                Utility.getCommandInfo(this, command);
+                            missingArgs(command);
             }
         }
     }
 
     @Override
-    public String[] names() {
+    protected String[] names() {
         return new String[]{"ManagePixelRoles", "PixelRoles"};
     }
 
@@ -99,57 +132,37 @@ public class ManagePixelRoles extends Command {
     }
 
     @Override
-    public String usage() {
+    protected String usage() {
         return "[Number/Mode] [RoleName]";
     }
 
     @Override
-    public String type() {
-        return TYPE_PIXEL;
+    protected SAILType type() {
+        return SAILType.PIXEL;
     }
 
     @Override
-    public String channel() {
+    protected ChannelSetting channel() {
         return null;
     }
 
     @Override
-    public Permissions[] perms() {
+    protected Permissions[] perms() {
         return new Permissions[]{Permissions.MANAGE_ROLES};
     }
 
     @Override
-    public boolean requiresArgs() {
+    protected boolean requiresArgs() {
         return true;
     }
 
     @Override
-    public boolean doAdminLogging() {
+    protected boolean doAdminLogging() {
         return true;
     }
 
     @Override
     public void init() {
 
-    }
-
-    @Override
-    public String dualDescription() {
-        return null;
-    }
-
-    @Override
-    public String dualUsage() {
-        return null;
-    }
-
-    @Override
-    public String dualType() {
-        return null;
-    }
-
-    @Override
-    public Permissions[] dualPerms() {
-        return new Permissions[0];
     }
 }

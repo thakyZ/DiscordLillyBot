@@ -14,6 +14,7 @@ public class OffenderObject {
         return ID;
     }
 
+<<<<<<< HEAD:src/main/java/com/github/vaerys/objects/OffenderObject.java~HEAD
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
@@ -21,7 +22,15 @@ public class OffenderObject {
     public OffenderObject(String ID) {
         this.displayName = Globals.getClient().getUserByID(ID).getName() + "#" + Globals.getClient().getUserByID(ID).getDiscriminator();
         this.ID = ID;
+=======
+    public OffenderObject(long id) {
+        this.id = id;
+>>>>>>> master:src/main/java/com/github/vaerys/objects/OffenderObject.java
         count = 1;
+    }
+
+    public long getID() {
+        return id;
     }
 
     public void addOffence() {

@@ -1,9 +1,9 @@
 package com.github.vaerys.guildtoggles.modules;
 
-import com.github.vaerys.channelsettings.settings.Servers;
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.ChannelSetting;
+import com.github.vaerys.enums.SAILType;
 import com.github.vaerys.pogos.GuildConfig;
-import com.github.vaerys.templates.Command;
 import com.github.vaerys.templates.GuildModule;
 
 /**
@@ -12,8 +12,8 @@ import com.github.vaerys.templates.GuildModule;
 public class ModuleServers extends GuildModule {
 
     @Override
-    public String name() {
-        return Command.TYPE_SERVERS;
+    public SAILType name() {
+        return SAILType.SERVERS;
     }
 
     @Override
@@ -22,7 +22,7 @@ public class ModuleServers extends GuildModule {
     }
 
     @Override
-    public boolean get(GuildConfig config) {
+    public boolean enabled(GuildConfig config) {
         return config.moduleServers;
     }
 
@@ -38,11 +38,16 @@ public class ModuleServers extends GuildModule {
 
     @Override
     public void setup() {
-        channels.add(new Servers());
+        channels.add(ChannelSetting.SERVERS);
     }
 
     @Override
-    public String stats(CommandObject object) {
-        return "**Total Server Listings:** " + object.guild.servers.getServers().size();
+    public String stats(CommandObject command) {
+        return "**Total Server Listings:** " + command.guild.servers.getServers().size();
+    }
+
+    @Override
+    public String shortDesc(CommandObject command) {
+        return "Allows users to create custom game server listings.";
     }
 }

@@ -1,17 +1,18 @@
 package com.github.vaerys.tags.cctags;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.templates.TagObject;
 
 public class TagUsername extends TagObject {
 
-    public TagUsername(int priority, String... types) {
+    public TagUsername(int priority, TagType... types) {
         super(priority, types);
     }
 
     @Override
     public String execute(String from, CommandObject command, String args) {
-        return replaceAllTag(from,command.user.name);
+        return replaceAllTag(from, command.user.name);
     }
 
     @Override

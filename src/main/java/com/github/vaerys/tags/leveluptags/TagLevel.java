@@ -1,11 +1,12 @@
 package com.github.vaerys.tags.leveluptags;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.templates.TagObject;
 
 public class TagLevel extends TagObject {
 
-    public TagLevel(int priority, String... types) {
+    public TagLevel(int priority, TagType... types) {
         super(priority, types);
     }
 

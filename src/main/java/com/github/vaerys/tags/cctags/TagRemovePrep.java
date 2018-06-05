@@ -1,12 +1,13 @@
 package com.github.vaerys.tags.cctags;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.masterobjects.CommandObject;
+import com.github.vaerys.enums.TagType;
 import com.github.vaerys.main.Utility;
 import com.github.vaerys.templates.TagObject;
 
 public class TagRemovePrep extends TagObject {
 
-    public TagRemovePrep(int priority, String... types) {
+    public TagRemovePrep(int priority, TagType... types) {
         super(priority, types);
     }
 
@@ -17,7 +18,7 @@ public class TagRemovePrep extends TagObject {
 
     @Override
     public String tagName() {
-        return "<removePrep>";
+        return "<dontSanitize>";
     }
 
     @Override
@@ -37,7 +38,7 @@ public class TagRemovePrep extends TagObject {
 
     @Override
     public String desc() {
-        return "Removes the sanitation from the args tag.";
+        return "This tag is used to tell the <args> tag not to sanitize the input.";
     }
 
     @Override

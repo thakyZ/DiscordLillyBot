@@ -1,8 +1,8 @@
 package com.github.vaerys.guildtoggles.modules;
 
-import com.github.vaerys.commands.CommandObject;
+import com.github.vaerys.enums.SAILType;
+import com.github.vaerys.masterobjects.CommandObject;
 import com.github.vaerys.pogos.GuildConfig;
-import com.github.vaerys.templates.Command;
 import com.github.vaerys.templates.GuildModule;
 
 /**
@@ -11,8 +11,8 @@ import com.github.vaerys.templates.GuildModule;
 public class ModuleSlash extends GuildModule {
 
     @Override
-    public String name() {
-        return Command.TYPE_SLASH;
+    public SAILType name() {
+        return SAILType.SLASH;
     }
 
     @Override
@@ -21,7 +21,7 @@ public class ModuleSlash extends GuildModule {
     }
 
     @Override
-    public boolean get(GuildConfig config) {
+    public boolean enabled(GuildConfig config) {
         return config.slashCommands;
     }
 
@@ -32,7 +32,7 @@ public class ModuleSlash extends GuildModule {
 
     @Override
     public String desc(CommandObject command) {
-        return "This module enables Slash commands.";
+        return "Enables additional text-based emoji slash commands.";
     }
 
     @Override
@@ -40,7 +40,12 @@ public class ModuleSlash extends GuildModule {
     }
 
     @Override
-    public String stats(CommandObject object) {
+    public String stats(CommandObject command) {
         return null;
+    }
+
+    @Override
+    public String shortDesc(CommandObject command) {
+        return desc(command);
     }
 }
